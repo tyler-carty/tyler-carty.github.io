@@ -5,7 +5,7 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 
 This is my portfolio, a detailed website showing off my programming capabilities, experience and education history.
 Thank you for the interest and I hope you enjoy your visit here. You will find downloads and information regarding 
-all of my projects, past employment and schooling and jopefully get to know me better! My contact details are on my
+all of my projects, past employment and schooling and hopefully get to know me better! My contact details are on my
 website if needs be. Thank you!!!
 
 Demo images* courtesy of Unsplash, a radtastic collection of CC0 (public domain) images
