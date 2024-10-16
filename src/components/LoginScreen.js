@@ -77,8 +77,8 @@ const LoginScreen = () => {
         >
             <LoginForm onSubmit={handleLogin}>
                 <LoginTitle>Tyler Cartwright's Portfolio</LoginTitle>
-                <LoginInput type="text" placeholder="Username" value="TylerCartwright" readOnly />
-                <LoginInput type="password" placeholder="Password" value="********" readOnly />
+                <LoginInput type="text" placeholder="Username" value="tyler-cartwright" readOnly />
+                <LoginInput type="password" placeholder="Password" value="password123" readOnly />
                 <LoginButton type="submit" disabled={isLoading}>
                     {isLoading ? 'Accessing...' : 'Access Portfolio'}
                 </LoginButton>
