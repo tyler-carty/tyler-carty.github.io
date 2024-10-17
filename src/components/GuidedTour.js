@@ -133,16 +133,16 @@ const tourSteps = [
                 position: { top: '120px', left: '220px' }
             },
             {
-                title: 'Project Metrics',
-                content: 'These metrics show the impact, complexity, and growth potential of the project. Higher percentages indicate greater significance.',
-                target: '.project-metrics',
-                position: { top: '200px', right: '220px' }
-            },
-            {
                 title: 'Tech Stack',
                 content: 'These tags represent the technologies used in the project. They are like the underlying assets of your investment.',
                 target: '.tech-stack',
                 position: { top: '250px', left: '220px' }
+            },
+            {
+                title: 'Project Metrics',
+                content: 'These metrics show the impact, complexity, and growth potential of the project. Higher percentages indicate greater significance.',
+                target: '.project-metrics',
+                position: { top: '200px', right: '220px' }
             },
             {
                 title: 'Detailed View',
