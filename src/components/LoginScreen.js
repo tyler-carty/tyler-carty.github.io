@@ -57,7 +57,7 @@ const LoginButton = styled.button`
   }
 `;
 
-const LoginScreen = () => {
+const LoginScreen = ({ onLogin }) => {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
 
@@ -65,6 +65,7 @@ const LoginScreen = () => {
         e.preventDefault();
         setIsLoading(true);
         setTimeout(() => {
+            onLogin(); // Trigger the tour
             navigate('/dashboard');
         }, 1000);
     };

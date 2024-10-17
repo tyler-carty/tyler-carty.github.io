@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import styled from 'styled-components';
@@ -11,6 +11,7 @@ import ProjectInvestments from './components/ProjectInvestments';
 import ExperienceTradingFloor from './components/ExperienceTradingFloor';
 import LearningFutures from './components/LearningFutures';
 import ContactTradingDesk from './components/ContactTradingDesk';
+import GuidedTour from './components/GuidedTour';
 
 const AppContainer = styled.div`
     display: flex;
@@ -52,12 +53,27 @@ const AnimatedRoutes = () => {
 function AppContent() {
     const location = useLocation();
     const isLoginPage = location.pathname === '/';
+    const [showTour, setShowTour] = useState(false);
+
+    const handleLogin = () => {
+        setShowTour(true);
+    };
 
     return (
         <AppContainer>
             {!isLoginPage && <Sidebar />}
             <MainContent hasSidebar={!isLoginPage}>
-                <AnimatedRoutes />
+                <AnimatePresence mode="wait">
+                    <Routes location={location} key={location.pathname}>
+                        <Route path="/" element={<PageTransitionWrapper><LoginScreen onLogin={handleLogin} /></PageTransitionWrapper>} />
+                        <Route path="/dashboard" element={<PageTransitionWrapper><Dashboard /></PageTransitionWrapper>} />
+                        <Route path="/projects" element={<PageTransitionWrapper><ProjectInvestments /></PageTransitionWrapper>} />
+                        <Route path="/experience" element={<PageTransitionWrapper><ExperienceTradingFloor /></PageTransitionWrapper>} />
+                        <Route path="/learning" element={<PageTransitionWrapper><LearningFutures /></PageTransitionWrapper>} />
+                        <Route path="/contact" element={<PageTransitionWrapper><ContactTradingDesk /></PageTransitionWrapper>} />
+                    </Routes>
+                </AnimatePresence>
+                {showTour && <GuidedTour />}
             </MainContent>
         </AppContainer>
     );
