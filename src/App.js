@@ -31,25 +31,6 @@ const MainContent = styled.main`
     }
 `;
 
-
-const AnimatedRoutes = () => {
-    const location = useLocation();
-    const isLoginPage = location.pathname === '/';
-
-    return (
-        <AnimatePresence mode="wait">
-            <Routes location={location} key={location.pathname}>
-                <Route path="/" element={<PageTransitionWrapper><LoginScreen /></PageTransitionWrapper>} />
-                <Route path="/dashboard" element={<PageTransitionWrapper><Dashboard /></PageTransitionWrapper>} />
-                <Route path="/projects" element={<PageTransitionWrapper><ProjectInvestments /></PageTransitionWrapper>} />
-                <Route path="/experience" element={<PageTransitionWrapper><ExperienceTradingFloor /></PageTransitionWrapper>} />
-                <Route path="/learning" element={<PageTransitionWrapper><LearningFutures /></PageTransitionWrapper>} />
-                <Route path="/contact" element={<PageTransitionWrapper><ContactTradingDesk /></PageTransitionWrapper>} />
-            </Routes>
-        </AnimatePresence>
-    );
-};
-
 function AppContent() {
     const location = useLocation();
     const isLoginPage = location.pathname === '/';
@@ -61,7 +42,7 @@ function AppContent() {
 
     return (
         <AppContainer>
-            {!isLoginPage && <Sidebar />}
+            {!isLoginPage && <Sidebar setShowTour={setShowTour} />}
             <MainContent hasSidebar={!isLoginPage}>
                 <AnimatePresence mode="wait">
                     <Routes location={location} key={location.pathname}>
@@ -73,7 +54,7 @@ function AppContent() {
                         <Route path="/contact" element={<PageTransitionWrapper><ContactTradingDesk /></PageTransitionWrapper>} />
                     </Routes>
                 </AnimatePresence>
-                {showTour && <GuidedTour />}
+                {showTour && <GuidedTour setIsTourActive={setShowTour} />}
             </MainContent>
         </AppContainer>
     );

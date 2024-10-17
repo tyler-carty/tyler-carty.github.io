@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Tooltip, AreaChart, Area, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { FaBriefcase, FaLaptopCode, FaGraduationCap, FaChartLine } from 'react-icons/fa';
+import {BaseComponent} from "./BaseComponent";
 
 const DashboardContainer = styled(motion.div)`
     display: grid;
@@ -151,91 +152,94 @@ const Dashboard = () => {
     ];
 
     return (
-        <DashboardContainer
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-        >
-            <Card>
-                <CardTitle>Skills Portfolio</CardTitle>
-                <CardContent>
-                    <SkillCategory onClick={() => setActiveSkillSet('technical')}>
-                        Technical Skills
-                    </SkillCategory>
-                    <SkillCategory onClick={() => setActiveSkillSet('soft')}>
-                        Soft Skills
-                    </SkillCategory>
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={activeSkillSet}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.5 }}
-                        >
-                            <ResponsiveContainer width="100%" height={300}>
-                                <RadarChart data={activeSkillSet === 'technical' ? technicalSkills : softSkills}>
-                                    <PolarGrid />
-                                    <PolarAngleAxis dataKey="subject" />
-                                    <PolarRadiusAxis angle={30} domain={[0, 100]} />
-                                    <Radar name="Skills" dataKey="A" stroke="#64ffda" fill="#64ffda" fillOpacity={0.6} />
-                                    <Tooltip />
-                                </RadarChart>
-                            </ResponsiveContainer>
-                        </motion.div>
-                    </AnimatePresence>
-                </CardContent>
-            </Card>
-
-            <Card>
-                <CardTitle>Experience Growth</CardTitle>
-                <CardContent>
-                    <ResponsiveContainer width="100%" height={300}>
-                        <AreaChart data={experienceData}>
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="year" />
-                            <YAxis />
-                            <Tooltip />
-                            <Area type="monotone" dataKey="value" stroke="#64ffda" fill="#64ffda" fillOpacity={0.3} />
-                        </AreaChart>
-                    </ResponsiveContainer>
-                </CardContent>
-            </Card>
-
-            <Card>
-                <CardTitle>Recent Projects</CardTitle>
-                <CardContent>
-                    {projectsData.map((project, index) => (
-                        <ProjectSummary key={index}>
-                            <ProjectTitle>{project.title}</ProjectTitle>
-                            <ProjectDescription>{project.description}</ProjectDescription>
-                            <QuickLink
-                                href={project.link}
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
+        <BaseComponent title="Dashboard">
+            <DashboardContainer
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="dashboard-overview"
+            >
+                <Card className="skills-chart">
+                    <CardTitle>Skills Portfolio</CardTitle>
+                    <CardContent>
+                        <SkillCategory onClick={() => setActiveSkillSet('technical')}>
+                            Technical Skills
+                        </SkillCategory>
+                        <SkillCategory onClick={() => setActiveSkillSet('soft')}>
+                            Soft Skills
+                        </SkillCategory>
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={activeSkillSet}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.5 }}
                             >
-                                Learn More
-                            </QuickLink>
-                        </ProjectSummary>
-                    ))}
-                </CardContent>
-            </Card>
+                                <ResponsiveContainer width="100%" height={300}>
+                                    <RadarChart data={activeSkillSet === 'technical' ? technicalSkills : softSkills}>
+                                        <PolarGrid />
+                                        <PolarAngleAxis dataKey="subject" />
+                                        <PolarRadiusAxis angle={30} domain={[0, 100]} />
+                                        <Radar name="Skills" dataKey="A" stroke="#64ffda" fill="#64ffda" fillOpacity={0.6} />
+                                        <Tooltip />
+                                    </RadarChart>
+                                </ResponsiveContainer>
+                            </motion.div>
+                        </AnimatePresence>
+                    </CardContent>
+                </Card>
 
-            <Card>
-                <CardTitle>Quick Stats</CardTitle>
-                <CardContent>
-                    <QuickStatsGrid>
-                        {quickStats.map((stat, index) => (
-                            <StatItem key={index}>
-                                <StatIcon>{stat.icon}</StatIcon>
-                                <StatValue>{stat.value}</StatValue>
-                                <StatLabel>{stat.label}</StatLabel>
-                            </StatItem>
+                <Card className="experience-chart">
+                    <CardTitle>Experience Growth</CardTitle>
+                    <CardContent>
+                        <ResponsiveContainer width="100%" height={300}>
+                            <AreaChart data={experienceData}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="year" />
+                                <YAxis />
+                                <Tooltip />
+                                <Area type="monotone" dataKey="value" stroke="#64ffda" fill="#64ffda" fillOpacity={0.3} />
+                            </AreaChart>
+                        </ResponsiveContainer>
+                    </CardContent>
+                </Card>
+
+                <Card className="recent-projects">
+                    <CardTitle>Recent Projects</CardTitle>
+                    <CardContent>
+                        {projectsData.map((project, index) => (
+                            <ProjectSummary key={index}>
+                                <ProjectTitle>{project.title}</ProjectTitle>
+                                <ProjectDescription>{project.description}</ProjectDescription>
+                                <QuickLink
+                                    href={project.link}
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                >
+                                    Learn More
+                                </QuickLink>
+                            </ProjectSummary>
                         ))}
-                    </QuickStatsGrid>
-                </CardContent>
-            </Card>
-        </DashboardContainer>
+                    </CardContent>
+                </Card>
+
+                <Card className="quick-stats">
+                    <CardTitle>Quick Stats</CardTitle>
+                    <CardContent>
+                        <QuickStatsGrid>
+                            {quickStats.map((stat, index) => (
+                                <StatItem key={index}>
+                                    <StatIcon>{stat.icon}</StatIcon>
+                                    <StatValue>{stat.value}</StatValue>
+                                    <StatLabel>{stat.label}</StatLabel>
+                                </StatItem>
+                            ))}
+                        </QuickStatsGrid>
+                    </CardContent>
+                </Card>
+            </DashboardContainer>
+        </BaseComponent>
     );
 };
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link, useLocation } from 'react-router-dom';
-import { FaHome, FaChartLine, FaBriefcase, FaGraduationCap, FaEnvelope, FaBars } from 'react-icons/fa';
+import { FaHome, FaChartLine, FaBriefcase, FaGraduationCap, FaEnvelope, FaBars, FaQuestionCircle } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const SidebarContainer = styled(motion.div)`
@@ -69,29 +69,52 @@ const Icon = styled.span`
 `;
 
 const Label = styled.span`
-  @media (max-width: 768px) {
-    display: ${props => props.isOpen ? 'inline' : 'none'};
-  }
+    @media (max-width: 768px) {
+        display: ${props => props.isOpen ? 'inline' : 'none'};
+    }
 `;
 
 const MenuButton = styled.button`
-  display: none;
-  background: none;
+    display: none;
+    background: none;
+    border: none;
+    color: #64ffda;
+    font-size: 1.5rem;
+    cursor: pointer;
+    position: absolute;
+    top: 1rem;
+    right: -3rem;
+    z-index: 1001;
+
+    @media (max-width: 768px) {
+        display: block;
+    }
+`;
+
+const TourButton = styled.button`
+  background-color: #64ffda;
+  color: #0a192f;
   border: none;
-  color: #64ffda;
-  font-size: 1.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
   cursor: pointer;
-  position: absolute;
-  top: 1rem;
-  right: -3rem;
-  z-index: 1001;
+  font-size: 0.9rem;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+  width: 80%;
+  margin-left: 10%;
+
+  &:hover {
+    background-color: #45c7b3;
+  }
 
   @media (max-width: 768px) {
-    display: block;
+    display: ${props => props.isOpen ? 'block' : 'none'};
   }
 `;
 
-const Sidebar = () => {
+const Sidebar = ({ setShowTour }) => {
     const location = useLocation();
     const [isOpen, setIsOpen] = useState(window.innerWidth > 768);
 
@@ -135,6 +158,9 @@ const Sidebar = () => {
                     </NavItem>
                 ))}
             </NavList>
+            <TourButton onClick={() => setShowTour(true)} isOpen={isOpen}>
+                <FaQuestionCircle /> {isOpen && "Start Tour"}
+            </TourButton>
         </SidebarContainer>
     );
 };

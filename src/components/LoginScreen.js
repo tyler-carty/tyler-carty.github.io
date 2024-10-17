@@ -42,19 +42,19 @@ const LoginInput = styled.input`
 `;
 
 const LoginButton = styled.button`
-  padding: 0.75rem;
-  background-color: #64ffda;
-  color: #0a192f;
-  border: none;
-  border-radius: 5px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
+    padding: 0.75rem;
+    background-color: #64ffda;
+    color: #0a192f;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
 
-  &:hover {
-    background-color: #45c7b3;
-    transform: translateY(-2px);
-  }
+    &:hover {
+        background-color: #45c7b3;
+        transform: translateY(-2px);
+    }
 `;
 
 const LoginScreen = ({ onLogin }) => {
