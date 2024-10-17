@@ -48,15 +48,6 @@ This project is an interactive, web-based portfolio for Tyler Cartwright, design
 2. Run `npm install` to install dependencies
 3. Use `npm start` to run the development server
 
-## Usage
-
-After starting the development server, navigate to `http://localhost:3000` in your web browser. You'll be presented with the login screen. Use the following credentials:
-
-- Username: tyler-cartwright
-- Password: password123
-
-Once logged in, you can explore the different sections of the portfolio or follow the guided tour for a comprehensive overview.
-
 ## Contributing
 
 While this is a personal portfolio project, suggestions and feedback are welcome. Please open an issue to discuss any changes you'd like to propose.
