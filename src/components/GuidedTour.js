@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback, useRef} from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -88,32 +88,27 @@ const tourSteps = [
             {
                 title: 'Welcome to Your Financial Portfolio',
                 content: 'This dashboard represents your skills and experiences as financial assets. Let us explore each section.',
-                target: '.dashboard-overview',
-                position: { top: '80px', left: '220px' }
+                target: '.dashboard-overview'
             },
             {
                 title: 'Skills Portfolio',
                 content: 'This radar chart visualizes your technical and soft skills. The further the point from the center, the stronger the skill.',
-                target: '.skills-chart',
-                position: { top: '100px', right: '220px' }
+                target: '.skills-chart'
             },
             {
                 title: 'Experience Growth',
                 content: 'This line chart demonstrates your professional growth over time. Notice how your experience compounds, just like a good investment!',
-                target: '.experience-chart',
-                position: { bottom: '150px', left: '220px' }
+                target: '.experience-chart'
             },
             {
                 title: 'Recent Projects',
                 content: 'These cards showcase your most recent or significant projects. Think of them as your top-performing stocks.',
-                target: '.recent-projects',
-                position: { top: '250px', left: '220px' }
+                target: '.recent-projects'
             },
             {
                 title: 'Quick Stats',
                 content: 'These metrics provide a snapshot of your professional achievements.',
-                target: '.quick-stats',
-                position: { bottom: '100px', right: '220px' }
+                target: '.quick-stats'
             }
         ]
     },
@@ -123,32 +118,27 @@ const tourSteps = [
             {
                 title: 'Project Investments',
                 content: 'Welcome to your project portfolio. Each card here represents a significant project you have worked on.',
-                target: '.projects-overview',
-                position: { top: '80px', left: '220px' }
+                target: '.projects-overview'
             },
             {
                 title: 'Project Card',
                 content: 'Each project is presented as an investment opportunity. Let us look at the details of one.',
-                target: '.project-card:first-child',
-                position: { top: '120px', left: '220px' }
+                target: '.project-card:first-child'
             },
             {
                 title: 'Tech Stack',
                 content: 'These tags represent the technologies used in the project. They are like the underlying assets of your investment.',
-                target: '.tech-stack',
-                position: { top: '250px', left: '220px' }
+                target: '.tech-stack'
             },
             {
                 title: 'Project Metrics',
                 content: 'These metrics show the impact, complexity, and growth potential of the project. Higher percentages indicate greater significance.',
-                target: '.project-metrics',
-                position: { top: '200px', right: '220px' }
+                target: '.project-metrics'
             },
             {
                 title: 'Detailed View',
                 content: 'Click on "More Details" to see an expanded view with performance charts and links to the project.',
-                target: '.project-card .expand-button',
-                position: { bottom: '100px', left: '220px' }
+                target: '.project-card .expand-button'
             }
         ]
     },
@@ -158,20 +148,17 @@ const tourSteps = [
             {
                 title: 'Experience Trading Floor',
                 content: 'Welcome to your career timeline. This represents your professional journey as a series of trades and investments.',
-                target: '.timeline-overview',
-                position: { top: '80px', left: '220px' }
+                target: '.timeline-overview'
             },
             {
                 title: 'Timeline Entry',
                 content: 'Each entry represents a significant milestone or role in your career. The vertical line shows the progression of time.',
-                target: '.timeline-item',
-                position: { top: '120px', right: '220px' }
+                target: '.timeline-item'
             },
             {
                 title: 'Role Details',
                 content: 'Click on an entry to see more details about that role or achievement. It is like examining the details of a particular trade.',
-                target: '.timeline-item .expand-button',
-                position: { top: '200px', left: '220px' }
+                target: '.timeline-item .expand-button'
             }
         ]
     },
@@ -181,26 +168,22 @@ const tourSteps = [
             {
                 title: 'Learning Futures',
                 content: 'This section showcases your ongoing learning and future skill projections.',
-                target: '.learning-overview',
-                position: { top: '80px', left: '220px' }
+                target: '.learning-overview'
             },
             {
                 title: 'Current Learning',
                 content: 'These cards represent the skills or technologies you are currently focusing on. They are your active investments.',
-                target: '.current-learning',
-                position: { top: '120px', right: '220px' }
+                target: '.current-learning'
             },
             {
                 title: 'Growth Potential',
                 content: 'This chart shows the potential growth of your skills. Higher bars indicate areas with significant room for improvement.',
-                target: '.growth-chart',
-                position: { bottom: '150px', left: '220px' }
+                target: '.growth-chart'
             },
             {
                 title: 'Future Interests',
                 content: 'These are areas you are interested in exploring. Think of them as potential future investments in your skill portfolio.',
-                target: '.future-interests',
-                position: { bottom: '100px', right: '220px' }
+                target: '.future-interests'
             }
         ]
     },
@@ -210,20 +193,17 @@ const tourSteps = [
             {
                 title: 'Contact Trading Desk',
                 content: 'Welcome to the contact section. Here, you can reach out just like you would contact a trading desk for high-value transactions.',
-                target: '.contact-overview',
-                position: { top: '80px', left: '220px' }
+                target: '.contact-overview'
             },
             {
                 title: 'Contact Form',
                 content: 'Use this form to send a message. Think of it as placing an order in the market of professional opportunities.',
-                target: '.contact-overview',
-                position: { top: '120px', right: '220px' }
+                target: '.contact-overview'
             },
             {
                 title: 'Tour Complete',
                 content: 'Congratulations! You have completed the tour of your financial portfolio. Feel free to explore further or reach out via this contact form.',
-                target: '.contact-overview',
-                position: { bottom: '150px', right: '220px' }
+                target: '.contact-overview'
             }
         ]
     }
@@ -257,14 +237,23 @@ const GuidedTour = ({ setIsTourActive, isPageReady }) => {
             });
 
             // Calculate card position
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
             let cardTop = rect.bottom + scrollTop + 20;
             let cardLeft = rect.left + scrollLeft;
 
-            if (cardTop + 200 > window.innerHeight) {
+            // Adjust card position if it goes off-screen
+            if (cardTop + 200 > viewportHeight) {
                 cardTop = rect.top + scrollTop - 220;
             }
-            if (cardLeft + 300 > window.innerWidth) {
-                cardLeft = window.innerWidth - 320;
+            if (cardLeft + 300 > viewportWidth) {
+                cardLeft = viewportWidth - 320;
+            }
+            if (cardTop < 0) {
+                cardTop = 20;
+            }
+            if (cardLeft < 0) {
+                cardLeft = 20;
             }
 
             setCardPosition({ top: cardTop, left: cardLeft });
@@ -345,30 +334,6 @@ const GuidedTour = ({ setIsTourActive, isPageReady }) => {
             window.removeEventListener('keydown', handleKeyPress);
         };
     }, [handleNext, handlePrev, handleSkip]);
-
-    useEffect(() => {
-        if (isPageReady) {
-            setIsElementVisible(false);
-            updatePositions();
-        }
-    }, [isPageReady, updatePositions]);
-
-    useEffect(() => {
-        const currentTourStep = tourSteps[currentPage];
-        if (location.pathname !== currentTourStep.path) {
-            setIsElementVisible(false);
-            navigate(currentTourStep.path);
-        }
-    }, [currentPage, navigate, location.pathname]);
-
-    useEffect(() => {
-        const handleResize = () => {
-            updatePositions();
-        };
-
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, [updatePositions]);
 
     return (
         <TourOverlay
