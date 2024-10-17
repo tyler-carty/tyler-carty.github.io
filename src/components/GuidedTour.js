@@ -164,7 +164,7 @@ const tourSteps = [
             {
                 title: 'Timeline Entry',
                 content: 'Each entry represents a significant milestone or role in your career. The vertical line shows the progression of time.',
-                target: '.timeline-item:first-child',
+                target: '.timeline-item',
                 position: { top: '120px', right: '220px' }
             },
             {
@@ -172,12 +172,6 @@ const tourSteps = [
                 content: 'Click on an entry to see more details about that role or achievement. It is like examining the details of a particular trade.',
                 target: '.timeline-item .expand-button',
                 position: { top: '200px', left: '220px' }
-            },
-            {
-                title: 'Skills Acquired',
-                content: 'These tags show the key skills you gained or improved in each role. They are the dividends from your career investments.',
-                target: '.timeline-item .skills-tags',
-                position: { bottom: '150px', right: '220px' }
             }
         ]
     },
@@ -224,12 +218,6 @@ const tourSteps = [
                 content: 'Use this form to send a message. Think of it as placing an order in the market of professional opportunities.',
                 target: '.contact-form',
                 position: { top: '120px', right: '220px' }
-            },
-            {
-                title: 'Social Links',
-                content: 'These links connect to your professional profiles. They are like different exchanges where people can learn more about your portfolio.',
-                target: '.social-links',
-                position: { bottom: '100px', left: '220px' }
             },
             {
                 title: 'Tour Complete',
