@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 
 const LoginContainer = styled(motion.div)`
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
 `;
 
 const LoginForm = styled.form`
-    display: flex;
-    flex-direction: column;
-    width: 300px;
+    width: 100%;
+    max-width: 300px;
     background-color: #112240;
     padding: 2rem;
     border-radius: 10px;
@@ -25,47 +25,99 @@ const LoginTitle = styled.h1`
     font-size: 2rem;
     margin-bottom: 2rem;
     text-align: center;
+    color: #64ffda;
 `;
 
-const LoginInput = styled.input`
+const InputContainer = styled.div`
+    position: relative;
     margin-bottom: 1rem;
+    height: 2rem;
+`;
+
+const LoginInput = styled.div`
+    width: 100%;
+    height: 100%;
     padding: 0.5rem;
     border: none;
     border-bottom: 2px solid #64ffda;
     background-color: transparent;
     color: #64ffda;
     font-size: 1rem;
+    display: flex;
+    align-items: center;
+`;
 
-    &::placeholder {
-        color: #8892b0;
+const Cursor = styled.span`
+    display: inline-block;
+    width: 2px;
+    height: 1.2em;
+    background-color: #64ffda;
+    margin-left: 2px;
+    animation: blink 0.7s infinite;
+
+    @keyframes blink {
+        0% { opacity: 0 }
+        50% { opacity: 1 }
+        100% { opacity: 0 }
     }
 `;
 
 const LoginButton = styled.button`
+    width: 100%;
     padding: 0.75rem;
-    background-color: #64ffda;
+    background-color: ${props => props.disabled ? '#45c7b3' : '#64ffda'};
     color: #0a192f;
     border: none;
     border-radius: 5px;
     font-size: 1rem;
-    cursor: pointer;
+    cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
     transition: all 0.3s ease;
+    opacity: ${props => props.disabled ? 0.7 : 1};
 
     &:hover {
-        background-color: #45c7b3;
-        transform: translateY(-2px);
+        background-color: ${props => props.disabled ? '#45c7b3' : '#45c7b3'};
     }
 `;
 
 const LoginScreen = ({ onLogin }) => {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [isTypingUsername, setIsTypingUsername] = useState(true);
+    const [isTypingPassword, setIsTypingPassword] = useState(false);
+
+    const fullUsername = 'tyler-cartwright';
+    const fullPassword = 'password123';
+
+    useEffect(() => {
+        let timeout;
+        if (isTypingUsername) {
+            if (username !== fullUsername) {
+                timeout = setTimeout(() => {
+                    setUsername(prevUsername => fullUsername.slice(0, prevUsername.length + 1));
+                }, 100);
+            } else {
+                setIsTypingUsername(false);
+                setIsTypingPassword(true)
+            }
+        } else if (isTypingPassword) {
+            if (password !== fullPassword) {
+                timeout = setTimeout(() => {
+                    setPassword(prevPassword => fullPassword.slice(0, prevPassword.length + 1));
+                }, 100);
+            } else {
+                setIsTypingPassword(false);
+            }
+        }
+        return () => clearTimeout(timeout);
+    }, [username, password, isTypingUsername, isTypingPassword]);
 
     const handleLogin = (e) => {
         e.preventDefault();
         setIsLoading(true);
         setTimeout(() => {
-            onLogin(); // Trigger the tour
+            onLogin();
             navigate('/dashboard');
         }, 1000);
     };
@@ -78,9 +130,19 @@ const LoginScreen = ({ onLogin }) => {
         >
             <LoginForm onSubmit={handleLogin}>
                 <LoginTitle>Tyler Cartwright's Portfolio</LoginTitle>
-                <LoginInput type="text" placeholder="Username" value="tyler-cartwright" readOnly />
-                <LoginInput type="password" placeholder="Password" value="password123" readOnly />
-                <LoginButton type="submit" disabled={isLoading}>
+                <InputContainer>
+                    <LoginInput>
+                        {username}
+                        {isTypingUsername && <Cursor />}
+                    </LoginInput>
+                </InputContainer>
+                <InputContainer>
+                    <LoginInput>
+                        {password.split('').map(() => '*').join('')}
+                        {isTypingPassword && <Cursor />}
+                    </LoginInput>
+                </InputContainer>
+                <LoginButton type="submit" disabled={isTypingUsername || isTypingPassword || isLoading}>
                     {isLoading ? 'Accessing...' : 'Access Portfolio'}
                 </LoginButton>
             </LoginForm>
