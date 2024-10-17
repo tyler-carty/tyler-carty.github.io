@@ -1,173 +1,240 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { motion } from 'framer-motion';
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { FaBriefcase, FaLaptopCode, FaGraduationCap, FaEnvelope } from 'react-icons/fa';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Tooltip, AreaChart, Area, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { FaBriefcase, FaLaptopCode, FaGraduationCap, FaChartLine } from 'react-icons/fa';
 
 const DashboardContainer = styled(motion.div)`
-    padding: 2rem;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
+    padding: 2rem;
 `;
 
-const DashboardHeader = styled.h1`
-    font-size: 2.5rem;
-    margin-bottom: 2rem;
-    grid-column: 1 / -1;
-    color: #64ffda;
-`;
-
-const SectionContainer = styled.div`
+const Card = styled(motion.div)`
     background-color: #112240;
     border-radius: 10px;
     padding: 1.5rem;
-    box-shadow: 0 0 15px rgba(100, 255, 218, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
-const SectionTitle = styled.h2`
-    font-size: 1.8rem;
-    margin-bottom: 1rem;
+const CardTitle = styled.h2`
+    font-size: 1.5rem;
     color: #64ffda;
+    margin-bottom: 1rem;
 `;
 
-const QuickLinkContainer = styled.div`
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+const CardContent = styled.div`
+    color: #8892b0;
 `;
 
-const QuickLink = styled(motion.div)`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #1d3557;
-    border-radius: 10px;
-    padding: 1rem;
+const SkillCategory = styled.div`
+    margin-bottom: 1rem;
     cursor: pointer;
-    transition: all 0.3s ease;
+`;
+
+const ProjectSummary = styled.div`
+    margin-bottom: 1rem;
+`;
+
+const ProjectTitle = styled.h3`
+    font-size: 1.2rem;
+    color: #ccd6f6;
+    margin-bottom: 0.5rem;
+`;
+
+const ProjectDescription = styled.p`
+    font-size: 0.9rem;
+    color: #8892b0;
+`;
+
+const QuickLink = styled(motion.a)`
+    display: inline-block;
+    margin-top: 0.5rem;
+    color: #64ffda;
+    text-decoration: none;
+    font-size: 0.9rem;
 
     &:hover {
-        background-color: #64ffda;
-        color: #0a192f;
+        text-decoration: underline;
     }
 `;
 
-const SkillContainer = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
+const QuickStatsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+  text-align: center;
 `;
 
-const SkillName = styled.span`
-    flex: 1;
-`;
-
-const SkillBar = styled.div`
-  flex: 2;
-  height: 10px;
+const StatItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
   background-color: #1d3557;
-  border-radius: 5px;
-  overflow: hidden;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(100, 255, 218, 0.1);
+  }
 `;
 
-const SkillProgress = styled.div`
-  height: 100%;
-  background-color: #64ffda;
-  width: ${props => props.width}%;
+const StatIcon = styled.div`
+  font-size: 24px;
+  color: #64ffda;
+  margin-bottom: 0.5rem;
 `;
 
-const experienceData = [
-    { year: 2019, value: 30 },
-    { year: 2020, value: 50 },
-    { year: 2021, value: 70 },
-    { year: 2022, value: 85 },
-    { year: 2023, value: 95 },
-];
+const StatValue = styled.p`
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #ccd6f6;
+  margin: 0.25rem 0;
+`;
+
+const StatLabel = styled.p`
+  font-size: 0.9rem;
+  color: #8892b0;
+  margin: 0;
+`;
 
 const skillsData = [
-    { name: 'React', value: 90 },
-    { name: 'Python', value: 85 },
-    { name: 'Data Science', value: 80 },
-    { name: 'Machine Learning', value: 75 },
-    { name: 'Cloud Computing', value: 70 },
+    { subject: 'React', A: 90, fullMark: 100 },
+    { subject: 'Python', A: 85, fullMark: 100 },
+    { subject: 'Data Science', A: 80, fullMark: 100 },
+    { subject: 'Machine Learning', A: 75, fullMark: 100 },
+    { subject: 'Cloud Computing', A: 70, fullMark: 100 },
 ];
 
-const projectData = [
-    { name: 'Sentiment Dynamics', value: 30 },
-    { name: 'TeslaTrack', value: 25 },
-    { name: 'FraudGuard', value: 20 },
-    { name: 'VenueVantage', value: 25 },
+const experienceData = [
+    { year: '2019', value: 30 },
+    { year: '2020', value: 50 },
+    { year: '2021', value: 70 },
+    { year: '2022', value: 85 },
+    { year: '2023', value: 95 },
 ];
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+const projectsData = [
+    {
+        title: 'AI-Driven Market Analyzer',
+        description: 'Developed an AI-powered tool for real-time market trend analysis.',
+        link: '/projects#market-analyzer'
+    },
+    {
+        title: 'Big Data Pipeline',
+        description: 'Built a scalable data pipeline processing millions of transactions per hour.',
+        link: '/projects#data-pipeline'
+    },
+    // Add more projects as needed
+];
 
 const Dashboard = () => {
+    const [activeSkillSet, setActiveSkillSet] = useState('technical');
+
+    const technicalSkills = skillsData;
+    const softSkills = [
+        { subject: 'Communication', A: 85, fullMark: 100 },
+        { subject: 'Teamwork', A: 90, fullMark: 100 },
+        { subject: 'Problem Solving', A: 88, fullMark: 100 },
+        { subject: 'Adaptability', A: 82, fullMark: 100 },
+        { subject: 'Leadership', A: 78, fullMark: 100 },
+    ];
+
+    const quickStats = [
+        { icon: <FaBriefcase />, value: '5+ Years', label: 'Experience' },
+        { icon: <FaLaptopCode />, value: '20+', label: 'Projects' },
+        { icon: <FaGraduationCap />, value: 'MSc', label: 'Data Science' },
+        { icon: <FaChartLine />, value: '10+', label: 'Technologies' },
+    ];
+
     return (
         <DashboardContainer
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
         >
-            <DashboardHeader>Portfolio Dashboard</DashboardHeader>
-
-            <SectionContainer>
-                <SectionTitle>Experience Growth</SectionTitle>
-                <ResponsiveContainer width="100%" height={200}>
-                    <LineChart data={experienceData}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="year" />
-                        <YAxis />
-                        <Tooltip />
-                        <Line type="monotone" dataKey="value" stroke="#64ffda" />
-                    </LineChart>
-                </ResponsiveContainer>
-            </SectionContainer>
-
-            <SectionContainer>
-                <SectionTitle>Skills Portfolio</SectionTitle>
-                {skillsData.map((skill, index) => (
-                    <SkillContainer key={index}>
-                        <SkillName>{skill.name}</SkillName>
-                        <SkillBar>
-                            <SkillProgress width={skill.value} />
-                        </SkillBar>
-                    </SkillContainer>
-                ))}
-            </SectionContainer>
-
-            <SectionContainer>
-                <SectionTitle>Project Distribution</SectionTitle>
-                <ResponsiveContainer width="100%" height={200}>
-                    <PieChart>
-                        <Pie
-                            data={projectData}
-                            cx="50%"
-                            cy="50%"
-                            outerRadius={80}
-                            fill="#8884d8"
-                            dataKey="value"
-                            label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+            <Card>
+                <CardTitle>Skills Portfolio</CardTitle>
+                <CardContent>
+                    <SkillCategory onClick={() => setActiveSkillSet('technical')}>
+                        Technical Skills
+                    </SkillCategory>
+                    <SkillCategory onClick={() => setActiveSkillSet('soft')}>
+                        Soft Skills
+                    </SkillCategory>
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={activeSkillSet}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.5 }}
                         >
-                            {projectData.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                            ))}
-                        </Pie>
-                        <Tooltip />
-                    </PieChart>
-                </ResponsiveContainer>
-            </SectionContainer>
+                            <ResponsiveContainer width="100%" height={300}>
+                                <RadarChart data={activeSkillSet === 'technical' ? technicalSkills : softSkills}>
+                                    <PolarGrid />
+                                    <PolarAngleAxis dataKey="subject" />
+                                    <PolarRadiusAxis angle={30} domain={[0, 100]} />
+                                    <Radar name="Skills" dataKey="A" stroke="#64ffda" fill="#64ffda" fillOpacity={0.6} />
+                                    <Tooltip />
+                                </RadarChart>
+                            </ResponsiveContainer>
+                        </motion.div>
+                    </AnimatePresence>
+                </CardContent>
+            </Card>
 
-            <SectionContainer>
-                <SectionTitle>Quick Links</SectionTitle>
-                <QuickLinkContainer>
-                    <QuickLink whileHover={{ scale: 1.05 }}><FaBriefcase size={24} /></QuickLink>
-                    <QuickLink whileHover={{ scale: 1.05 }}><FaLaptopCode size={24} /></QuickLink>
-                    <QuickLink whileHover={{ scale: 1.05 }}><FaGraduationCap size={24} /></QuickLink>
-                    <QuickLink whileHover={{ scale: 1.05 }}><FaEnvelope size={24} /></QuickLink>
-                </QuickLinkContainer>
-            </SectionContainer>
+            <Card>
+                <CardTitle>Experience Growth</CardTitle>
+                <CardContent>
+                    <ResponsiveContainer width="100%" height={300}>
+                        <AreaChart data={experienceData}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="year" />
+                            <YAxis />
+                            <Tooltip />
+                            <Area type="monotone" dataKey="value" stroke="#64ffda" fill="#64ffda" fillOpacity={0.3} />
+                        </AreaChart>
+                    </ResponsiveContainer>
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardTitle>Recent Projects</CardTitle>
+                <CardContent>
+                    {projectsData.map((project, index) => (
+                        <ProjectSummary key={index}>
+                            <ProjectTitle>{project.title}</ProjectTitle>
+                            <ProjectDescription>{project.description}</ProjectDescription>
+                            <QuickLink
+                                href={project.link}
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                            >
+                                Learn More
+                            </QuickLink>
+                        </ProjectSummary>
+                    ))}
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardTitle>Quick Stats</CardTitle>
+                <CardContent>
+                    <QuickStatsGrid>
+                        {quickStats.map((stat, index) => (
+                            <StatItem key={index}>
+                                <StatIcon>{stat.icon}</StatIcon>
+                                <StatValue>{stat.value}</StatValue>
+                                <StatLabel>{stat.label}</StatLabel>
+                            </StatItem>
+                        ))}
+                    </QuickStatsGrid>
+                </CardContent>
+            </Card>
         </DashboardContainer>
     );
 };
