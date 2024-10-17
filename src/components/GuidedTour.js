@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect, useCallback, useRef} from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -248,6 +248,7 @@ const GuidedTour = ({ setIsTourActive }) => {
     const [cardPosition, setCardPosition] = useState({ top: 0, left: 0 });
     const navigate = useNavigate();
     const location = useLocation();
+    const pollingIntervalRef = useRef(null);
 
     const updatePositions = useCallback(() => {
         const currentTourStep = tourSteps[currentPage].steps[currentStep];
@@ -266,7 +267,7 @@ const GuidedTour = ({ setIsTourActive }) => {
             });
 
             // Calculate card position
-            let cardTop = rect.top + scrollTop + rect.height + 20; // 20px below the element
+            let cardTop = rect.bottom + scrollTop + 20; // 20px below the element
             let cardLeft = rect.left + scrollLeft;
 
             // Adjust if card would go off-screen
@@ -278,22 +279,66 @@ const GuidedTour = ({ setIsTourActive }) => {
             }
 
             setCardPosition({ top: cardTop, left: cardLeft });
+
+            // If we found the element, clear the polling interval
+            if (pollingIntervalRef.current) {
+                clearInterval(pollingIntervalRef.current);
+                pollingIntervalRef.current = null;
+            }
+
+            return true; // Element found and positions updated
+        }
+
+        return false; // Element not found
+    }, [currentPage, currentStep]);
+
+    const startPollingForElement = useCallback(() => {
+        if (pollingIntervalRef.current) {
+            clearInterval(pollingIntervalRef.current);
+        }
+
+        pollingIntervalRef.current = setInterval(() => {
+            const found = updatePositions();
+            if (found) {
+                clearInterval(pollingIntervalRef.current);
+                pollingIntervalRef.current = null;
+            }
+        }, 100); // Poll every 100ms
+
+        // Set a timeout to stop polling after 5 seconds
+        setTimeout(() => {
+            if (pollingIntervalRef.current) {
+                clearInterval(pollingIntervalRef.current);
+                pollingIntervalRef.current = null;
+                console.error('Failed to find target element after 5 seconds');
+            }
+        }, 5000);
+    }, [updatePositions]);
+
+    const handleNext = useCallback(() => {
+        const currentPageSteps = tourSteps[currentPage].steps;
+        if (currentStep < currentPageSteps.length - 1) {
+            setCurrentStep(currentStep + 1);
+        } else if (currentPage < tourSteps.length - 1) {
+            setCurrentPage(currentPage + 1);
+            setCurrentStep(0);
+        } else {
+            setIsTourActive(false);
+        }
+    }, [currentPage, currentStep, setIsTourActive]);
+
+    const handlePrev = useCallback(() => {
+        if (currentStep > 0) {
+            setCurrentStep(currentStep - 1);
+        } else if (currentPage > 0) {
+            setCurrentPage(currentPage - 1);
+            setCurrentStep(tourSteps[currentPage - 1].steps.length - 1);
         }
     }, [currentPage, currentStep]);
 
-    useEffect(() => {
-        navigate(tourSteps[currentPage].path);
-        updatePositions();
-    }, [currentPage, currentStep, navigate, updatePositions]);
-
-    useEffect(() => {
-        window.addEventListener('resize', updatePositions);
-        window.addEventListener('scroll', updatePositions);
-        return () => {
-            window.removeEventListener('resize', updatePositions);
-            window.removeEventListener('scroll', updatePositions);
-        };
-    }, [updatePositions]);
+    const handleSkip = useCallback(() => {
+        setIsTourActive(false);
+    }, [setIsTourActive]);
 
     useEffect(() => {
         const handleKeyPress = (event) => {
@@ -304,42 +349,42 @@ const GuidedTour = ({ setIsTourActive }) => {
 
         window.addEventListener('keydown', handleKeyPress);
         return () => window.removeEventListener('keydown', handleKeyPress);
-    }, [currentPage, currentStep]);
+    }, [handleNext, handlePrev, handleSkip]);
 
-    const handleNext = () => {
-        const currentPageSteps = tourSteps[currentPage].steps;
-        if (currentStep < currentPageSteps.length - 1) {
-            setCurrentStep(currentStep + 1);
-        } else if (currentPage < tourSteps.length - 1) {
-            setCurrentPage(currentPage + 1);
-            setCurrentStep(0);
-        } else {
-            setIsTourActive(false);
+    useEffect(() => {
+        const currentTourStep = tourSteps[currentPage];
+        if (location.pathname !== currentTourStep.path) {
+            navigate(currentTourStep.path);
         }
-    };
+    }, [currentPage, navigate, location.pathname]);
 
-    const handlePrev = () => {
-        if (currentStep > 0) {
-            setCurrentStep(currentStep - 1);
-        } else if (currentPage > 0) {
-            setCurrentPage(currentPage - 1);
-            setCurrentStep(tourSteps[currentPage - 1].steps.length - 1);
-        }
-    };
+    useEffect(() => {
+        startPollingForElement();
 
-    const handleSkip = () => {
-        setIsTourActive(false);
-    };
+        const handleResize = () => {
+            updatePositions();
+        };
 
-    const scrollToElement = (element) => {
+        window.addEventListener('resize', handleResize);
+        return () => {
+            if (pollingIntervalRef.current) {
+                clearInterval(pollingIntervalRef.current);
+            }
+            window.removeEventListener('resize', handleResize);
+        };
+    }, [updatePositions, startPollingForElement, currentPage, currentStep]);
+
+    const scrollToElement = useCallback((element) => {
         element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    };
+    }, []);
 
     useEffect(() => {
         const currentTourStep = tourSteps[currentPage].steps[currentStep];
         const targetElement = document.querySelector(currentTourStep.target);
-        scrollToElement(targetElement);
-    }, [currentPage, currentStep]);
+        if (targetElement) {
+            scrollToElement(targetElement);
+        }
+    }, [currentPage, currentStep, scrollToElement]);
 
     const currentTourStep = tourSteps[currentPage].steps[currentStep];
 
@@ -349,38 +394,46 @@ const GuidedTour = ({ setIsTourActive }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
         >
-            <TourCard
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.3 }}
-                style={{
-                    top: cardPosition.top,
-                    left: cardPosition.left
-                }}
-            >
-                <TourTitle>{currentTourStep.title}</TourTitle>
-                <TourContent>{currentTourStep.content}</TourContent>
-                <TourNavigation>
-                    <TourButton onClick={handlePrev} disabled={currentPage === 0 && currentStep === 0}>
-                        Previous
-                    </TourButton>
-                    <SkipButton onClick={handleSkip}>Skip Tour</SkipButton>
-                    <TourButton onClick={handleNext}>
-                        {currentPage === tourSteps.length - 1 && currentStep === tourSteps[currentPage].steps.length - 1 ? 'Finish' : 'Next'}
-                    </TourButton>
-                </TourNavigation>
-            </TourCard>
-            <HighlightBox
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5 }}
-                style={{
-                    top: highlightPosition.top,
-                    left: highlightPosition.left,
-                    width: highlightPosition.width,
-                    height: highlightPosition.height
-                }}
-            />
+            <AnimatePresence mode="wait">
+                <TourCard
+                    key={`${currentPage}-${currentStep}`}
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.8, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    style={{
+                        top: cardPosition.top,
+                        left: cardPosition.left
+                    }}
+                >
+                    <TourTitle>{currentTourStep.title}</TourTitle>
+                    <TourContent>{currentTourStep.content}</TourContent>
+                    <TourNavigation>
+                        <TourButton onClick={handlePrev} disabled={currentPage === 0 && currentStep === 0}>
+                            Previous
+                        </TourButton>
+                        <SkipButton onClick={handleSkip}>Skip Tour</SkipButton>
+                        <TourButton onClick={handleNext}>
+                            {currentPage === tourSteps.length - 1 && currentStep === tourSteps[currentPage].steps.length - 1 ? 'Finish' : 'Next'}
+                        </TourButton>
+                    </TourNavigation>
+                </TourCard>
+            </AnimatePresence>
+            <AnimatePresence>
+                <HighlightBox
+                    key={`highlight-${currentPage}-${currentStep}`}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.3 }}
+                    style={{
+                        top: highlightPosition.top,
+                        left: highlightPosition.left,
+                        width: highlightPosition.width,
+                        height: highlightPosition.height
+                    }}
+                />
+            </AnimatePresence>
         </TourOverlay>
     );
 };

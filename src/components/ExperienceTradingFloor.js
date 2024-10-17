@@ -22,6 +22,7 @@ const ExperienceTradingFloor = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
+                className="timeline-overview"
             >
                 <ExperienceHeader>Experience Trading Floor</ExperienceHeader>
                 <InteractiveTimeline />

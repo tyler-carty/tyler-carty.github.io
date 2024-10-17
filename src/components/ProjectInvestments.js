@@ -152,79 +152,82 @@ const ProjectInvestments = () => {
 
     return (
         <BaseComponent title="Project Investments">
-            {projects.map((project, index) => (
-                <ProjectCard
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    onClick={() => toggleExpand(index)}
-                >
-                    <ProjectTitle>{project.title}</ProjectTitle>
-                    <ProjectDescription>{project.description}</ProjectDescription>
-                    <TechStack>
-                        {project.techStack.map((tech, i) => (
-                            <TechTag key={i}>{tech}</TechTag>
-                        ))}
-                    </TechStack>
-                    <ProjectMetrics>
-                        <Metric>
-                            <MetricValue>{project.metrics.impact}%</MetricValue>
-                            <MetricLabel>Impact</MetricLabel>
-                        </Metric>
-                        <Metric>
-                            <MetricValue>{project.metrics.complexity}%</MetricValue>
-                            <MetricLabel>Complexity</MetricLabel>
-                        </Metric>
-                        <Metric>
-                            <MetricValue>{project.metrics.growth}%</MetricValue>
-                            <MetricLabel>Growth Potential</MetricLabel>
-                        </Metric>
-                    </ProjectMetrics>
-                    <ExpandButton>
-                        {expandedProject === index ? (
-                            <>
-                                Less Details <FaChevronUp />
-                            </>
-                        ) : (
-                            <>
-                                More Details <FaChevronDown />
-                            </>
-                        )}
-                    </ExpandButton>
-                    <AnimatePresence>
-                        {expandedProject === index && (
-                            <ExpandedContent
-                                initial={{ opacity: 0, height: 0 }}
-                                animate={{ opacity: 1, height: 'auto' }}
-                                exit={{ opacity: 0, height: 0 }}
-                                transition={{ duration: 0.3 }}
-                            >
-                                <ProjectLinks>
-                                    <ProjectLink href={project.github} target="_blank" rel="noopener noreferrer">
-                                        <FaGithub /> GitHub
-                                    </ProjectLink>
-                                    <ProjectLink href={project.liveDemo} target="_blank" rel="noopener noreferrer">
-                                        <FaExternalLinkAlt /> Live Demo
-                                    </ProjectLink>
-                                </ProjectLinks>
-                                <ResponsiveContainer width="100%" height={200}>
-                                    <LineChart data={project.performanceData}>
-                                        <XAxis dataKey="month" stroke="#8892b0" />
-                                        <YAxis stroke="#8892b0" />
-                                        <Tooltip
-                                            contentStyle={{ backgroundColor: '#112240', border: 'none' }}
-                                            labelStyle={{ color: '#64ffda' }}
-                                            itemStyle={{ color: '#8892b0' }}
-                                        />
-                                        <Line type="monotone" dataKey="performance" stroke="#64ffda" strokeWidth={2} />
-                                    </LineChart>
-                                </ResponsiveContainer>
-                            </ExpandedContent>
-                        )}
-                    </AnimatePresence>
-                </ProjectCard>
-            ))}
+            <div className="projects-overview">
+                {projects.map((project, index) => (
+                    <ProjectCard
+                        key={index}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        onClick={() => toggleExpand(index)}
+                        className="project-card"
+                    >
+                        <ProjectTitle>{project.title}</ProjectTitle>
+                        <ProjectDescription>{project.description}</ProjectDescription>
+                        <TechStack className="tech-stack">
+                            {project.techStack.map((tech, i) => (
+                                <TechTag key={i}>{tech}</TechTag>
+                            ))}
+                        </TechStack>
+                        <ProjectMetrics className="project-metrics">
+                            <Metric>
+                                <MetricValue>{project.metrics.impact}%</MetricValue>
+                                <MetricLabel>Impact</MetricLabel>
+                            </Metric>
+                            <Metric>
+                                <MetricValue>{project.metrics.complexity}%</MetricValue>
+                                <MetricLabel>Complexity</MetricLabel>
+                            </Metric>
+                            <Metric>
+                                <MetricValue>{project.metrics.growth}%</MetricValue>
+                                <MetricLabel>Growth Potential</MetricLabel>
+                            </Metric>
+                        </ProjectMetrics>
+                        <ExpandButton className="expand-button">
+                            {expandedProject === index ? (
+                                <>
+                                    Less Details <FaChevronUp />
+                                </>
+                            ) : (
+                                <>
+                                    More Details <FaChevronDown />
+                                </>
+                            )}
+                        </ExpandButton>
+                        <AnimatePresence>
+                            {expandedProject === index && (
+                                <ExpandedContent
+                                    initial={{ opacity: 0, height: 0 }}
+                                    animate={{ opacity: 1, height: 'auto' }}
+                                    exit={{ opacity: 0, height: 0 }}
+                                    transition={{ duration: 0.3 }}
+                                >
+                                    <ProjectLinks>
+                                        <ProjectLink href={project.github} target="_blank" rel="noopener noreferrer">
+                                            <FaGithub /> GitHub
+                                        </ProjectLink>
+                                        <ProjectLink href={project.liveDemo} target="_blank" rel="noopener noreferrer">
+                                            <FaExternalLinkAlt /> Live Demo
+                                        </ProjectLink>
+                                    </ProjectLinks>
+                                    <ResponsiveContainer width="100%" height={200}>
+                                        <LineChart data={project.performanceData}>
+                                            <XAxis dataKey="month" stroke="#8892b0" />
+                                            <YAxis stroke="#8892b0" />
+                                            <Tooltip
+                                                contentStyle={{ backgroundColor: '#112240', border: 'none' }}
+                                                labelStyle={{ color: '#64ffda' }}
+                                                itemStyle={{ color: '#8892b0' }}
+                                            />
+                                            <Line type="monotone" dataKey="performance" stroke="#64ffda" strokeWidth={2} />
+                                        </LineChart>
+                                    </ResponsiveContainer>
+                                </ExpandedContent>
+                            )}
+                        </AnimatePresence>
+                    </ProjectCard>
+                ))}
+            </div>
         </BaseComponent>
     );
 };

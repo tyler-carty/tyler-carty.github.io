@@ -82,73 +82,75 @@ const ContactTradingDesk = () => {
 
     return (
         <BaseComponent title="Contact Trading Desk">
-            <FormContainer
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-            >
-                {!isSubmitted ? (
-                    <Form onSubmit={handleSubmit}>
-                        <FormGroup>
-                            <Label htmlFor="name">Name</Label>
-                            <Input
-                                type="text"
-                                id="name"
-                                name="name"
-                                value={formData.name}
-                                onChange={handleChange}
-                                required
-                            />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label htmlFor="email">Email</Label>
-                            <Input
-                                type="email"
-                                id="email"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                required
-                            />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label htmlFor="subject">Subject</Label>
-                            <Input
-                                type="text"
-                                id="subject"
-                                name="subject"
-                                value={formData.subject}
-                                onChange={handleChange}
-                                required
-                            />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label htmlFor="message">Message</Label>
-                            <TextArea
-                                id="message"
-                                name="message"
-                                rows="5"
-                                value={formData.message}
-                                onChange={handleChange}
-                                required
-                            />
-                        </FormGroup>
-                        <SubmitButton
-                            type="submit"
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
+            <div className="contact-overview">
+                <FormContainer
+                    initial={{opacity: 0, y: 20}}
+                    animate={{opacity: 1, y: 0}}
+                >
+                    {!isSubmitted ? (
+                        <Form onSubmit={handleSubmit}>
+                            <FormGroup>
+                                <Label htmlFor="name">Name</Label>
+                                <Input
+                                    type="text"
+                                    id="name"
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </FormGroup>
+                            <FormGroup>
+                                <Label htmlFor="email">Email</Label>
+                                <Input
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </FormGroup>
+                            <FormGroup>
+                                <Label htmlFor="subject">Subject</Label>
+                                <Input
+                                    type="text"
+                                    id="subject"
+                                    name="subject"
+                                    value={formData.subject}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </FormGroup>
+                            <FormGroup>
+                                <Label htmlFor="message">Message</Label>
+                                <TextArea
+                                    id="message"
+                                    name="message"
+                                    rows="5"
+                                    value={formData.message}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </FormGroup>
+                            <SubmitButton
+                                type="submit"
+                                whileHover={{scale: 1.05}}
+                                whileTap={{scale: 0.95}}
+                            >
+                                Send Message
+                            </SubmitButton>
+                        </Form>
+                    ) : (
+                        <ThankYouMessage
+                            initial={{opacity: 0}}
+                            animate={{opacity: 1}}
                         >
-                            Send Message
-                        </SubmitButton>
-                    </Form>
-                ) : (
-                    <ThankYouMessage
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                    >
-                        Thank you for your message! I'll get back to you soon.
-                    </ThankYouMessage>
-                )}
-            </FormContainer>
+                            Thank you for your message! I'll get back to you soon.
+                        </ThankYouMessage>
+                    )}
+                </FormContainer>
+            </div>
         </BaseComponent>
     );
 };

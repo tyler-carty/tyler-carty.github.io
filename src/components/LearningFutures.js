@@ -73,34 +73,50 @@ const chartData = learningData.map(item => ({
 const LearningFutures = () => {
     return (
         <BaseComponent title="Learning Futures">
-            {learningData.map((item, index) => (
-                <LearningCard
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                >
-                    <LearningTitle>{item.title}</LearningTitle>
-                    <LearningDescription>{item.description}</LearningDescription>
-                    <ProgressBar>
-                        <Progress width={item.progress} />
-                    </ProgressBar>
-                    <p>Current Progress: {item.progress}%</p>
-                    <p>Future Potential: {item.futureValue}%</p>
-                </LearningCard>
-            ))}
+            <div className="learning-overview">
+                <div className="current-learning">
+                    {learningData.map((item, index) => (
+                        <LearningCard
+                            key={index}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: index * 0.1 }}
+                        >
+                            <LearningTitle>{item.title}</LearningTitle>
+                            <LearningDescription>{item.description}</LearningDescription>
+                            <ProgressBar>
+                                <Progress width={item.progress} />
+                            </ProgressBar>
+                            <p>Current Progress: {item.progress}%</p>
+                            <p>Future Potential: {item.futureValue}%</p>
+                        </LearningCard>
+                    ))}
+                </div>
 
-            <ChartTitle>Learning Growth Potential</ChartTitle>
-            <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Bar dataKey="current" fill="#8884d8" name="Current Progress" />
-                    <Bar dataKey="potential" fill="#82ca9d" name="Future Potential" />
-                </BarChart>
-            </ResponsiveContainer>
+                <ChartTitle>Learning Growth Potential</ChartTitle>
+                <div className="growth-chart">
+                    <ResponsiveContainer width="100%" height={300}>
+                        <BarChart data={chartData}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="name" />
+                            <YAxis />
+                            <Tooltip />
+                            <Bar dataKey="current" fill="#8884d8" name="Current Progress" />
+                            <Bar dataKey="potential" fill="#82ca9d" name="Future Potential" />
+                        </BarChart>
+                    </ResponsiveContainer>
+                </div>
+
+                <div className="future-interests">
+                    {/* Add content for future interests here */}
+                    <h3>Future Interests</h3>
+                    <ul>
+                        <li>Quantum Computing</li>
+                        <li>Augmented Reality Development</li>
+                        <li>Sustainable Energy Technologies</li>
+                    </ul>
+                </div>
+            </div>
         </BaseComponent>
     );
 };

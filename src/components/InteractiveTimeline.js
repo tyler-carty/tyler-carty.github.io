@@ -147,7 +147,7 @@ const TimelineItem = ({ item, index }) => {
     });
 
     return (
-        <TimelineItemWrapper style={springProps}>
+        <TimelineItemWrapper style={springProps} className="timeline-item">
             <TimelineContent>
                 <TimelineDate>{item.date}</TimelineDate>
                 <TimelineTitle>{item.title}</TimelineTitle>
@@ -156,7 +156,7 @@ const TimelineItem = ({ item, index }) => {
                 <animated.div style={expandSpring}>
                     <TimelineDescription>{item.details}</TimelineDescription>
                 </animated.div>
-                <ExpandButton onClick={() => setExpanded(!expanded)}>
+                <ExpandButton onClick={() => setExpanded(!expanded)} className="expand-button">
                     {expanded ? 'Read less' : 'Read more'}
                 </ExpandButton>
             </TimelineContent>
