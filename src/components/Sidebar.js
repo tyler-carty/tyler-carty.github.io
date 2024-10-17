@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link, useLocation } from 'react-router-dom';
 import { FaHome, FaChartLine, FaBriefcase, FaGraduationCap, FaEnvelope, FaBars, FaQuestionCircle } from 'react-icons/fa';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 const SidebarContainer = styled(motion.div)`
     background-color: #0a192f;
