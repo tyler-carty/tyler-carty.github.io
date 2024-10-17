@@ -9,7 +9,6 @@ const TourOverlay = styled(motion.div)`
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(10, 25, 47, 0.7);
     z-index: 1000;
     pointer-events: none;
 `;
@@ -19,7 +18,7 @@ const TourCard = styled(motion.div)`
     background-color: #112240;
     border-radius: 10px;
     padding: 1.5rem;
-    max-width: 300px;
+    max-width: 350px;
     box-shadow: 0 0 20px rgba(100, 255, 218, 0.3);
     pointer-events: auto;
     z-index: 1001;
@@ -35,11 +34,13 @@ const TourContent = styled.p`
     color: #8892b0;
     font-size: 0.9rem;
     margin-bottom: 1rem;
+    line-height: 1.5;
 `;
 
 const TourNavigation = styled.div`
     display: flex;
     justify-content: space-between;
+    align-items: center;
 `;
 
 const TourButton = styled.button`
@@ -55,11 +56,13 @@ const TourButton = styled.button`
 
     &:hover {
         background-color: #45c7b3;
+        transform: translateY(-2px);
     }
 
     &:disabled {
         background-color: #1d3557;
         cursor: not-allowed;
+        transform: none;
     }
 `;
 
@@ -73,12 +76,28 @@ const SkipButton = styled(TourButton)`
     }
 `;
 
+const ProgressIndicator = styled.div`
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+`;
+
+const ProgressDot = styled.div`
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: ${props => props.active ? '#64ffda' : '#1d3557'};
+    margin: 0 4px;
+    transition: background-color 0.3s ease;
+`;
+
 const HighlightBox = styled(motion.div)`
     position: absolute;
     border: 2px solid #64ffda;
     border-radius: 5px;
     pointer-events: none;
     z-index: 1000;
+    box-shadow: 0 0 0 9999px rgba(10, 25, 47, 0.7);
 `;
 
 const tourSteps = [
@@ -246,8 +265,8 @@ const GuidedTour = ({ setIsTourActive, isPageReady }) => {
             if (cardTop + 200 > viewportHeight) {
                 cardTop = rect.top + scrollTop - 220;
             }
-            if (cardLeft + 300 > viewportWidth) {
-                cardLeft = viewportWidth - 320;
+            if (cardLeft + 350 > viewportWidth) {
+                cardLeft = viewportWidth - 370;
             }
             if (cardTop < 0) {
                 cardTop = 20;
@@ -365,6 +384,11 @@ const GuidedTour = ({ setIsTourActive, isPageReady }) => {
                                 {currentPage === tourSteps.length - 1 && currentStep === tourSteps[currentPage].steps.length - 1 ? 'Finish' : 'Next'}
                             </TourButton>
                         </TourNavigation>
+                        <ProgressIndicator>
+                            {tourSteps[currentPage].steps.map((_, index) => (
+                                <ProgressDot key={index} active={index === currentStep} />
+                            ))}
+                        </ProgressIndicator>
                     </TourCard>
                 )}
             </AnimatePresence>
