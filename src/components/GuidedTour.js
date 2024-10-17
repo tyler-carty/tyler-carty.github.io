@@ -216,13 +216,13 @@ const tourSteps = [
             {
                 title: 'Contact Form',
                 content: 'Use this form to send a message. Think of it as placing an order in the market of professional opportunities.',
-                target: '.contact-form',
+                target: '.contact-overview',
                 position: { top: '120px', right: '220px' }
             },
             {
                 title: 'Tour Complete',
                 content: 'Congratulations! You have completed the tour of your financial portfolio. Feel free to explore further or reach out via this contact form.',
-                target: '.contact-form',
+                target: '.contact-overview',
                 position: { bottom: '150px', right: '220px' }
             }
         ]

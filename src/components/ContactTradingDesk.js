@@ -113,7 +113,7 @@ const ContactTradingDesk = ({ onReady }) => {
                     animate={{opacity: 1, y: 0}}
                 >
                     {!isSubmitted ? (
-                        <Form onSubmit={handleSubmit} className="contact-form">
+                        <Form onSubmit={handleSubmit}>
                             <FormGroup>
                                 <Label htmlFor="name">Name</Label>
                                 <Input
