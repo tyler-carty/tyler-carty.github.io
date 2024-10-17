@@ -8,7 +8,6 @@ This project is an interactive, web-based portfolio for Tyler Cartwright, design
 
 1. **Interactive Login Screen**
     - Animated typing effect for username and password
-    - Secure access to the main portfolio
 
 2. **Guided Tour**
     - Step-by-step introduction to portfolio sections
