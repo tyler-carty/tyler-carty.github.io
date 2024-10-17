@@ -1,13 +1,25 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
+import styled from 'styled-components';
 import GlobalStyle from './globalStyles';
+import Sidebar from './components/Sidebar';
 import LoginScreen from './components/LoginScreen';
 import Dashboard from './components/Dashboard';
 import ProjectInvestments from './components/ProjectInvestments';
 import ExperienceTradingFloor from './components/ExperienceTradingFloor';
 import LearningFutures from './components/LearningFutures';
 import ContactTradingDesk from './components/ContactTradingDesk';
+
+const AppContainer = styled.div`
+    display: flex;
+`;
+
+const MainContent = styled.main`
+    flex-grow: 1;
+    margin-left: 200px; // Width of the sidebar
+    padding: 2rem;
+`;
 
 const AnimatedRoutes = () => {
     const location = useLocation();
@@ -26,13 +38,24 @@ const AnimatedRoutes = () => {
     );
 };
 
+const AppContent = () => {
+    const location = useLocation();
+
+    return (
+        <AppContainer>
+            {location.pathname !== '/' && <Sidebar />}
+            <MainContent>
+                <AnimatedRoutes />
+            </MainContent>
+        </AppContainer>
+    );
+};
+
 function App() {
     return (
         <Router>
             <GlobalStyle />
-            <div className="App">
-                <AnimatedRoutes />
-            </div>
+            <AppContent />
         </Router>
     );
 }
