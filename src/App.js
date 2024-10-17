@@ -19,23 +19,24 @@ const AppContainer = styled.div`
 
 const MainContent = styled.main`
     flex-grow: 1;
-    padding: 2rem;
     transition: margin-left 0.3s ease-in-out;
-
-    @media (min-width: 769px) {
-        margin-left: 200px;
-    }
-
-    @media (max-width: 768px) {
-        margin-left: 60px;
-    }
+    ${props => props.isLoginPage ? '' : `
+        padding: 2rem;
+        @media (min-width: 769px) {
+            margin-left: 200px;
+        }
+        @media (max-width: 768px) {
+            margin-left: 60px;
+        }
+    `}
 `;
 
 function AppContent() {
     const location = useLocation();
-    const isLoginPage = location.pathname === '/';
     const [showTour, setShowTour] = useState(false);
     const [isPageReady, setIsPageReady] = useState(false);
+
+    const isLoginPage = location.pathname === '/';
 
     const handleLogin = useCallback(() => {
         setShowTour(true);
@@ -52,7 +53,7 @@ function AppContent() {
     return (
         <AppContainer>
             {!isLoginPage && <Sidebar setShowTour={setShowTour} />}
-            <MainContent hasSidebar={!isLoginPage}>
+            <MainContent isLoginPage={isLoginPage}>
                 <AnimatePresence mode="wait" onExitComplete={handlePageChange}>
                     <Routes location={location} key={location.pathname}>
                         <Route path="/" element={<PageTransitionWrapper><LoginScreen onLogin={handleLogin} /></PageTransitionWrapper>} />
