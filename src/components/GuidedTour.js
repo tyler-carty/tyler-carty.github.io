@@ -329,6 +329,47 @@ const GuidedTour = ({ setIsTourActive, isPageReady }) => {
         setIsTourActive(false);
     }, [setIsTourActive]);
 
+    useEffect(() => {
+        const handleKeyPress = (event) => {
+            if (event.key === 'ArrowRight') {
+                handleNext();
+            } else if (event.key === 'ArrowLeft') {
+                handlePrev();
+            } else if (event.key === 'Escape') {
+                handleSkip();
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyPress);
+        return () => {
+            window.removeEventListener('keydown', handleKeyPress);
+        };
+    }, [handleNext, handlePrev, handleSkip]);
+
+    useEffect(() => {
+        if (isPageReady) {
+            setIsElementVisible(false);
+            updatePositions();
+        }
+    }, [isPageReady, updatePositions]);
+
+    useEffect(() => {
+        const currentTourStep = tourSteps[currentPage];
+        if (location.pathname !== currentTourStep.path) {
+            setIsElementVisible(false);
+            navigate(currentTourStep.path);
+        }
+    }, [currentPage, navigate, location.pathname]);
+
+    useEffect(() => {
+        const handleResize = () => {
+            updatePositions();
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, [updatePositions]);
+
     return (
         <TourOverlay
             initial={{ opacity: 0 }}
