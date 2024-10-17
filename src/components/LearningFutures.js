@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
@@ -70,7 +70,33 @@ const chartData = learningData.map(item => ({
     potential: item.futureValue
 }));
 
-const LearningFutures = () => {
+const LearningFutures = ({ onReady }) => {
+    const [dataLoaded, setDataLoaded] = useState(false);
+
+    useEffect(() => {
+        const loadData = async () => {
+            // Simulate async data loading
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            setDataLoaded(true);
+        };
+
+        loadData();
+    }, []);
+
+    useEffect(() => {
+        if (dataLoaded) {
+            onReady();
+        }
+    }, [dataLoaded, onReady]);
+
+    if (!dataLoaded) {
+        return (
+            <BaseComponent title="Learning Futures">
+                <div>Loading...</div>
+            </BaseComponent>
+        );
+    }
+
     return (
         <BaseComponent title="Learning Futures">
             <div className="learning-overview">

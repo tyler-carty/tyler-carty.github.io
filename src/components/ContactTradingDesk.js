@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { BaseComponent } from './BaseComponent';
@@ -60,7 +60,7 @@ const ThankYouMessage = styled(motion.div)`
   margin-top: 1rem;
 `;
 
-const ContactTradingDesk = () => {
+const ContactTradingDesk = ({ onReady }) => {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -68,6 +68,23 @@ const ContactTradingDesk = () => {
         message: ''
     });
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [dataLoaded, setDataLoaded] = useState(false);
+
+    useEffect(() => {
+        const loadData = async () => {
+            // Simulate async data loading
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            setDataLoaded(true);
+        };
+
+        loadData();
+    }, []);
+
+    useEffect(() => {
+        if (dataLoaded) {
+            onReady();
+        }
+    }, [dataLoaded, onReady]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -79,6 +96,14 @@ const ContactTradingDesk = () => {
         console.log('Form submitted:', formData);
         setIsSubmitted(true);
     };
+
+    if (!dataLoaded) {
+        return (
+            <BaseComponent title="Contact Trading Desk">
+                <div>Loading...</div>
+            </BaseComponent>
+        );
+    }
 
     return (
         <BaseComponent title="Contact Trading Desk">

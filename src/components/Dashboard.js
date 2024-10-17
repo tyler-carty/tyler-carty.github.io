@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Tooltip, AreaChart, Area, XAxis, YAxis, CartesianGrid } from 'recharts';
@@ -132,8 +132,9 @@ const projectsData = [
     // Add more projects as needed
 ];
 
-const Dashboard = () => {
+const Dashboard = ({ onReady }) => {
     const [activeSkillSet, setActiveSkillSet] = useState('technical');
+    const [dataLoaded, setDataLoaded] = useState(false);
 
     const technicalSkills = skillsData;
     const softSkills = [
@@ -150,6 +151,32 @@ const Dashboard = () => {
         { icon: <FaGraduationCap />, value: 'MSc', label: 'Data Science' },
         { icon: <FaChartLine />, value: '10+', label: 'Technologies' },
     ];
+
+    useEffect(() => {
+        // Simulate any async operations
+        const loadData = async () => {
+            // Perform any necessary data fetching or initialization here
+            // For now, we'll just use a timeout to simulate async operation
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            setDataLoaded(true);
+        };
+
+        loadData();
+    }, []);
+
+    useEffect(() => {
+        if (dataLoaded) {
+            onReady();
+        }
+    }, [dataLoaded, onReady]);
+
+    if (!dataLoaded) {
+        return (
+            <BaseComponent title="Dashboard">
+                <div>Loading...</div>
+            </BaseComponent>
+        );
+    }
 
     return (
         <BaseComponent title="Dashboard">

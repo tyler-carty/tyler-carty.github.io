@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaChevronDown, FaChevronUp, FaGithub, FaExternalLinkAlt } from 'react-icons/fa';
@@ -143,12 +143,37 @@ const projects = [
     },
 ];
 
-const ProjectInvestments = () => {
+const ProjectInvestments = ({ onReady }) => {
     const [expandedProject, setExpandedProject] = useState(null);
+    const [dataLoaded, setDataLoaded] = useState(false);
+
+    useEffect(() => {
+        const loadData = async () => {
+            // Simulate async data loading
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            setDataLoaded(true);
+        };
+
+        loadData();
+    }, []);
+
+    useEffect(() => {
+        if (dataLoaded) {
+            onReady();
+        }
+    }, [dataLoaded, onReady]);
 
     const toggleExpand = (index) => {
         setExpandedProject(expandedProject === index ? null : index);
     };
+
+    if (!dataLoaded) {
+        return (
+            <BaseComponent title="Project Investments">
+                <div>Loading...</div>
+            </BaseComponent>
+        );
+    }
 
     return (
         <BaseComponent title="Project Investments">

@@ -241,14 +241,16 @@ const tourSteps = [
     }
 ];
 
-const GuidedTour = ({ setIsTourActive }) => {
+const GuidedTour = ({ setIsTourActive, isPageReady }) => {
     const [currentPage, setCurrentPage] = useState(0);
     const [currentStep, setCurrentStep] = useState(0);
     const [highlightPosition, setHighlightPosition] = useState({ top: 0, left: 0, width: 0, height: 0 });
     const [cardPosition, setCardPosition] = useState({ top: 0, left: 0 });
+    const [isElementVisible, setIsElementVisible] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
-    const pollingIntervalRef = useRef(null);
+    const updateAttempts = useRef(0);
+    const maxAttempts = 10;
 
     const updatePositions = useCallback(() => {
         const currentTourStep = tourSteps[currentPage].steps[currentStep];
@@ -267,52 +269,51 @@ const GuidedTour = ({ setIsTourActive }) => {
             });
 
             // Calculate card position
-            let cardTop = rect.bottom + scrollTop + 20; // 20px below the element
+            let cardTop = rect.bottom + scrollTop + 20;
             let cardLeft = rect.left + scrollLeft;
 
-            // Adjust if card would go off-screen
-            if (cardTop + 200 > window.innerHeight) { // Assuming card height is about 200px
-                cardTop = rect.top + scrollTop - 220; // 20px above the element
+            if (cardTop + 200 > window.innerHeight) {
+                cardTop = rect.top + scrollTop - 220;
             }
-            if (cardLeft + 300 > window.innerWidth) { // Assuming card width is 300px
-                cardLeft = window.innerWidth - 320; // 20px from right edge of screen
+            if (cardLeft + 300 > window.innerWidth) {
+                cardLeft = window.innerWidth - 320;
             }
 
             setCardPosition({ top: cardTop, left: cardLeft });
-
-            // If we found the element, clear the polling interval
-            if (pollingIntervalRef.current) {
-                clearInterval(pollingIntervalRef.current);
-                pollingIntervalRef.current = null;
-            }
-
-            return true; // Element found and positions updated
+            setIsElementVisible(true);
+            updateAttempts.current = 0;
+        } else if (updateAttempts.current < maxAttempts) {
+            updateAttempts.current++;
+            setTimeout(updatePositions, 100);
+        } else {
+            console.error(`Failed to find target element: ${currentTourStep.target}`);
+            setIsElementVisible(false);
+            updateAttempts.current = 0;
         }
-
-        return false; // Element not found
     }, [currentPage, currentStep]);
 
-    const startPollingForElement = useCallback(() => {
-        if (pollingIntervalRef.current) {
-            clearInterval(pollingIntervalRef.current);
+    useEffect(() => {
+        if (isPageReady) {
+            setIsElementVisible(false);
+            updatePositions();
         }
+    }, [isPageReady, updatePositions]);
 
-        pollingIntervalRef.current = setInterval(() => {
-            const found = updatePositions();
-            if (found) {
-                clearInterval(pollingIntervalRef.current);
-                pollingIntervalRef.current = null;
-            }
-        }, 100); // Poll every 100ms
+    useEffect(() => {
+        const currentTourStep = tourSteps[currentPage];
+        if (location.pathname !== currentTourStep.path) {
+            setIsElementVisible(false);
+            navigate(currentTourStep.path);
+        }
+    }, [currentPage, navigate, location.pathname]);
 
-        // Set a timeout to stop polling after 5 seconds
-        setTimeout(() => {
-            if (pollingIntervalRef.current) {
-                clearInterval(pollingIntervalRef.current);
-                pollingIntervalRef.current = null;
-                console.error('Failed to find target element after 5 seconds');
-            }
-        }, 5000);
+    useEffect(() => {
+        const handleResize = () => {
+            updatePositions();
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
     }, [updatePositions]);
 
     const handleNext = useCallback(() => {
@@ -340,54 +341,6 @@ const GuidedTour = ({ setIsTourActive }) => {
         setIsTourActive(false);
     }, [setIsTourActive]);
 
-    useEffect(() => {
-        const handleKeyPress = (event) => {
-            if (event.key === 'ArrowRight') handleNext();
-            if (event.key === 'ArrowLeft') handlePrev();
-            if (event.key === 'Escape') handleSkip();
-        };
-
-        window.addEventListener('keydown', handleKeyPress);
-        return () => window.removeEventListener('keydown', handleKeyPress);
-    }, [handleNext, handlePrev, handleSkip]);
-
-    useEffect(() => {
-        const currentTourStep = tourSteps[currentPage];
-        if (location.pathname !== currentTourStep.path) {
-            navigate(currentTourStep.path);
-        }
-    }, [currentPage, navigate, location.pathname]);
-
-    useEffect(() => {
-        startPollingForElement();
-
-        const handleResize = () => {
-            updatePositions();
-        };
-
-        window.addEventListener('resize', handleResize);
-        return () => {
-            if (pollingIntervalRef.current) {
-                clearInterval(pollingIntervalRef.current);
-            }
-            window.removeEventListener('resize', handleResize);
-        };
-    }, [updatePositions, startPollingForElement, currentPage, currentStep]);
-
-    const scrollToElement = useCallback((element) => {
-        element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, []);
-
-    useEffect(() => {
-        const currentTourStep = tourSteps[currentPage].steps[currentStep];
-        const targetElement = document.querySelector(currentTourStep.target);
-        if (targetElement) {
-            scrollToElement(targetElement);
-        }
-    }, [currentPage, currentStep, scrollToElement]);
-
-    const currentTourStep = tourSteps[currentPage].steps[currentStep];
-
     return (
         <TourOverlay
             initial={{ opacity: 0 }}
@@ -395,44 +348,48 @@ const GuidedTour = ({ setIsTourActive }) => {
             exit={{ opacity: 0 }}
         >
             <AnimatePresence mode="wait">
-                <TourCard
-                    key={`${currentPage}-${currentStep}`}
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    exit={{ scale: 0.8, opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                    style={{
-                        top: cardPosition.top,
-                        left: cardPosition.left
-                    }}
-                >
-                    <TourTitle>{currentTourStep.title}</TourTitle>
-                    <TourContent>{currentTourStep.content}</TourContent>
-                    <TourNavigation>
-                        <TourButton onClick={handlePrev} disabled={currentPage === 0 && currentStep === 0}>
-                            Previous
-                        </TourButton>
-                        <SkipButton onClick={handleSkip}>Skip Tour</SkipButton>
-                        <TourButton onClick={handleNext}>
-                            {currentPage === tourSteps.length - 1 && currentStep === tourSteps[currentPage].steps.length - 1 ? 'Finish' : 'Next'}
-                        </TourButton>
-                    </TourNavigation>
-                </TourCard>
+                {isElementVisible && (
+                    <TourCard
+                        key={`${currentPage}-${currentStep}`}
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.8, opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        style={{
+                            top: cardPosition.top,
+                            left: cardPosition.left
+                        }}
+                    >
+                        <TourTitle>{tourSteps[currentPage].steps[currentStep].title}</TourTitle>
+                        <TourContent>{tourSteps[currentPage].steps[currentStep].content}</TourContent>
+                        <TourNavigation>
+                            <TourButton onClick={handlePrev} disabled={currentPage === 0 && currentStep === 0}>
+                                Previous
+                            </TourButton>
+                            <SkipButton onClick={handleSkip}>Skip Tour</SkipButton>
+                            <TourButton onClick={handleNext}>
+                                {currentPage === tourSteps.length - 1 && currentStep === tourSteps[currentPage].steps.length - 1 ? 'Finish' : 'Next'}
+                            </TourButton>
+                        </TourNavigation>
+                    </TourCard>
+                )}
             </AnimatePresence>
             <AnimatePresence>
-                <HighlightBox
-                    key={`highlight-${currentPage}-${currentStep}`}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    transition={{ duration: 0.3 }}
-                    style={{
-                        top: highlightPosition.top,
-                        left: highlightPosition.left,
-                        width: highlightPosition.width,
-                        height: highlightPosition.height
-                    }}
-                />
+                {isElementVisible && (
+                    <HighlightBox
+                        key={`highlight-${currentPage}-${currentStep}`}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        transition={{ duration: 0.3 }}
+                        style={{
+                            top: highlightPosition.top,
+                            left: highlightPosition.left,
+                            width: highlightPosition.width,
+                            height: highlightPosition.height
+                        }}
+                    />
+                )}
             </AnimatePresence>
         </TourOverlay>
     );

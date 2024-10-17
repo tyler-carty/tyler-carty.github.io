@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import styled from 'styled-components';
@@ -35,26 +35,35 @@ function AppContent() {
     const location = useLocation();
     const isLoginPage = location.pathname === '/';
     const [showTour, setShowTour] = useState(false);
+    const [isPageReady, setIsPageReady] = useState(false);
 
-    const handleLogin = () => {
+    const handleLogin = useCallback(() => {
         setShowTour(true);
-    };
+    }, []);
+
+    const handlePageReady = useCallback(() => {
+        setIsPageReady(true);
+    }, []);
+
+    const handlePageChange = useCallback(() => {
+        setIsPageReady(false);
+    }, []);
 
     return (
         <AppContainer>
             {!isLoginPage && <Sidebar setShowTour={setShowTour} />}
             <MainContent hasSidebar={!isLoginPage}>
-                <AnimatePresence mode="wait">
+                <AnimatePresence mode="wait" onExitComplete={handlePageChange}>
                     <Routes location={location} key={location.pathname}>
                         <Route path="/" element={<PageTransitionWrapper><LoginScreen onLogin={handleLogin} /></PageTransitionWrapper>} />
-                        <Route path="/dashboard" element={<PageTransitionWrapper><Dashboard /></PageTransitionWrapper>} />
-                        <Route path="/projects" element={<PageTransitionWrapper><ProjectInvestments /></PageTransitionWrapper>} />
-                        <Route path="/experience" element={<PageTransitionWrapper><ExperienceTradingFloor /></PageTransitionWrapper>} />
-                        <Route path="/learning" element={<PageTransitionWrapper><LearningFutures /></PageTransitionWrapper>} />
-                        <Route path="/contact" element={<PageTransitionWrapper><ContactTradingDesk /></PageTransitionWrapper>} />
+                        <Route path="/dashboard" element={<PageTransitionWrapper><Dashboard onReady={handlePageReady} /></PageTransitionWrapper>} />
+                        <Route path="/projects" element={<PageTransitionWrapper><ProjectInvestments onReady={handlePageReady} /></PageTransitionWrapper>} />
+                        <Route path="/experience" element={<PageTransitionWrapper><ExperienceTradingFloor onReady={handlePageReady} /></PageTransitionWrapper>} />
+                        <Route path="/learning" element={<PageTransitionWrapper><LearningFutures onReady={handlePageReady} /></PageTransitionWrapper>} />
+                        <Route path="/contact" element={<PageTransitionWrapper><ContactTradingDesk onReady={handlePageReady} /></PageTransitionWrapper>} />
                     </Routes>
                 </AnimatePresence>
-                {showTour && <GuidedTour setIsTourActive={setShowTour} />}
+                {showTour && <GuidedTour setIsTourActive={setShowTour} isPageReady={isPageReady} />}
             </MainContent>
         </AppContainer>
     );

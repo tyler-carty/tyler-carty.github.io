@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { BaseComponent } from './BaseComponent';
@@ -15,7 +15,33 @@ const ExperienceHeader = styled.h2`
     text-align: center;
 `;
 
-const ExperienceTradingFloor = () => {
+const ExperienceTradingFloor = ({ onReady }) => {
+    const [dataLoaded, setDataLoaded] = useState(false);
+
+    useEffect(() => {
+        const loadData = async () => {
+            // Simulate async data loading
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            setDataLoaded(true);
+        };
+
+        loadData();
+    }, []);
+
+    useEffect(() => {
+        if (dataLoaded) {
+            onReady();
+        }
+    }, [dataLoaded, onReady]);
+
+    if (!dataLoaded) {
+        return (
+            <BaseComponent>
+                <div>Loading...</div>
+            </BaseComponent>
+        );
+    }
+
     return (
         <BaseComponent>
             <ExperienceContainer

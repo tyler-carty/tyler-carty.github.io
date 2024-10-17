@@ -33,6 +33,7 @@ const PageTransitionWrapper = ({ children }) => {
             exit="out"
             variants={pageVariants}
             transition={pageTransition}
+            style={{ zIndex: 1 }}
         >
             {children}
         </motion.div>
