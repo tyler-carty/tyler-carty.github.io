@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaChevronDown, FaChevronUp, FaGithub, FaExternalLinkAlt } from 'react-icons/fa';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer } from 'recharts';
+import {FaChevronDown, FaChevronUp, FaGithub, FaExternalLinkAlt, FaInfoCircle} from 'react-icons/fa';
 import { BaseComponent } from './BaseComponent';
 
 const ProjectCard = styled(motion.div)`
@@ -102,54 +102,80 @@ const ProjectLink = styled.a`
     }
 `;
 
-const projects = [
-    {
-        title: "Sentiment Dynamics",
-        description: "A real-time sentiment analysis tool for financial markets.",
-        techStack: ["Python", "NLP", "React", "D3.js"],
-        metrics: {
-            impact: 85,
-            complexity: 70,
-            growth: 90
-        },
-        github: "https://github.com/username/sentiment-dynamics",
-        liveDemo: "https://sentiment-dynamics.demo.com",
-        performanceData: [
-            { month: 'Jan', performance: 65 },
-            { month: 'Feb', performance: 70 },
-            { month: 'Mar', performance: 80 },
-            { month: 'Apr', performance: 85 },
-            { month: 'May', performance: 90 },
-        ]
-    },
-    {
-        title: "TeslaTrack",
-        description: "An IoT-based vehicle tracking system for Tesla cars.",
-        techStack: ["IoT", "React Native", "Node.js", "MongoDB"],
-        metrics: {
-            impact: 75,
-            complexity: 80,
-            growth: 85
-        },
-        github: "https://github.com/username/teslatrack",
-        liveDemo: "https://teslatrack.demo.com",
-        performanceData: [
-            { month: 'Jan', performance: 60 },
-            { month: 'Feb', performance: 65 },
-            { month: 'Mar', performance: 75 },
-            { month: 'Apr', performance: 80 },
-            { month: 'May', performance: 85 },
-        ]
-    },
-];
+const MetricsExplanation = styled.div`
+    background-color: #112240;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 0 15px rgba(100, 255, 218, 0.1);
+`;
+
+const ExplanationTitle = styled.h3`
+    color: #64ffda;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+`;
+
+const ExplanationList = styled.ul`
+  list-style-type: none;
+  padding: 0;
+`;
+
+const ExplanationItem = styled.li`
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+`;
+
+const MetricName = styled.span`
+  color: #64ffda;
+  font-weight: bold;
+`;
+
+const ProjectImpact = styled.div`
+  margin-top: 1rem;
+  font-style: italic;
+  color: #64ffda;
+`;
 
 const ProjectInvestments = ({ onReady }) => {
     const [expandedProject, setExpandedProject] = useState(null);
     const [dataLoaded, setDataLoaded] = useState(false);
+    const [projects, setProjects] = useState([
+        {
+            title: "Sentiment Dynamics",
+            description: "A real-time sentiment analysis tool for financial markets.",
+            techStack: ["Python", "NLP", "React", "D3.js"],
+            metrics: {
+                impact: 85,
+                complexity: 70,
+                growth: 90
+            },
+            github: "https://github.com/username/sentiment-dynamics",
+            liveDemo: "https://sentiment-dynamics.demo.com",
+            impact: "This project opened doors to fintech opportunities and deepened my NLP expertise."
+        },
+        {
+            title: "Distributed Systems Simulator",
+            description: "A tool for simulating and visualizing distributed systems.",
+            techStack: ["Go", "gRPC", "React", "WebGL"],
+            metrics: {
+                impact: 75,
+                complexity: 85,
+                growth: 80
+            },
+            github: "https://github.com/username/distributed-sim",
+            liveDemo: "https://distributed-sim.demo.com",
+            impact: "Strengthened my understanding of complex systems and improved my Go programming skills."
+        },
+        // ... (you can add more projects here)
+    ]);
 
     useEffect(() => {
         const loadData = async () => {
-            // Simulate async data loading
             await new Promise(resolve => setTimeout(resolve, 1000));
             setDataLoaded(true);
         };
@@ -167,6 +193,14 @@ const ProjectInvestments = ({ onReady }) => {
         setExpandedProject(expandedProject === index ? null : index);
     };
 
+    const chartData = useMemo(() => {
+        return projects.map(project => [
+            { subject: 'Impact', A: project.metrics.impact },
+            { subject: 'Complexity', A: project.metrics.complexity },
+            { subject: 'Growth', A: project.metrics.growth },
+        ]);
+    }, [projects]);
+
     if (!dataLoaded) {
         return (
             <BaseComponent title="Project Investments">
@@ -177,6 +211,23 @@ const ProjectInvestments = ({ onReady }) => {
 
     return (
         <BaseComponent title="Project Investments">
+            <MetricsExplanation>
+                <ExplanationTitle>
+                    <FaInfoCircle /> Project Metrics Explained
+                </ExplanationTitle>
+                <ExplanationList>
+                    <ExplanationItem>
+                        <MetricName>Impact:</MetricName> How this project influenced my career choices and future opportunities.
+                    </ExplanationItem>
+                    <ExplanationItem>
+                        <MetricName>Complexity:</MetricName> The level of challenge and depth of skills required to complete the project.
+                    </ExplanationItem>
+                    <ExplanationItem>
+                        <MetricName>Growth:</MetricName> How relevant this project is to my future career progression plans.
+                    </ExplanationItem>
+                </ExplanationList>
+            </MetricsExplanation>
+
             <div className="projects-overview">
                 {projects.map((project, index) => (
                     <ProjectCard
@@ -195,28 +246,18 @@ const ProjectInvestments = ({ onReady }) => {
                             ))}
                         </TechStack>
                         <ProjectMetrics className="project-metrics">
-                            <Metric>
-                                <MetricValue>{project.metrics.impact}%</MetricValue>
-                                <MetricLabel>Impact</MetricLabel>
-                            </Metric>
-                            <Metric>
-                                <MetricValue>{project.metrics.complexity}%</MetricValue>
-                                <MetricLabel>Complexity</MetricLabel>
-                            </Metric>
-                            <Metric>
-                                <MetricValue>{project.metrics.growth}%</MetricValue>
-                                <MetricLabel>Growth Potential</MetricLabel>
-                            </Metric>
+                            {Object.entries(project.metrics).map(([key, value]) => (
+                                <Metric key={key}>
+                                    <MetricValue>{value}%</MetricValue>
+                                    <MetricLabel>{key.charAt(0).toUpperCase() + key.slice(1)}</MetricLabel>
+                                </Metric>
+                            ))}
                         </ProjectMetrics>
                         <ExpandButton className="expand-button">
                             {expandedProject === index ? (
-                                <>
-                                    Less Details <FaChevronUp />
-                                </>
+                                <>Less Details <FaChevronUp /></>
                             ) : (
-                                <>
-                                    More Details <FaChevronDown />
-                                </>
+                                <>More Details <FaChevronDown /></>
                             )}
                         </ExpandButton>
                         <AnimatePresence>
@@ -235,18 +276,15 @@ const ProjectInvestments = ({ onReady }) => {
                                             <FaExternalLinkAlt /> Live Demo
                                         </ProjectLink>
                                     </ProjectLinks>
-                                    <ResponsiveContainer width="100%" height={200}>
-                                        <LineChart data={project.performanceData}>
-                                            <XAxis dataKey="month" stroke="#8892b0" />
-                                            <YAxis stroke="#8892b0" />
-                                            <Tooltip
-                                                contentStyle={{ backgroundColor: '#112240', border: 'none' }}
-                                                labelStyle={{ color: '#64ffda' }}
-                                                itemStyle={{ color: '#8892b0' }}
-                                            />
-                                            <Line type="monotone" dataKey="performance" stroke="#64ffda" strokeWidth={2} />
-                                        </LineChart>
+                                    <ResponsiveContainer width="100%" height={300}>
+                                        <RadarChart data={chartData[index]}>
+                                            <PolarGrid />
+                                            <PolarAngleAxis dataKey="subject" />
+                                            <PolarRadiusAxis angle={30} domain={[0, 100]} />
+                                            <Radar name="Project Metrics" dataKey="A" stroke="#64ffda" fill="#64ffda" fillOpacity={0.6} />
+                                        </RadarChart>
                                     </ResponsiveContainer>
+                                    <ProjectImpact>{project.impact}</ProjectImpact>
                                 </ExpandedContent>
                             )}
                         </AnimatePresence>
