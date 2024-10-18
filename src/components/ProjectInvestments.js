@@ -144,7 +144,7 @@ const ProjectImpact = styled.div`
 const ProjectInvestments = ({ onReady }) => {
     const [expandedProject, setExpandedProject] = useState(null);
     const [dataLoaded, setDataLoaded] = useState(false);
-    const [projects, setProjects] = useState([
+    const [projects] = useState([
         {
             title: "Sentiment Dynamics",
             description: "A real-time sentiment analysis tool for financial markets.",
@@ -280,7 +280,6 @@ const ProjectInvestments = ({ onReady }) => {
                                         <RadarChart data={chartData[index]}>
                                             <PolarGrid />
                                             <PolarAngleAxis dataKey="subject" />
-                                            <PolarRadiusAxis angle={30} domain={[0, 100]} />
                                             <Radar name="Project Metrics" dataKey="A" stroke="#64ffda" fill="#64ffda" fillOpacity={0.6} />
                                         </RadarChart>
                                     </ResponsiveContainer>
