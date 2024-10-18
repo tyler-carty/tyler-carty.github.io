@@ -8,7 +8,6 @@ This project is an interactive, web-based portfolio for Tyler Cartwright, design
 
 1. **Interactive Login Screen**
     - Animated typing effect for username and password
-    - Secure access to the main portfolio
 
 2. **Guided Tour**
     - Step-by-step introduction to portfolio sections
@@ -47,15 +46,6 @@ This project is an interactive, web-based portfolio for Tyler Cartwright, design
 1. Clone the repository
 2. Run `npm install` to install dependencies
 3. Use `npm start` to run the development server
-
-## Usage
-
-After starting the development server, navigate to `http://localhost:3000` in your web browser. You'll be presented with the login screen. Use the following credentials:
-
-- Username: tyler-cartwright
-- Password: password123
-
-Once logged in, you can explore the different sections of the portfolio or follow the guided tour for a comprehensive overview.
 
 ## Contributing
 
