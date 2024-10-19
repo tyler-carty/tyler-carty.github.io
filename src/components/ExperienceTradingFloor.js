@@ -6,6 +6,10 @@ import InteractiveTimeline from './InteractiveTimeline';
 
 const ExperienceContainer = styled(motion.div)`
     padding: 2rem;
+
+    @media (max-width: 768px) {
+        padding: 1rem;
+    }
 `;
 
 const ExperienceHeader = styled.h2`
@@ -13,10 +17,16 @@ const ExperienceHeader = styled.h2`
     color: #64ffda;
     margin-bottom: 2rem;
     text-align: center;
+
+    @media (max-width: 768px) {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+    }
 `;
 
 const ExperienceTradingFloor = ({ onReady }) => {
     const [dataLoaded, setDataLoaded] = useState(false);
+    const [expandedItem, setExpandedItem] = useState(null);
 
     useEffect(() => {
         const loadData = async () => {
@@ -34,6 +44,10 @@ const ExperienceTradingFloor = ({ onReady }) => {
         }
     }, [dataLoaded, onReady]);
 
+    const handleExpand = (index) => {
+        setExpandedItem(expandedItem === index ? null : index);
+    };
+
     if (!dataLoaded) {
         return (
             <BaseComponent>
@@ -48,10 +62,14 @@ const ExperienceTradingFloor = ({ onReady }) => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
                 className="timeline-overview"
             >
                 <ExperienceHeader>Experience Trading Floor</ExperienceHeader>
-                <InteractiveTimeline />
+                <InteractiveTimeline
+                    onExpand={handleExpand}
+                    expandedItem={expandedItem}
+                />
             </ExperienceContainer>
         </BaseComponent>
     );

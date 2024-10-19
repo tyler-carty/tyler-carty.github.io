@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { useSpring, animated, config } from 'react-spring';
-import { FaBriefcase, FaGraduationCap, FaCode } from 'react-icons/fa';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FaBriefcase, FaGraduationCap, FaCode, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 const TimelineContainer = styled.div`
     position: relative;
@@ -19,11 +19,12 @@ const TimelineLine = styled.div`
     background-color: #64ffda;
 `;
 
-const TimelineItemWrapper = styled(animated.div)`
+const TimelineItemWrapper = styled(motion.div)`
     position: relative;
     width: 50%;
     padding: 10px 40px;
     box-sizing: border-box;
+    cursor: pointer;
 
     &:nth-child(odd) {
         left: 0;
@@ -35,11 +36,17 @@ const TimelineItemWrapper = styled(animated.div)`
     }
 `;
 
-const TimelineContent = styled.div`
+const TimelineContent = styled(motion.div)`
     padding: 20px;
     background: #112240;
-    border-radius: 4px;
+    border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(100, 255, 218, 0.2);
+    }
 `;
 
 const TimelineIcon = styled.div`
@@ -80,18 +87,34 @@ const TimelineDescription = styled.p`
     color: #8892b0;
 `;
 
-const ExpandButton = styled.button`
-    background: none;
-    border: none;
+const ExpandButton = styled.div`
     color: #64ffda;
-    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-top: 10px;
-    padding: 0;
     font-size: 0.9em;
+`;
 
-    &:hover {
-        text-decoration: underline;
-    }
+const ExpandedContent = styled(motion.div)`
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #1d3557;
+`;
+
+const TechStack = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+`;
+
+const TechTag = styled.span`
+    background-color: #1d3557;
+    color: #64ffda;
+    padding: 0.25rem 0.5rem;
+    border-radius: 5px;
+    font-size: 0.9rem;
 `;
 
 const timelineData = [
@@ -101,14 +124,16 @@ const timelineData = [
         title: 'Senior Data Engineer',
         company: 'Tech Innovations Inc.',
         description: 'Leading big data initiatives and implementing machine learning solutions.',
-        details: 'Spearheaded the development of a real-time data processing pipeline handling over 1 million transactions per hour. Implemented advanced fraud detection algorithms reducing false positives by 30%.'
+        details: 'Spearheaded the development of a real-time data processing pipeline handling over 1 million transactions per hour. Implemented advanced fraud detection algorithms reducing false positives by 30%.',
+        techStack: ['Python', 'Apache Spark', 'Kubernetes', 'TensorFlow']
     },
     {
         date: '2022',
         icon: <FaCode />,
         title: 'Project: AI-Driven Market Analyzer',
         description: 'Developed an AI-powered tool for real-time market trend analysis.',
-        details: 'Utilized natural language processing and machine learning to analyze social media sentiment and news articles, providing actionable insights for investment strategies.'
+        details: 'Utilized natural language processing and machine learning to analyze social media sentiment and news articles, providing actionable insights for investment strategies.',
+        techStack: ['Python', 'NLP', 'Machine Learning', 'AWS']
     },
     {
         date: '2020 - 2023',
@@ -116,7 +141,8 @@ const timelineData = [
         title: 'Data Scientist',
         company: 'DataCorp Solutions',
         description: 'Focused on predictive modeling and data-driven decision making.',
-        details: 'Created predictive models for customer churn, increasing retention rates by 25%. Developed an automated reporting system, saving 20 hours of manual work per week.'
+        details: 'Created predictive models for customer churn, increasing retention rates by 25%. Developed an automated reporting system, saving 20 hours of manual work per week.',
+        techStack: ['Python', 'R', 'SQL', 'Tableau']
     },
     {
         date: '2019',
@@ -124,53 +150,63 @@ const timelineData = [
         title: 'MSc in Data Science',
         company: 'Tech University',
         description: 'Specialized in machine learning and big data technologies.',
-        details: 'Thesis on "Applying Deep Learning to Financial Time Series Forecasting" received departmental honors. Published two papers in peer-reviewed journals.'
+        details: 'Thesis on "Applying Deep Learning to Financial Time Series Forecasting" received departmental honors. Published two papers in peer-reviewed journals.',
+        techStack: ['Python', 'TensorFlow', 'Time Series Analysis', 'Big Data']
     },
-    // Add more items as needed
 ];
 
-const TimelineItem = ({ item, index }) => {
-    const [expanded, setExpanded] = useState(false);
-
-    const springProps = useSpring({
-        opacity: 1,
-        transform: 'translateY(0)',
-        from: { opacity: 0, transform: 'translateY(50px)' },
-        delay: index * 200,
-        config: config.gentle
-    });
-
-    const expandSpring = useSpring({
-        height: expanded ? 'auto' : '0px',
-        opacity: expanded ? 1 : 0,
-        config: config.gentle
-    });
-
+const TimelineItem = ({ item, index, onExpand, isExpanded }) => {
     return (
-        <TimelineItemWrapper style={springProps} className="timeline-item">
+        <TimelineItemWrapper
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: index * 0.2 }}
+            onClick={() => onExpand(index)}
+        >
             <TimelineContent>
                 <TimelineDate>{item.date}</TimelineDate>
                 <TimelineTitle>{item.title}</TimelineTitle>
                 {item.company && <p style={{ color: '#64ffda' }}>{item.company}</p>}
                 <TimelineDescription>{item.description}</TimelineDescription>
-                <animated.div style={expandSpring}>
-                    <TimelineDescription>{item.details}</TimelineDescription>
-                </animated.div>
-                <ExpandButton onClick={() => setExpanded(!expanded)} className="expand-button">
-                    {expanded ? 'Read less' : 'Read more'}
+                <ExpandButton>
+                    {isExpanded ? 'Read less' : 'Read more'}
+                    {isExpanded ? <FaChevronUp style={{ marginLeft: '5px' }} /> : <FaChevronDown style={{ marginLeft: '5px' }} />}
                 </ExpandButton>
+                <AnimatePresence>
+                    {isExpanded && (
+                        <ExpandedContent
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.3 }}
+                        >
+                            <TimelineDescription>{item.details}</TimelineDescription>
+                            <TechStack>
+                                {item.techStack.map((tech, i) => (
+                                    <TechTag key={i}>{tech}</TechTag>
+                                ))}
+                            </TechStack>
+                        </ExpandedContent>
+                    )}
+                </AnimatePresence>
             </TimelineContent>
             <TimelineIcon>{item.icon}</TimelineIcon>
         </TimelineItemWrapper>
     );
 };
 
-const InteractiveTimeline = () => {
+const InteractiveTimeline = ({ onExpand, expandedItem }) => {
     return (
         <TimelineContainer>
             <TimelineLine />
             {timelineData.map((item, index) => (
-                <TimelineItem key={index} item={item} index={index} />
+                <TimelineItem
+                    key={index}
+                    item={item}
+                    index={index}
+                    onExpand={onExpand}
+                    isExpanded={expandedItem === index}
+                />
             ))}
         </TimelineContainer>
     );
