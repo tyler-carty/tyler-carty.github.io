@@ -48,13 +48,6 @@ const ExpandedContent = styled(motion.div)`
     border-top: 1px solid #1d3557;
 `;
 
-const ChartTitle = styled.h3`
-    font-size: 1.5rem;
-    color: #64ffda;
-    margin-bottom: 1rem;
-    text-align: center;
-`;
-
 const ExternalLink = styled.a`
     color: #64ffda;
     text-decoration: none;
