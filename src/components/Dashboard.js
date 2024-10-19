@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { motion } from 'framer-motion';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { FaBriefcase, FaLaptopCode, FaGraduationCap, FaChartLine } from 'react-icons/fa';
+import { motion, AnimatePresence } from 'framer-motion';
 import { BaseComponent } from "./BaseComponent";
-import RadarChart from './RadarChart';
+import { FaCode, FaBriefcase, FaGraduationCap, FaChartLine, FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import TechStackTags from './TechStackTags';
 
 const DashboardContainer = styled(motion.div)`
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 2rem;
     padding: 2rem;
 `;
@@ -18,6 +18,11 @@ const Card = styled(motion.div)`
     border-radius: 10px;
     padding: 1.5rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
 `;
 
 const CardTitle = styled.h2`
@@ -27,115 +32,90 @@ const CardTitle = styled.h2`
 `;
 
 const CardContent = styled.div`
-    color: #8892b0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
 `;
 
-const ProjectSummary = styled.div`
+const IconWrapper = styled.div`
+    font-size: 3rem;
+    color: #64ffda;
     margin-bottom: 1rem;
 `;
 
-const ProjectTitle = styled.h3`
-    font-size: 1.2rem;
+const Highlight = styled.p`
+    font-size: 2rem;
+    font-weight: bold;
     color: #ccd6f6;
     margin-bottom: 0.5rem;
+`;
+
+const Subtitle = styled.p`
+    font-size: 1rem;
+    color: #8892b0;
+    text-align: center;
+`;
+
+const ExpandButton = styled.button`
+    background: none;
+    border: none;
+    color: #64ffda;
+    cursor: pointer;
+    align-self: flex-end;
+    font-size: 1.2rem;
+    margin-top: 1rem;
+`;
+
+const ExpandedContent = styled(motion.div)`
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #1d3557;
+`;
+
+const SkillBar = styled.div`
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+`;
+
+const SkillName = styled.span`
+    flex: 0 0 100px;
+    color: #8892b0;
+`;
+
+const SkillLevel = styled.div`
+    flex-grow: 1;
+    height: 10px;
+    background-color: #1d3557;
+    border-radius: 5px;
+    overflow: hidden;
+`;
+
+const SkillFill = styled.div`
+    height: 100%;
+    background-color: #64ffda;
+    width: ${props => props.level}%;
+`;
+
+const ProjectItem = styled.div`
+    margin-bottom: 1rem;
+`;
+
+const ProjectTitle = styled.h4`
+    color: #ccd6f6;
+    margin-bottom: 0.25rem;
 `;
 
 const ProjectDescription = styled.p`
     font-size: 0.9rem;
     color: #8892b0;
+    margin-bottom: 0.25rem;
 `;
-
-const QuickLink = styled(motion.a)`
-    display: inline-block;
-    margin-top: 0.5rem;
-    color: #64ffda;
-    text-decoration: none;
-    font-size: 0.9rem;
-
-    &:hover {
-        text-decoration: underline;
-    }
-`;
-
-const QuickStatsGrid = styled.div`
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 1rem;
-    text-align: center;
-`;
-
-const StatItem = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 1rem;
-    background-color: #1d3557;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-
-    &:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 5px 15px rgba(100, 255, 218, 0.1);
-    }
-`;
-
-const StatIcon = styled.div`
-    font-size: 24px;
-    color: #64ffda;
-    margin-bottom: 0.5rem;
-`;
-
-const StatValue = styled.p`
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #ccd6f6;
-    margin: 0.25rem 0;
-`;
-
-const StatLabel = styled.p`
-    font-size: 0.9rem;
-    color: #8892b0;
-    margin: 0;
-`;
-
-const skillsData = [
-    { subject: 'React', A: 90, fullMark: 100 },
-    { subject: 'Python', A: 85, fullMark: 100 },
-    { subject: 'Data Science', A: 80, fullMark: 100 },
-    { subject: 'Machine Learning', A: 75, fullMark: 100 },
-    { subject: 'Cloud Computing', A: 70, fullMark: 100 },
-];
-
-const experienceData = [
-    { year: '2019', value: 30 },
-    { year: '2020', value: 50 },
-    { year: '2021', value: 70 },
-    { year: '2022', value: 85 },
-    { year: '2023', value: 95 },
-];
-
-const projectsData = [
-    {
-        title: 'AI-Driven Market Analyzer',
-        description: 'Developed an AI-powered tool for real-time market trend analysis.',
-        link: '/projects#market-analyzer'
-    },
-    {
-        title: 'Big Data Pipeline',
-        description: 'Built a scalable data pipeline processing millions of transactions per hour.',
-        link: '/projects#data-pipeline'
-    },
-];
 
 const Dashboard = ({ onReady }) => {
+    const [expandedCard, setExpandedCard] = useState(null);
     const [dataLoaded, setDataLoaded] = useState(false);
-
-    const quickStats = useMemo(() => [
-        { icon: <FaBriefcase />, value: '5+ Years', label: 'Experience' },
-        { icon: <FaLaptopCode />, value: '20+', label: 'Projects' },
-        { icon: <FaGraduationCap />, value: 'MSc', label: 'Data Science' },
-        { icon: <FaChartLine />, value: '10+', label: 'Technologies' },
-    ], []);
 
     useEffect(() => {
         const loadData = async () => {
@@ -152,6 +132,107 @@ const Dashboard = ({ onReady }) => {
         }
     }, [dataLoaded, onReady]);
 
+    const handleExpand = (index) => {
+        setExpandedCard(expandedCard === index ? null : index);
+    };
+
+    const cardData = [
+        {
+            title: "Technical Expertise",
+            icon: <FaCode />,
+            highlight: "Full-Stack",
+            subtitle: "Developer",
+            expandedContent: (
+                <>
+                    <p>Specialized skills:</p>
+                    <SkillBar>
+                        <SkillName>React</SkillName>
+                        <SkillLevel><SkillFill level={90} /></SkillLevel>
+                    </SkillBar>
+                    <SkillBar>
+                        <SkillName>Node.js</SkillName>
+                        <SkillLevel><SkillFill level={85} /></SkillLevel>
+                    </SkillBar>
+                    <SkillBar>
+                        <SkillName>Python</SkillName>
+                        <SkillLevel><SkillFill level={80} /></SkillLevel>
+                    </SkillBar>
+                    <SkillBar>
+                        <SkillName>AWS</SkillName>
+                        <SkillLevel><SkillFill level={75} /></SkillLevel>
+                    </SkillBar>
+                </>
+            )
+        },
+        {
+            title: "Professional Experience",
+            icon: <FaBriefcase />,
+            highlight: "5+ Years",
+            subtitle: "in Tech Industry",
+            expandedContent: (
+                <>
+                    <p>Career progression:</p>
+                    <ResponsiveContainer width="100%" height={200}>
+                        <BarChart data={[
+                            { year: '2019', role: 'Junior Developer' },
+                            { year: '2020', role: 'Developer' },
+                            { year: '2021', role: 'Senior Developer' },
+                            { year: '2022', role: 'Lead Developer' },
+                            { year: '2023', role: 'Tech Lead' },
+                        ]}>
+                            <XAxis dataKey="year" />
+                            <YAxis hide />
+                            <Tooltip />
+                            <Bar dataKey="role" fill="#64ffda" />
+                        </BarChart>
+                    </ResponsiveContainer>
+                </>
+            )
+        },
+        {
+            title: "Education",
+            icon: <FaGraduationCap />,
+            highlight: "MSc",
+            subtitle: "Data Science",
+            expandedContent: (
+                <>
+                    <p>Educational journey:</p>
+                    <ul style={{ color: '#8892b0', listStyleType: 'none', padding: 0 }}>
+                        <li>✓ BSc in Computer Science (2018)</li>
+                        <li>✓ MSc in Data Science (2020)</li>
+                        <li>• Online courses in AI and ML</li>
+                        <li>• Regular tech conference attendee</li>
+                    </ul>
+                </>
+            )
+        },
+        {
+            title: "Project Highlights",
+            icon: <FaChartLine />,
+            highlight: "10+",
+            subtitle: "Major Projects",
+            expandedContent: (
+                <>
+                    <ProjectItem>
+                        <ProjectTitle>E-commerce Platform</ProjectTitle>
+                        <ProjectDescription>Built a scalable online marketplace</ProjectDescription>
+                        <TechStackTags tags={['React', 'Node.js', 'MongoDB', 'AWS']} />
+                    </ProjectItem>
+                    <ProjectItem>
+                        <ProjectTitle>AI Chatbot</ProjectTitle>
+                        <ProjectDescription>Developed an intelligent customer service bot</ProjectDescription>
+                        <TechStackTags tags={['Python', 'TensorFlow', 'NLP', 'Azure']} />
+                    </ProjectItem>
+                    <ProjectItem>
+                        <ProjectTitle>Data Visualization Tool</ProjectTitle>
+                        <ProjectDescription>Created interactive dashboards for business analytics</ProjectDescription>
+                        <TechStackTags tags={['D3.js', 'React', 'Node.js', 'PostgreSQL']} />
+                    </ProjectItem>
+                </>
+            )
+        }
+    ];
+
     if (!dataLoaded) {
         return (
             <BaseComponent title="Dashboard">
@@ -161,72 +242,44 @@ const Dashboard = ({ onReady }) => {
     }
 
     return (
-        <BaseComponent title="Dashboard">
+        <BaseComponent title="Portfolio at a Glance">
             <DashboardContainer
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="dashboard-overview"
+                transition={{ duration: 0.5 }}
             >
-                <Card className="skills-chart">
-                    <CardTitle>Skills Portfolio</CardTitle>
-                    <CardContent>
-                        <RadarChart
-                            data={skillsData}
-                            dataKey="A"
-                            height={300}
-                        />
-                    </CardContent>
-                </Card>
-
-                <Card className="experience-chart">
-                    <CardTitle>Experience Growth</CardTitle>
-                    <CardContent>
-                        <ResponsiveContainer width="100%" height={300}>
-                            <AreaChart data={experienceData}>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="year" />
-                                <YAxis />
-                                <Tooltip />
-                                <Area type="monotone" dataKey="value" stroke="#64ffda" fill="#64ffda" fillOpacity={0.3} />
-                            </AreaChart>
-                        </ResponsiveContainer>
-                    </CardContent>
-                </Card>
-
-                <Card className="recent-projects">
-                    <CardTitle>Recent Projects</CardTitle>
-                    <CardContent>
-                        {projectsData.map((project, index) => (
-                            <ProjectSummary key={index}>
-                                <ProjectTitle>{project.title}</ProjectTitle>
-                                <ProjectDescription>{project.description}</ProjectDescription>
-                                <QuickLink
-                                    href={project.link}
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
+                {cardData.map((card, index) => (
+                    <Card
+                        key={index}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: index * 0.1 }}
+                        whileHover={{ scale: 1.05 }}
+                    >
+                        <CardTitle>{card.title}</CardTitle>
+                        <CardContent>
+                            <IconWrapper>{card.icon}</IconWrapper>
+                            <Highlight>{card.highlight}</Highlight>
+                            <Subtitle>{card.subtitle}</Subtitle>
+                        </CardContent>
+                        <ExpandButton onClick={() => handleExpand(index)}>
+                            {expandedCard === index ? <FaChevronUp /> : <FaChevronDown />}
+                        </ExpandButton>
+                        <AnimatePresence>
+                            {expandedCard === index && (
+                                <ExpandedContent
+                                    initial={{ opacity: 0, height: 0 }}
+                                    animate={{ opacity: 1, height: 'auto' }}
+                                    exit={{ opacity: 0, height: 0 }}
+                                    transition={{ duration: 0.3 }}
                                 >
-                                    Learn More
-                                </QuickLink>
-                            </ProjectSummary>
-                        ))}
-                    </CardContent>
-                </Card>
-
-                <Card className="quick-stats">
-                    <CardTitle>Quick Stats</CardTitle>
-                    <CardContent>
-                        <QuickStatsGrid>
-                            {quickStats.map((stat, index) => (
-                                <StatItem key={index}>
-                                    <StatIcon>{stat.icon}</StatIcon>
-                                    <StatValue>{stat.value}</StatValue>
-                                    <StatLabel>{stat.label}</StatLabel>
-                                </StatItem>
-                            ))}
-                        </QuickStatsGrid>
-                    </CardContent>
-                </Card>
+                                    {card.expandedContent}
+                                </ExpandedContent>
+                            )}
+                        </AnimatePresence>
+                    </Card>
+                ))}
             </DashboardContainer>
         </BaseComponent>
     );

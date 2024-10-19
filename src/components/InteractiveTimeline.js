@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaBriefcase, FaGraduationCap, FaCode, FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import TechStackTags from './TechStackTags';
 
 const TimelineContainer = styled.div`
     position: relative;
@@ -102,19 +103,8 @@ const ExpandedContent = styled(motion.div)`
     border-top: 1px solid #1d3557;
 `;
 
-const TechStack = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+const TechStackContainer = styled.div`
     margin-top: 1rem;
-`;
-
-const TechTag = styled.span`
-    background-color: #1d3557;
-    color: #64ffda;
-    padding: 0.25rem 0.5rem;
-    border-radius: 5px;
-    font-size: 0.9rem;
 `;
 
 const timelineData = [
@@ -181,11 +171,9 @@ const TimelineItem = ({ item, index, onExpand, isExpanded }) => {
                             transition={{ duration: 0.3 }}
                         >
                             <TimelineDescription>{item.details}</TimelineDescription>
-                            <TechStack>
-                                {item.techStack.map((tech, i) => (
-                                    <TechTag key={i}>{tech}</TechTag>
-                                ))}
-                            </TechStack>
+                            <TechStackContainer>
+                                <TechStackTags tags={item.techStack} />
+                            </TechStackContainer>
                         </ExpandedContent>
                     )}
                 </AnimatePresence>
