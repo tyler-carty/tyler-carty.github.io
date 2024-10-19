@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import {RadarChart, PolarGrid, PolarAngleAxis, Radar, ResponsiveContainer, PolarRadiusAxis, Tooltip} from 'recharts';
-import {FaChevronDown, FaChevronUp, FaGithub, FaExternalLinkAlt, FaInfoCircle} from 'react-icons/fa';
+import { FaChevronDown, FaChevronUp, FaGithub, FaExternalLinkAlt, FaInfoCircle } from 'react-icons/fa';
 import { BaseComponent } from './BaseComponent';
+import RadarChart from './RadarChart';
 
 const ProjectCard = styled(motion.div)`
   background-color: #112240;
@@ -203,7 +203,6 @@ const ProjectInvestments = ({ onReady }) => {
             liveDemo: "https://distributed-sim.demo.com",
             impact: "Strengthened my understanding of complex systems and improved my Go programming skills."
         },
-        // ... (you can add more projects here)
     ]);
 
     useEffect(() => {
@@ -308,27 +307,11 @@ const ProjectInvestments = ({ onReady }) => {
                                             <FaExternalLinkAlt /> Live Demo
                                         </ProjectLink>
                                     </ProjectLinks>
-                                    <ResponsiveContainer width="100%" height={300}>
-                                        <RadarChart data={chartData[index]} margin={{ top: 20, right: 30, bottom: 20, left: 30 }}>
-                                            <PolarGrid />
-                                            <PolarAngleAxis dataKey="subject" tick={{ fill: '#8892b0' }} />
-                                            <PolarRadiusAxis
-                                                angle={30}
-                                                domain={[0, 100]}
-                                                tickCount={5}
-                                                tick={{ fill: '#64ffda' }}
-                                                axisLine={{ stroke: '#64ffda' }}
-                                            />
-                                            <Radar
-                                                name="Project Metrics"
-                                                dataKey="A"
-                                                stroke="#64ffda"
-                                                fill="#64ffda"
-                                                fillOpacity={0.6}
-                                            />
-                                            <Tooltip content={<CustomTooltipComponent />} />
-                                        </RadarChart>
-                                    </ResponsiveContainer>
+                                    <RadarChart
+                                        data={chartData[index]}
+                                        dataKey="A"
+                                        height={300}
+                                    />
                                     <ProjectImpact>{project.impact}</ProjectImpact>
                                 </ExpandedContent>
                             )}

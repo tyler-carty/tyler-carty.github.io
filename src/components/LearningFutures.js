@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Tooltip, ResponsiveContainer } from 'recharts';
 import { FaChevronDown, FaChevronUp, FaExternalLinkAlt, FaCheckCircle, FaSpinner, FaHourglassHalf, FaBook, FaCertificate, FaLaptopCode } from 'react-icons/fa';
 import { BaseComponent } from './BaseComponent';
+import RadarChart from './RadarChart';
 
 const LearningCard = styled(motion.div)`
     background-color: #112240;
@@ -209,19 +209,23 @@ const LearningFutures = ({ onReady }) => {
         );
     }
 
+    if (!dataLoaded) {
+        return (
+            <BaseComponent title="Learning Futures">
+                <div>Loading...</div>
+            </BaseComponent>
+        );
+    }
+
     return (
         <BaseComponent title="Learning Futures">
             <div className="learning-overview">
-                <ChartTitle>Skill Area Focus</ChartTitle>
-                <ResponsiveContainer width="100%" height={400}>
-                    <RadarChart data={skillAreaData}>
-                        <PolarGrid />
-                        <PolarAngleAxis dataKey="subject" />
-                        <PolarRadiusAxis angle={30} domain={[0, 100]} />
-                        <Radar name="Skill Level" dataKey="A" stroke="#64ffda" fill="#64ffda" fillOpacity={0.6} />
-                        <Tooltip />
-                    </RadarChart>
-                </ResponsiveContainer>
+                <RadarChart
+                    title="Skill Area Focus"
+                    data={skillAreaData}
+                    dataKey="A"
+                    height={400}
+                />
 
                 {learningData.map((item, index) => (
                     <LearningCard

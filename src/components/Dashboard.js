@@ -1,9 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Tooltip, AreaChart, Area, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { motion } from 'framer-motion';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { FaBriefcase, FaLaptopCode, FaGraduationCap, FaChartLine } from 'react-icons/fa';
-import {BaseComponent} from "./BaseComponent";
+import { BaseComponent } from "./BaseComponent";
+import RadarChart from './RadarChart';
 
 const DashboardContainer = styled(motion.div)`
     display: grid;
@@ -27,11 +28,6 @@ const CardTitle = styled.h2`
 
 const CardContent = styled.div`
     color: #8892b0;
-`;
-
-const SkillCategory = styled.div`
-    margin-bottom: 1rem;
-    cursor: pointer;
 `;
 
 const ProjectSummary = styled.div`
@@ -62,44 +58,44 @@ const QuickLink = styled(motion.a)`
 `;
 
 const QuickStatsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 1rem;
-  text-align: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    text-align: center;
 `;
 
 const StatItem = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 1rem;
-  background-color: #1d3557;
-  border-radius: 8px;
-  transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    background-color: #1d3557;
+    border-radius: 8px;
+    transition: all 0.3s ease;
 
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(100, 255, 218, 0.1);
-  }
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(100, 255, 218, 0.1);
+    }
 `;
 
 const StatIcon = styled.div`
-  font-size: 24px;
-  color: #64ffda;
-  margin-bottom: 0.5rem;
+    font-size: 24px;
+    color: #64ffda;
+    margin-bottom: 0.5rem;
 `;
 
 const StatValue = styled.p`
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #ccd6f6;
-  margin: 0.25rem 0;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #ccd6f6;
+    margin: 0.25rem 0;
 `;
 
 const StatLabel = styled.p`
-  font-size: 0.9rem;
-  color: #8892b0;
-  margin: 0;
+    font-size: 0.9rem;
+    color: #8892b0;
+    margin: 0;
 `;
 
 const skillsData = [
@@ -129,34 +125,20 @@ const projectsData = [
         description: 'Built a scalable data pipeline processing millions of transactions per hour.',
         link: '/projects#data-pipeline'
     },
-    // Add more projects as needed
 ];
 
 const Dashboard = ({ onReady }) => {
-    const [activeSkillSet, setActiveSkillSet] = useState('technical');
     const [dataLoaded, setDataLoaded] = useState(false);
 
-    const technicalSkills = skillsData;
-    const softSkills = [
-        { subject: 'Communication', A: 85, fullMark: 100 },
-        { subject: 'Teamwork', A: 90, fullMark: 100 },
-        { subject: 'Problem Solving', A: 88, fullMark: 100 },
-        { subject: 'Adaptability', A: 82, fullMark: 100 },
-        { subject: 'Leadership', A: 78, fullMark: 100 },
-    ];
-
-    const quickStats = [
+    const quickStats = useMemo(() => [
         { icon: <FaBriefcase />, value: '5+ Years', label: 'Experience' },
         { icon: <FaLaptopCode />, value: '20+', label: 'Projects' },
         { icon: <FaGraduationCap />, value: 'MSc', label: 'Data Science' },
         { icon: <FaChartLine />, value: '10+', label: 'Technologies' },
-    ];
+    ], []);
 
     useEffect(() => {
-        // Simulate any async operations
         const loadData = async () => {
-            // Perform any necessary data fetching or initialization here
-            // For now, we'll just use a timeout to simulate async operation
             await new Promise(resolve => setTimeout(resolve, 1000));
             setDataLoaded(true);
         };
@@ -189,31 +171,11 @@ const Dashboard = ({ onReady }) => {
                 <Card className="skills-chart">
                     <CardTitle>Skills Portfolio</CardTitle>
                     <CardContent>
-                        <SkillCategory onClick={() => setActiveSkillSet('technical')}>
-                            Technical Skills
-                        </SkillCategory>
-                        <SkillCategory onClick={() => setActiveSkillSet('soft')}>
-                            Soft Skills
-                        </SkillCategory>
-                        <AnimatePresence mode="wait">
-                            <motion.div
-                                key={activeSkillSet}
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                transition={{ duration: 0.5 }}
-                            >
-                                <ResponsiveContainer width="100%" height={300}>
-                                    <RadarChart data={activeSkillSet === 'technical' ? technicalSkills : softSkills}>
-                                        <PolarGrid />
-                                        <PolarAngleAxis dataKey="subject" />
-                                        <PolarRadiusAxis angle={30} domain={[0, 100]} />
-                                        <Radar name="Skills" dataKey="A" stroke="#64ffda" fill="#64ffda" fillOpacity={0.6} />
-                                        <Tooltip />
-                                    </RadarChart>
-                                </ResponsiveContainer>
-                            </motion.div>
-                        </AnimatePresence>
+                        <RadarChart
+                            data={skillsData}
+                            dataKey="A"
+                            height={300}
+                        />
                     </CardContent>
                 </Card>
 
