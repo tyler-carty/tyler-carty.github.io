@@ -147,16 +147,16 @@ const ProjectInvestments = ({ onReady }) => {
     const [projects] = useState([
         {
             title: "Sentiment Dynamics",
-            description: "A real-time sentiment analysis tool for financial markets.",
-            techStack: ["Python", "NLP", "React", "D3.js"],
+            description: "A exploratory sentiment analysis tool for navigating social media influence.",
+            techStack: ["Python", "NLP", "Jupyter"],
             metrics: {
-                impact: 85,
-                complexity: 70,
+                impact: 90,
+                complexity: 80,
                 growth: 90
             },
-            github: "https://github.com/username/sentiment-dynamics",
-            liveDemo: "https://sentiment-dynamics.demo.com",
-            impact: "This project opened doors to fintech opportunities and deepened my NLP expertise."
+            github: "https://github.com/username/link",
+            liveDemo: "https://link.com",
+            impact: "This project opened doors to fintech opportunities and deepened my NLP and ML knowledge."
         },
         {
             title: "Distributed Systems Simulator",
