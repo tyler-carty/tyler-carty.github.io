@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { BaseComponent } from "./BaseComponent";
 import {
     FaReact, FaNodeJs, FaPython, FaGoogle, FaGithub, FaLinkedin, FaEnvelope,
-    FaChartLine, FaTrophy, FaUser, FaBrain, FaLaptopCode, FaGraduationCap
+    FaChartLine, FaTrophy, FaUser, FaGraduationCap
 } from 'react-icons/fa';
 
 const DashboardContainer = styled.div`
@@ -206,35 +206,25 @@ const Dashboard = ({ onReady }) => {
     const achievementsData = [
         {
             icon: <FaChartLine />,
-            text: "Architected a high-load fintech platform",
-            metric: "1M+ users"
+            text: "Modernised industry-leading financial systems",
+            metric: "1M+ Users"
         },
         {
             icon: <FaTrophy />,
-            text: "Developed ML models improving prediction accuracy",
-            metric: "30% increase"
+            text: "Developed end-to-end solutions improving admin for local businesses",
+            metric: "40+ Hours per Month"
         },
         {
             icon: <FaUser />,
-            text: "Led a team in delivering a critical project ahead of schedule",
-            metric: "5 team members"
+            text: "Contributed to crime prevention by maintaining real-time transaction data flow",
+            metric: "400M+ Records"
         }
     ];
 
     const educationData = {
-        degree: "MSc in Data Science",
-        university: "Tech University",
-        year: "2020",
-        courses: [
-            { name: "Machine Learning", icon: <FaBrain /> },
-            { name: "Big Data Analytics", icon: <FaChartLine /> },
-            { name: "Advanced Algorithms", icon: <FaLaptopCode /> },
-        ],
-        skills: [
-            { name: "Data Analysis", progress: 90 },
-            { name: "Statistical Modeling", progress: 85 },
-            { name: "Deep Learning", progress: 80 },
-        ]
+        degree: "BSc in Computer Science",
+        university: "University of Derby",
+        year: "2024",
     };
 
     if (!dataLoaded) {
@@ -291,8 +281,8 @@ const Dashboard = ({ onReady }) => {
                         <CardTitle>About Me</CardTitle>
                     </CardHeader>
                     <BioText>
-                        Passionate engineer with <BioHighlight>5+ years</BioHighlight> of experience in full-stack development and data science.
-                        I thrive on creating <BioHighlight>scalable solutions</BioHighlight> and turning <BioHighlight>complex data into actionable insights</BioHighlight>.
+                        Passionate engineer with <BioHighlight>3+ years</BioHighlight> of experience in full-stack development and data science.
+                        I thrive on creating <BioHighlight>scalable solutions</BioHighlight> and turning <BioHighlight>complex data</BioHighlight> into <BioHighlight>actionable insights</BioHighlight>.
                     </BioText>
                     <BioText>
                         Always pushing the boundaries of what's possible in tech.
