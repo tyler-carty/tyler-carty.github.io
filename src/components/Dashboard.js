@@ -2,103 +2,156 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { BaseComponent } from "./BaseComponent";
-import { FaReact, FaNodeJs, FaPython, FaAws, FaGithub, FaLinkedin, FaEnvelope } from 'react-icons/fa';
+import {
+    FaReact, FaNodeJs, FaPython, FaGoogle, FaGithub, FaLinkedin, FaEnvelope,
+    FaChartLine, FaTrophy, FaUser, FaBrain, FaLaptopCode, FaGraduationCap
+} from 'react-icons/fa';
 
 const DashboardContainer = styled.div`
-    position: relative;
-    height: calc(100vh - 4rem);
-    overflow: hidden;
-    background-color: #0a192f;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
     padding: 2rem;
+    background-color: #0a192f;
+    min-height: 100vh;
+
+    @media (max-width: 768px) {
+        padding: 1rem;
+    }
 `;
 
 const FloatingElement = styled(motion.div)`
-    position: absolute;
     background-color: rgba(17, 34, 64, 0.8);
     border-radius: 10px;
     padding: 1.5rem;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+`;
+
+const Header = styled.div`
+    margin-bottom: 2rem;
 `;
 
 const Name = styled(motion.h1)`
     font-size: 4rem;
     color: #64ffda;
     margin-bottom: 0.5rem;
-    position: absolute;
-    top: 10%;
-    left: 10%;
+
+    @media (max-width: 768px) {
+        font-size: 3rem;
+    }
 `;
 
 const Title = styled(motion.h2)`
     font-size: 2rem;
     color: #8892b0;
-    position: absolute;
-    top: calc(10% + 5rem);
-    left: 10%;
+
+    @media (max-width: 768px) {
+        font-size: 1.5rem;
+    }
 `;
 
-const SkillsContainer = styled(FloatingElement)`
-    top: 30%;
-    left: 15%;
+const CardHeader = styled.div`
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
+    margin-bottom: 1rem;
+    color: #64ffda;
+`;
+
+const CardIcon = styled.div`
+    font-size: 1.5rem;
+    margin-right: 0.5rem;
+`;
+
+const CardTitle = styled.h3`
+    font-size: 1.2rem;
+    margin: 0;
+`;
+
+const SkillsContainer = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+`;
+
+const SkillsFloatingElement = styled(FloatingElement)`
+    background-color: rgba(17, 34, 64, 0.8);
+    border-radius: 10px;
+    padding: 1.5rem;
+    width: 100%;
 `;
 
 const SkillIcon = styled(motion.div)`
     font-size: 2.5rem;
     color: #64ffda;
-    margin-bottom: 1rem;
     display: flex;
     align-items: center;
 `;
 
 const SkillName = styled.span`
-    font-size: 1rem;
     color: #8892b0;
-    margin-left: 1rem;
-`;
-
-const BioCard = styled(FloatingElement)`
-    top: 25%;
-    right: 10%;
-    width: 30%;
-    max-width: 400px;
+    font-size: 0.9rem;
+    margin-left: 0.5rem;
 `;
 
 const BioText = styled.p`
     font-size: 1rem;
     color: #8892b0;
     line-height: 1.6;
+    margin-bottom: 1rem;
 `;
 
-const AchievementsCard = styled(FloatingElement)`
-    bottom: 20%;
-    left: 20%;
-    width: 30%;
-    max-width: 400px;
+const BioHighlight = styled.span`
+    color: #64ffda;
+    font-weight: bold;
 `;
 
 const AchievementList = styled.ul`
     color: #8892b0;
-    padding-left: 1.5rem;
+    padding-left: 0;
+    list-style-type: none;
 `;
 
 const AchievementItem = styled.li`
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: flex-start;
+`;
+
+const AchievementIcon = styled.div`
+    color: #64ffda;
+    font-size: 1.2rem;
+    margin-right: 0.5rem;
+    margin-top: 0.2rem;
+`;
+
+const AchievementText = styled.p`
+    margin: 0;
+`;
+
+const AchievementMetric = styled.span`
+    display: block;
+    color: #64ffda;
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-top: 0.2rem;
+`;
+
+const Degree = styled.h4`
+    font-size: 1.2rem;
+    color: #64ffda;
     margin-bottom: 0.5rem;
 `;
 
-const ConnectCard = styled(FloatingElement)`
-    bottom: 15%;
-    right: 15%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+const University = styled.p`
+    font-size: 1rem;
+    color: #8892b0;
+    margin-bottom: 1rem;
 `;
 
 const SocialLinks = styled.div`
     display: flex;
-    justify-content: center;
     gap: 1rem;
     margin-top: 1rem;
 `;
@@ -111,21 +164,18 @@ const SocialIcon = styled(motion.a)`
     }
 `;
 
-const FloatingEducation = styled(FloatingElement)`
-    top: 60%;
-    left: 5%;
-    text-align: center;
+const BottomGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
-const Degree = styled.h4`
-    font-size: 1.2rem;
-    color: #ccd6f6;
-    margin-bottom: 0.5rem;
-`;
-
-const University = styled.p`
-  font-size: 1rem;
-  color: #8892b0;
+const GridElement = styled(FloatingElement)`
+  margin: 0;
 `;
 
 const Dashboard = ({ onReady }) => {
@@ -147,113 +197,197 @@ const Dashboard = ({ onReady }) => {
     }, [dataLoaded, onReady]);
 
     const skillsData = [
+        { name: 'Python', icon: FaPython },
         { name: 'React', icon: FaReact },
         { name: 'Node.js', icon: FaNodeJs },
-        { name: 'Python', icon: FaPython },
-        { name: 'AWS', icon: FaAws },
+        { name: 'GCP', icon: FaGoogle },
     ];
+
+    const achievementsData = [
+        {
+            icon: <FaChartLine />,
+            text: "Architected a high-load fintech platform",
+            metric: "1M+ users"
+        },
+        {
+            icon: <FaTrophy />,
+            text: "Developed ML models improving prediction accuracy",
+            metric: "30% increase"
+        },
+        {
+            icon: <FaUser />,
+            text: "Led a team in delivering a critical project ahead of schedule",
+            metric: "5 team members"
+        }
+    ];
+
+    const educationData = {
+        degree: "MSc in Data Science",
+        university: "Tech University",
+        year: "2020",
+        courses: [
+            { name: "Machine Learning", icon: <FaBrain /> },
+            { name: "Big Data Analytics", icon: <FaChartLine /> },
+            { name: "Advanced Algorithms", icon: <FaLaptopCode /> },
+        ],
+        skills: [
+            { name: "Data Analysis", progress: 90 },
+            { name: "Statistical Modeling", progress: 85 },
+            { name: "Deep Learning", progress: 80 },
+        ]
+    };
 
     if (!dataLoaded) {
         return (
-            <BaseComponent title="Dashboard">
+            <BaseComponent>
+                <Header>
+                    <Name
+                        initial={{ opacity: 0, x: -50 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5 }}
+                    >
+                        Tyler Cartwright
+                    </Name>
+                    <Title
+                        initial={{ opacity: 0, x: -50 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5, delay: 0.2 }}
+                    >
+                        Full-Stack Developer & Data Scientist
+                    </Title>
+                </Header>
                 <div>Loading...</div>
             </BaseComponent>
         );
     }
 
     return (
-        <BaseComponent title="Dashboard">
+        <BaseComponent>
             <DashboardContainer>
-                <Name
-                    initial={{ opacity: 0, x: -50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.5 }}
-                >
-                    Tyler Cartwright
-                </Name>
-                <Title
-                    initial={{ opacity: 0, x: -50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
-                >
-                    Full-Stack Developer & Data Scientist
-                </Title>
+                <Header>
+                    <Name
+                        initial={{ opacity: 0, x: -50 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5 }}
+                    >
+                        Tyler Cartwright
+                    </Name>
+                    <Title
+                        initial={{ opacity: 0, x: -50 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5, delay: 0.2 }}
+                    >
+                        Full-Stack Developer & Data Scientist
+                    </Title>
+                </Header>
 
-                <SkillsContainer
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5, delay: 0.3 }}
-                >
-                    {skillsData.map((skill, index) => (
-                        <SkillIcon
-                            key={skill.name}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
-                        >
-                            <skill.icon />
-                            <SkillName>{skill.name}</SkillName>
-                        </SkillIcon>
-                    ))}
-                </SkillsContainer>
-
-                <BioCard
+                <FloatingElement
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.4 }}
                 >
+                    <CardHeader>
+                        <CardIcon><FaUser /></CardIcon>
+                        <CardTitle>About Me</CardTitle>
+                    </CardHeader>
                     <BioText>
-                        Passionate engineer with 5+ years of experience in full-stack development and data science.
-                        I thrive on creating scalable solutions and turning complex data into actionable insights.
+                        Passionate engineer with <BioHighlight>5+ years</BioHighlight> of experience in full-stack development and data science.
+                        I thrive on creating <BioHighlight>scalable solutions</BioHighlight> and turning <BioHighlight>complex data into actionable insights</BioHighlight>.
+                    </BioText>
+                    <BioText>
                         Always pushing the boundaries of what's possible in tech.
                     </BioText>
-                </BioCard>
+                </FloatingElement>
 
-                <AchievementsCard
+                <SkillsFloatingElement
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.3 }}
+                >
+                    <CardHeader>
+                        <CardIcon><FaChartLine /></CardIcon>
+                        <CardTitle>Top Skills</CardTitle>
+                    </CardHeader>
+                    <SkillsContainer>
+                        {skillsData.map((skill, index) => (
+                            <SkillIcon
+                                key={skill.name}
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
+                            >
+                                <skill.icon />
+                                <SkillName>{skill.name}</SkillName>
+                            </SkillIcon>
+                        ))}
+                    </SkillsContainer>
+                </SkillsFloatingElement>
+
+                <FloatingElement
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.5 }}
                 >
+                    <CardHeader>
+                        <CardIcon><FaTrophy /></CardIcon>
+                        <CardTitle>Key Achievements</CardTitle>
+                    </CardHeader>
                     <AchievementList>
-                        <AchievementItem>Architected a high-load fintech platform serving 1M+ users</AchievementItem>
-                        <AchievementItem>Developed ML models improving prediction accuracy by 30%</AchievementItem>
-                        <AchievementItem>Led a team of 5 in delivering a critical project ahead of schedule</AchievementItem>
+                        {achievementsData.map((achievement, index) => (
+                            <AchievementItem key={index}>
+                                <AchievementIcon>{achievement.icon}</AchievementIcon>
+                                <div>
+                                    <AchievementText>{achievement.text}</AchievementText>
+                                    <AchievementMetric>{achievement.metric}</AchievementMetric>
+                                </div>
+                            </AchievementItem>
+                        ))}
                     </AchievementList>
-                </AchievementsCard>
+                </FloatingElement>
 
-                <ConnectCard
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5, delay: 0.6 }}
-                >
-                    <BioText>Let's collaborate on something amazing!</BioText>
-                    <SocialLinks>
-                        <SocialIcon href="https://github.com/your-github" target="_blank" rel="noopener noreferrer"
-                                    whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.9 }}
-                        >
-                            <FaGithub />
-                        </SocialIcon>
-                        <SocialIcon href="https://linkedin.com/in/your-linkedin" target="_blank" rel="noopener noreferrer"
-                                    whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.9 }}
-                        >
-                            <FaLinkedin />
-                        </SocialIcon>
-                        <SocialIcon href="mailto:your.email@example.com"
-                                    whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.9 }}
-                        >
-                            <FaEnvelope />
-                        </SocialIcon>
-                    </SocialLinks>
-                </ConnectCard>
+                <BottomGrid>
+                    <GridElement
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.6 }}
+                    >
+                        <CardHeader>
+                            <CardIcon><FaGraduationCap /></CardIcon>
+                            <CardTitle>Education</CardTitle>
+                        </CardHeader>
+                        <Degree>{educationData.degree}</Degree>
+                        <University>{educationData.university}, {educationData.year}</University>
+                    </GridElement>
 
-                <FloatingEducation
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5, delay: 0.7 }}
-                >
-                    <Degree>MSc in Data Science</Degree>
-                    <University>Tech University, 2020</University>
-                </FloatingEducation>
+                    <GridElement
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.7 }}
+                    >
+                        <CardHeader>
+                            <CardIcon><FaEnvelope /></CardIcon>
+                            <CardTitle>Let's Connect</CardTitle>
+                        </CardHeader>
+                        <BioText>Let's collaborate on something amazing!</BioText>
+                        <SocialLinks>
+                            <SocialIcon href="https://github.com/your-github" target="_blank" rel="noopener noreferrer"
+                                        whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.9 }}
+                            >
+                                <FaGithub />
+                            </SocialIcon>
+                            <SocialIcon href="https://linkedin.com/in/your-linkedin" target="_blank" rel="noopener noreferrer"
+                                        whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.9 }}
+                            >
+                                <FaLinkedin />
+                            </SocialIcon>
+                            <SocialIcon href="mailto:your.email@example.com"
+                                        whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.9 }}
+                            >
+                                <FaEnvelope />
+                            </SocialIcon>
+                        </SocialLinks>
+                    </GridElement>
+                </BottomGrid>
             </DashboardContainer>
         </BaseComponent>
     );
