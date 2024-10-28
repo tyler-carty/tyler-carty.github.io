@@ -660,17 +660,14 @@ const Portfolio = () => {
 
                         <div
                             ref={containerRef}
-                            className="h-screen overflow-hidden"
-                            style={{
-                                scrollSnapType: 'y mandatory',
-                                overscrollBehavior: 'none'
-                            }}
+                            className="h-screen overflow-hidden scroll-smooth snap-y snap-mandatory"
+                            style={{overscrollBehavior: 'none'}}
                             onWheel={handleWheel}
                         >
                             {PORTFOLIO_CHAPTERS.map((chapter, index) => (
                                 <div
                                     key={index}
-                                    className="snap-start h-screen"
+                                    className="h-screen snap-start"
                                 >
                                     <Chapter
                                         icon={chapter.icon}

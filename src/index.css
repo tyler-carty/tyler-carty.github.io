@@ -16,25 +16,28 @@
   }
 }
 
-/* Custom scrollbar styling */
-::-webkit-scrollbar {
-  width: 4px;
-  @screen md {
-    width: 8px;
-  }
+/* Base scroll behavior */
+html, body {
+  overflow: hidden;
+  height: 100%;
+  overscroll-behavior: none;
 }
 
-::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.1);
+/* Better font rendering */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  @apply text-base md:text-lg;
 }
 
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
+/* Hide scrollbars while maintaining functionality */
+* {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
+*::-webkit-scrollbar {
+  display: none;
 }
 
 /* Smooth scrolling - disable on mobile for better performance */
@@ -42,15 +45,6 @@
   html {
     scroll-behavior: smooth;
   }
-}
-
-/* Better font rendering */
-body {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  overflow: hidden;
-  overscroll-behavior: none;
-  @apply text-base md:text-lg;
 }
 
 /* Glass effect utility */
@@ -65,6 +59,11 @@ body {
 @media (hover: none) {
   .hover\:scale-105 {
     transform: none !important;
+  }
+
+  .h-screen {
+    height: 100vh;
+    height: -webkit-fill-available;
   }
 }
 
@@ -105,34 +104,8 @@ body {
   user-select: none;
 }
 
-/* Disable default scrolling */
-html, body {
-  overflow: hidden;
-  height: 100%;
-  overscroll-behavior-y: none;
-}
-
-/* For Chrome, Safari, and newer browsers */
-* {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;     /* Firefox */
-}
-
-/* For Webkit browsers */
-*::-webkit-scrollbar {
-  display: none;
-}
-
-/* Ensure smooth transitions */
+/* Snap scroll behavior */
 .snap-start {
   scroll-snap-align: start;
   scroll-snap-stop: always;
-}
-
-/* Touch device optimizations */
-@media (hover: none) {
-  .h-screen {
-    height: 100vh;
-    height: -webkit-fill-available;
-  }
 }
