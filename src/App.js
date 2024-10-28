@@ -6,7 +6,6 @@ const App = () => {
     return (
         <AnimatePresence mode="wait">
             <div className="min-h-screen bg-slate-900 font-sans antialiased">
-                {/* Initial page load animation */}
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -14,25 +13,24 @@ const App = () => {
                     transition={{ duration: 0.5 }}
                     className="relative"
                 >
-                    {/* Background gradient effect */}
+                    {/* Background Elements */}
                     <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900" />
-
-                    {/* Background grid pattern */}
                     <div
                         className="fixed inset-0 opacity-10"
                         style={{
                             backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
-                            backgroundSize: '32px 32px'
+                            backgroundSize: '24px 24px'
                         }}
                     />
 
-                    {/* Main content */}
+                    {/* Main Content */}
                     <main className="relative z-10">
                         <Portfolio />
                     </main>
 
-                    {/* Social links */}
-                    <footer className="fixed bottom-4 right-4 flex gap-4 z-50">
+                    {/* Social Links Footer */}
+                    <footer className="fixed bottom-4 right-4 flex gap-2 md:gap-4 z-50">
+                        {/* GitHub Link */}
                         <motion.a
                             href="https://github.com/tyler-carty"
                             target="_blank"
@@ -40,9 +38,10 @@ const App = () => {
                             className="p-2 rounded-full bg-slate-800/50 backdrop-blur-sm hover:bg-slate-700/50 transition-colors"
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
+                            aria-label="GitHub Profile"
                         >
                             <svg
-                                className="w-5 h-5"
+                                className="w-4 h-4 md:w-5 md:h-5"
                                 fill="currentColor"
                                 viewBox="0 0 24 24"
                                 aria-hidden="true"
@@ -54,6 +53,8 @@ const App = () => {
                                 />
                             </svg>
                         </motion.a>
+
+                        {/* LinkedIn Link */}
                         <motion.a
                             href="https://linkedin.com/in/tyler-cartwright"
                             target="_blank"
@@ -61,9 +62,10 @@ const App = () => {
                             className="p-2 rounded-full bg-slate-800/50 backdrop-blur-sm hover:bg-slate-700/50 transition-colors"
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
+                            aria-label="LinkedIn Profile"
                         >
                             <svg
-                                className="w-5 h-5"
+                                className="w-4 h-4 md:w-5 md:h-5"
                                 fill="currentColor"
                                 viewBox="0 0 24 24"
                                 aria-hidden="true"

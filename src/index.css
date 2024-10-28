@@ -2,9 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Base styles */
+:root {
+  --content-width: min(90vw, 1200px);
+  --header-height: 60px;
+}
+
+/* Better mobile touch handling */
+@media (max-width: 768px) {
+  html {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
 /* Custom scrollbar styling */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 4px;
+  @screen md {
+    width: 8px;
+  }
 }
 
 ::-webkit-scrollbar-track {
@@ -20,15 +37,20 @@
   background: rgba(255, 255, 255, 0.3);
 }
 
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
+/* Smooth scrolling - disable on mobile for better performance */
+@screen md {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 /* Better font rendering */
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+  overscroll-behavior: none;
+  @apply text-base md:text-lg;
 }
 
 /* Glass effect utility */
@@ -37,4 +59,48 @@ body {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Mobile touch optimization */
+@media (hover: none) {
+  .hover\:scale-105 {
+    transform: none !important;
+  }
+}
+
+/* Responsive text utilities */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-pretty {
+    text-wrap: pretty;
+  }
+}
+
+/* Custom animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Focus styles for better accessibility */
+:focus-visible {
+  outline: 2px solid theme('colors.blue.400');
+  outline-offset: 2px;
+}
+
+/* Prevent text selection on interactive elements */
+.no-select {
+  -webkit-user-select: none;
+  user-select: none;
 }

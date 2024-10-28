@@ -7,9 +7,67 @@ import {
     LineChart,
     Shield,
     Database,
-    ArrowLeft
+    ArrowLeft,
+    Menu
 } from 'lucide-react';
 
+// Mobile Navigation Menu Component
+const MobileNav = ({ chapters, currentChapter, onChapterSelect }) => {
+    const [isOpen, setIsOpen] = useState(false);
+
+    return (
+        <div className="lg:hidden">
+            <motion.button
+                className="fixed top-4 right-4 z-50 p-2 rounded-full bg-slate-800/50 backdrop-blur-sm"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => setIsOpen(!isOpen)}
+            >
+                <Menu className="w-6 h-6" />
+            </motion.button>
+
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div
+                        className="fixed inset-0 bg-slate-900/95 z-40 flex items-center justify-center"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                    >
+                        <motion.div
+                            className="w-full max-w-md p-4 space-y-4"
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                        >
+                            {chapters.map((chapter, index) => (
+                                <motion.button
+                                    key={index}
+                                    className={`w-full p-4 rounded-lg flex items-center gap-4 ${
+                                        currentChapter === index
+                                            ? 'bg-blue-500/20 text-blue-400'
+                                            : 'bg-slate-800/50'
+                                    }`}
+                                    whileHover={{ scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
+                                    onClick={() => {
+                                        onChapterSelect(index);
+                                        setIsOpen(false);
+                                    }}
+                                >
+                                    <chapter.icon className="w-6 h-6" />
+                                    <span className="text-lg font-medium">{chapter.title}</span>
+                                </motion.button>
+                            ))}
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
+    );
+};
+
+// Updated Chapter Component with Responsive Styles
 const Chapter = ({ children, icon: Icon, title, index, isActive, progress }) => {
     const bgColors = [
         'from-blue-500/20', 'from-green-500/20', 'from-purple-500/20',
@@ -18,26 +76,26 @@ const Chapter = ({ children, icon: Icon, title, index, isActive, progress }) => 
 
     return (
         <motion.div
-            className={`min-h-screen flex items-center justify-center p-8 bg-gradient-to-b ${bgColors[index]} to-slate-900`}
+            className={`min-h-screen flex items-center justify-center p-4 md:p-8 bg-gradient-to-b ${bgColors[index]} to-slate-900`}
             initial={{ opacity: 0 }}
             animate={{ opacity: isActive ? 1 : 0.3 }}
             transition={{ duration: 0.5 }}
         >
             <div className="max-w-4xl w-full">
                 <motion.div
-                    className="flex items-center gap-4 mb-8"
+                    className="flex items-center gap-4 mb-6 md:mb-8"
                     initial={{ x: -50, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ delay: 0.2 }}
                 >
-                    <div className={`w-16 h-16 rounded-full bg-white/10 flex items-center justify-center`}>
-                        <Icon className="w-8 h-8" />
+                    <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-white/10 flex items-center justify-center">
+                        <Icon className="w-6 h-6 md:w-8 md:h-8" />
                     </div>
-                    <h2 className="text-3xl font-bold">{title}</h2>
+                    <h2 className="text-2xl md:text-3xl font-bold">{title}</h2>
                 </motion.div>
 
                 <motion.div
-                    className="bg-slate-800/50 backdrop-blur-sm rounded-lg p-8"
+                    className="bg-slate-800/50 backdrop-blur-sm rounded-lg p-4 md:p-8"
                     initial={{ y: 50, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ delay: 0.4 }}
@@ -46,7 +104,7 @@ const Chapter = ({ children, icon: Icon, title, index, isActive, progress }) => 
                 </motion.div>
 
                 <motion.div
-                    className="h-1 bg-white/20 mt-8 rounded-full overflow-hidden"
+                    className="h-1 bg-white/20 mt-6 md:mt-8 rounded-full overflow-hidden"
                     initial={{ width: 0 }}
                     animate={{ width: '100%' }}
                     transition={{ duration: 0.8 }}
@@ -61,13 +119,14 @@ const Chapter = ({ children, icon: Icon, title, index, isActive, progress }) => 
     );
 };
 
+// Updated TechStack Component
 const TechStack = ({ technologies }) => {
     return (
-        <div className="flex flex-wrap gap-3 mt-4">
+        <div className="flex flex-wrap gap-2 md:gap-3 mt-4">
             {technologies.map((tech, index) => (
                 <motion.span
                     key={tech}
-                    className="px-3 py-1 bg-white/10 rounded-full text-sm"
+                    className="px-2 md:px-3 py-1 bg-white/10 rounded-full text-xs md:text-sm"
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ delay: index * 0.1 }}
@@ -115,45 +174,45 @@ const PORTFOLIO_CHAPTERS = [
                         </div>
                     </motion.div>
 
-                    {/* A-Levels Section */}
-                    <motion.div
-                        className="space-y-4"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.8 }}
-                    >
-                        <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-2xl font-bold text-green-400">A-Level Education</h3>
-                            <span className="text-sm text-white/70 bg-green-500/20 px-3 py-1 rounded-full">
-                                September 2018 - June 2020
-                            </span>
-                        </div>
-                        <div className="bg-slate-800/50 rounded-lg p-6 space-y-6">
-                            {/* Computer Science */}
-                            <div className="space-y-3">
-                                <div className="flex items-start justify-between">
-                                    <h4 className="text-xl font-semibold">Computer Science</h4>
-                                    <span className="text-lg font-bold text-green-400">A*</span>
-                                </div>
-                            </div>
+                    {/*/!* A-Levels Section *!/*/}
+                    {/*<motion.div*/}
+                    {/*    className="space-y-4"*/}
+                    {/*    initial={{ opacity: 0 }}*/}
+                    {/*    animate={{ opacity: 1 }}*/}
+                    {/*    transition={{ delay: 0.8 }}*/}
+                    {/*>*/}
+                    {/*    <div className="flex items-center justify-between mb-4">*/}
+                    {/*        <h3 className="text-2xl font-bold text-green-400">A-Level Education</h3>*/}
+                    {/*        <span className="text-sm text-white/70 bg-green-500/20 px-3 py-1 rounded-full">*/}
+                    {/*            September 2018 - June 2020*/}
+                    {/*        </span>*/}
+                    {/*    </div>*/}
+                    {/*    <div className="bg-slate-800/50 rounded-lg p-6 space-y-6">*/}
+                    {/*        /!* Computer Science *!/*/}
+                    {/*        <div className="space-y-3">*/}
+                    {/*            <div className="flex items-start justify-between">*/}
+                    {/*                <h4 className="text-xl font-semibold">Computer Science</h4>*/}
+                    {/*                <span className="text-lg font-bold text-green-400">A*</span>*/}
+                    {/*            </div>*/}
+                    {/*        </div>*/}
 
-                            {/* Mathematics */}
-                            <div className="space-y-3">
-                                <div className="flex items-start justify-between">
-                                    <h4 className="text-xl font-semibold">Mathematics</h4>
-                                    <span className="text-lg font-bold text-green-400">A*</span>
-                                </div>
-                            </div>
+                    {/*        /!* Mathematics *!/*/}
+                    {/*        <div className="space-y-3">*/}
+                    {/*            <div className="flex items-start justify-between">*/}
+                    {/*                <h4 className="text-xl font-semibold">Mathematics</h4>*/}
+                    {/*                <span className="text-lg font-bold text-green-400">A*</span>*/}
+                    {/*            </div>*/}
+                    {/*        </div>*/}
 
-                            {/* IT & Software Development */}
-                            <div className="space-y-3">
-                                <div className="flex items-start justify-between">
-                                    <h4 className="text-xl font-semibold">IT & Software Development</h4>
-                                    <span className="text-lg font-bold text-green-400">Distinction*</span>
-                                </div>
-                            </div>
-                        </div>
-                    </motion.div>
+                    {/*        /!* IT & Software Development *!/*/}
+                    {/*        <div className="space-y-3">*/}
+                    {/*            <div className="flex items-start justify-between">*/}
+                    {/*                <h4 className="text-xl font-semibold">IT & Software Development</h4>*/}
+                    {/*                <span className="text-lg font-bold text-green-400">Distinction*</span>*/}
+                    {/*            </div>*/}
+                    {/*        </div>*/}
+                    {/*    </div>*/}
+                    {/*</motion.div>*/}
                 </div>
             </>
         )
@@ -366,7 +425,7 @@ const PORTFOLIO_CHAPTERS = [
     }
 ];
 
-// NavigationDots component with hover functionality
+// Updated NavigationDots Component
 const NavigationDots = React.memo(({
                                        chapters,
                                        currentChapter,
@@ -375,7 +434,7 @@ const NavigationDots = React.memo(({
                                    }) => {
     return (
         <motion.div
-            className="fixed left-8 top-1/2 -translate-y-1/2 flex flex-col gap-4 z-50"
+            className="fixed left-2 md:left-8 top-1/2 -translate-y-1/2 flex flex-col gap-3 md:gap-4 z-50 hidden lg:flex"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5 }}
@@ -383,7 +442,7 @@ const NavigationDots = React.memo(({
             {chapters.map((chapter, index) => (
                 <div key={index} className="relative">
                     <motion.button
-                        className={`w-3 h-3 rounded-full transition-all duration-300 relative z-10
+                        className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-300 relative z-10
                             ${currentChapter === index
                             ? 'bg-white scale-125'
                             : index < currentChapter
@@ -518,18 +577,18 @@ const Portfolio = () => {
             <AnimatePresence>
                 {!isExploring ? (
                     <motion.div
-                        className="h-screen flex flex-col items-center justify-center p-8 text-center"
+                        className="h-screen flex flex-col items-center justify-center p-4 md:p-8 text-center"
                         exit={{ opacity: 0, scale: 0.8 }}
                     >
                         <motion.h1
-                            className="text-6xl font-bold mb-6"
+                            className="text-4xl md:text-6xl font-bold mb-4 md:mb-6"
                             initial={{ y: 50, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                         >
                             Tyler Cartwright
                         </motion.h1>
                         <motion.h2
-                            className="text-2xl text-blue-400 mb-8"
+                            className="text-xl md:text-2xl text-blue-400 mb-6 md:mb-8"
                             initial={{ y: 50, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             transition={{ delay: 0.2 }}
@@ -537,7 +596,7 @@ const Portfolio = () => {
                             Software Engineer | Data Scientist | ML Engineer
                         </motion.h2>
                         <motion.button
-                            className="px-8 py-4 bg-blue-500 rounded-full text-lg font-semibold hover:bg-blue-600 transition-colors"
+                            className="px-6 md:px-8 py-3 md:py-4 bg-blue-500 rounded-full text-base md:text-lg font-semibold hover:bg-blue-600 transition-colors"
                             initial={{ y: 50, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             transition={{ delay: 0.4 }}
@@ -560,14 +619,16 @@ const Portfolio = () => {
                             <ArrowLeft className="w-5 h-5"/>
                         </motion.button>
 
+                        <MobileNav
+                            chapters={PORTFOLIO_CHAPTERS}
+                            currentChapter={currentChapter}
+                            onChapterSelect={scrollToChapter}
+                        />
+
                         <NavigationDots
                             chapters={PORTFOLIO_CHAPTERS}
                             currentChapter={currentChapter}
-                            onDotClick={(index) => {
-                                if (!isNavigating) {
-                                    scrollToChapter(index);
-                                }
-                            }}
+                            onDotClick={scrollToChapter}
                             onHoverChange={setHoveredChapter}
                         />
 
