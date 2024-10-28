@@ -56,7 +56,7 @@ const App = () => {
 
                         {/* LinkedIn Link */}
                         <motion.a
-                            href="https://linkedin.com/in/tyler-cartwright"
+                            href="https://linkedin.com/in/tyler-reece-cartwright"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="p-2 rounded-full bg-slate-800/50 backdrop-blur-sm hover:bg-slate-700/50 transition-colors"
