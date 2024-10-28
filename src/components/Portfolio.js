@@ -200,7 +200,7 @@ const PORTFOLIO_CHAPTERS = [
                         transition={{ delay: 0.6 }}
                     >
                         <h4 className="text-xl text-blue-400">Full Stack Engineer</h4>
-                        <p>Modernizing legacy applications and building new customer journeys</p>
+                        <p>Modernising legacy applications and building new customer journeys</p>
                         <TechStack technologies={["React", "C#", ".NET", "Azure", "RESTful APIs"]} />
                     </motion.div>
                 </div>
@@ -278,7 +278,7 @@ const PORTFOLIO_CHAPTERS = [
                         transition={{ delay: 0.4 }}
                     >
                         <h4 className="text-xl text-yellow-400">From Posts to Profits</h4>
-                        <p>Analyzing social media's impact on stock markets</p>
+                        <p>Analysing social media's impact on stock markets</p>
                         <TechStack technologies={[
                             "Python", "FinBERT", "MemeBERT",
                             "Sentiment Analysis", "Financial Analysis"
@@ -481,12 +481,12 @@ const Portfolio = () => {
         const newChapter = Math.round(scrollPosition / chapterHeight);
 
         if (newChapter !== currentChapter && newChapter >= 0 && newChapter < PORTFOLIO_CHAPTERS.length) {
-            // Use scrollToChapter to ensure synchronized navigation
+            // Use scrollToChapter to ensure synchronised navigation
             scrollToChapter(newChapter);
         }
     }, [currentChapter, isNavigating, scrollToChapter]);
 
-    // Initialize when exploration starts
+    // Initialise when exploration starts
     useEffect(() => {
         if (isExploring) {
             setCurrentChapter(0);
