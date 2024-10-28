@@ -148,9 +148,9 @@ const PORTFOLIO_CHAPTERS = [
                 <div className="space-y-8">
                     <motion.div
                         className="space-y-4"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.6 }}
+                        initial={{opacity: 0}}
+                        animate={{opacity: 1}}
+                        transition={{delay: 0.6}}
                     >
                         <div className="flex items-center justify-between mb-4">
                             <h3 className="text-2xl font-bold text-blue-400">University Education</h3>
@@ -158,7 +158,8 @@ const PORTFOLIO_CHAPTERS = [
                                 September 2020 - July 2024
                             </span>
                         </div>
-                        <div className="bg-slate-800/50 rounded-lg p-6 space-y-4">
+                        <div className="bg-slate-800/50 rounded-lg p-6 space-y-6">
+                            {/* Degree Information */}
                             <div className="flex items-start justify-between">
                                 <div>
                                     <h4 className="text-xl font-semibold">BSc Computer Science</h4>
@@ -166,11 +167,32 @@ const PORTFOLIO_CHAPTERS = [
                                 </div>
                                 <span className="text-lg font-bold text-blue-400">First Class Honours</span>
                             </div>
-                            <TechStack technologies={[
-                                "Data Science",
-                                "Machine Learning",
-                                "Software Engineering"
-                            ]} />
+
+                            {/* Dean's Awards */}
+                            <div className="space-y-3">
+                                <motion.div
+                                    className="p-3 bg-white/5 rounded-lg"
+                                    initial={{scale: 0.95, opacity: 0}}
+                                    animate={{scale: 1, opacity: 1}}
+                                    transition={{delay: 0.7}}
+                                >
+                                    <div className="flex items-center justify-between mb-1">
+                                        <span className="font-medium">Dean's Award for Academic Excellence</span>
+                                        <span className="text-sm text-blue-400">2020-2024</span>
+                                    </div>
+                                    <p className="text-sm text-white/70">Achieved in all three years of study</p>
+                                </motion.div>
+                            </div>
+
+                            {/* Technologies */}
+                            <div>
+                                <h5 className="text-lg font-semibold text-blue-400 mb-2">Key Focus Areas</h5>
+                                <TechStack technologies={[
+                                    "Data Science",
+                                    "Machine Learning",
+                                    "Software Engineering"
+                                ]}/>
+                            </div>
                         </div>
                     </motion.div>
 
@@ -226,16 +248,16 @@ const PORTFOLIO_CHAPTERS = [
                     <div className="flex items-center justify-between mb-4">
                         <motion.h3
                             className="text-2xl font-bold"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
+                            initial={{opacity: 0}}
+                            animate={{opacity: 1}}
                         >
                             Lloyds Banking Group - Placement Year
                         </motion.h3>
                         <motion.span
                             className="text-sm text-white/70 bg-blue-500/20 px-3 py-1 rounded-full"
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.3 }}
+                            initial={{opacity: 0, x: 20}}
+                            animate={{opacity: 1, x: 0}}
+                            transition={{delay: 0.3}}
                         >
                             June 2022 - September 2023
                         </motion.span>
@@ -434,7 +456,7 @@ const NavigationDots = React.memo(({
                                    }) => {
     return (
         <motion.div
-            className="fixed left-2 md:left-8 top-1/2 -translate-y-1/2 flex flex-col gap-3 md:gap-4 z-50 hidden lg:flex"
+            className="fixed left-2 md:left-8 top-1/2 -translate-y-1/2 flex flex-col gap-3 md:gap-4 z-50 lg:flex"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5 }}
