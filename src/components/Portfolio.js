@@ -10,7 +10,7 @@ import {
     ArrowLeft
 } from 'lucide-react';
 
-const Chapter = ({ children, icon: Icon, title, description, index, isActive, progress }) => {
+const Chapter = ({ children, icon: Icon, title, index, isActive, progress }) => {
     const bgColors = [
         'from-blue-500/20', 'from-green-500/20', 'from-purple-500/20',
         'from-yellow-500/20', 'from-red-500/20', 'from-indigo-500/20'
@@ -110,10 +110,7 @@ const PORTFOLIO_CHAPTERS = [
                             <TechStack technologies={[
                                 "Data Science",
                                 "Machine Learning",
-                                "Software Engineering",
-                                "Web Development",
-                                "Networking",
-                                "Databases"
+                                "Software Engineering"
                             ]} />
                         </div>
                     </motion.div>
@@ -374,7 +371,7 @@ const NavigationDots = React.memo(({
                                        chapters,
                                        currentChapter,
                                        onDotClick,
-                                       onHoverChange  // New prop for handling hover
+                                       onHoverChange
                                    }) => {
     return (
         <motion.div
@@ -384,19 +381,34 @@ const NavigationDots = React.memo(({
             transition={{ delay: 0.5 }}
         >
             {chapters.map((chapter, index) => (
-                <motion.button
-                    key={index}
-                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                        currentChapter === index
+                <div key={index} className="relative">
+                    <motion.button
+                        className={`w-3 h-3 rounded-full transition-all duration-300 relative z-10
+                            ${currentChapter === index
                             ? 'bg-white scale-125'
-                            : 'bg-white/30 hover:bg-white/50'
-                    }`}
-                    onClick={() => onDotClick(index)}
-                    onMouseEnter={() => onHoverChange(index)}
-                    onMouseLeave={() => onHoverChange(null)}
-                    whileHover={{ scale: 1.2 }}
-                    whileTap={{ scale: 0.9 }}
-                />
+                            : index < currentChapter
+                                ? 'bg-white/70 hover:bg-white'
+                                : 'bg-white/30 hover:bg-white/50'
+                        }`}
+                        onClick={() => onDotClick(index)}
+                        onMouseEnter={() => onHoverChange(index)}
+                        onMouseLeave={() => onHoverChange(null)}
+                        whileHover={{ scale: 1.2 }}
+                        whileTap={{ scale: 0.9 }}
+                    />
+                    {currentChapter === index && (
+                        <motion.div
+                            className="absolute inset-0 rounded-full bg-white/30"
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1.5 }}
+                            transition={{
+                                duration: 0.5,
+                                repeat: Infinity,
+                                repeatType: "reverse"
+                            }}
+                        />
+                    )}
+                </div>
             ))}
         </motion.div>
     );
@@ -562,7 +574,7 @@ const Portfolio = () => {
                         {hoveredChapter !== null && (
                             <ChapterPreview
                                 chapter={PORTFOLIO_CHAPTERS[hoveredChapter]}
-                                isVisible={hoveredChapter !== null}
+                                isVisible={true}
                             />
                         )}
 
