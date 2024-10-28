@@ -1,64 +1,147 @@
-# Tyler Cartwright's Interactive Portfolio
+# Tyler Cartwright Portfolio
 
-## Overview
+A React-based portfolio website showcasing my journey through education and professional experience in software engineering and data science.
 
-This project is an interactive, web-based portfolio for Tyler Cartwright, designed to showcase professional skills, experiences, and projects in a unique and engaging way. The portfolio is themed as a financial dashboard, presenting career achievements and skills as financial assets.
+## 🚀 Live Site
+[tylercartwright.co.uk](https://tylercartwright.co.uk)
 
-## Features
-
-1. **Interactive Login Screen**
-    - Animated typing effect for username and password
-
-2. **Guided Tour**
-    - Step-by-step introduction to portfolio sections
-    - Highlights key areas with informative descriptions
-    - Smooth animations and transitions between tour steps
-
-3. **Dashboard**
-    - Overview of skills, experiences, and recent projects
-    - Interactive charts and visualisations
-    - Quick-view statistics of professional achievements
-
-4. **Project Investments**
-    - Detailed view of significant projects
-    - Interactive elements to showcase project impacts and technologies used
-
-5. **Experience Trading Floor**
-    - Timeline representation of career history
-    - Detailed information about each role and its contributions
-
-6. **Learning Futures**
-    - Visualisation of ongoing learning and skill development
-    - Projections for future skill growth
-
-7. **Contact Trading Desk**
-    - Interactive contact form styled as a trading desk interface
-
-## Technology Stack
-
+## 🛠️ Built With
 - React
-- styled-components for styling
-- framer-motion for animations
-- recharts for data visualisation
+- Tailwind CSS
+- Framer Motion
+- Lucide React Icons
 
-## Setup and Installation
+## 🔄 Development Workflow
 
-1. Clone the repository
-2. Run `npm install` to install dependencies
-3. Use `npm start` to run the development server
+### Initial Setup
+```bash
+# Clone the repository
+git clone https://github.com/tyler-carty/tyler-carty.github.io.git
+cd tyler-carty.github.io
 
-## Contributing
+# Install dependencies
+npm install
+```
 
-While this is a personal portfolio project, suggestions and feedback are welcome. Please open an issue to discuss any changes you'd like to propose.
+### Making Changes
 
-## Future Enhancements
+1. Create a new feature branch:
+```bash
+# From main branch
+git checkout main
+git pull origin main
+git checkout -b feature/your-feature-name
+```
 
-- Implement more interactive elements within each main component
-- Add subtle sound effects to enhance user experience
-- Create more detailed views for projects and experiences
-- Implement a theme toggler for light/dark modes
-- Enhance accessibility features
+2. Make your changes and test locally:
+```bash
+npm start
+```
 
-## License
+3. Commit your changes:
+```bash
+git add .
+git commit -m "Description of your changes"
+git push origin feature/your-feature-name
+```
 
-This project is licensed under the MIT License.
+### Deployment Process
+
+1. Before deploying, ensure your changes are working locally:
+```bash
+npm start
+```
+
+2. Create a production build and deploy:
+```bash
+npm run deploy
+```
+This command will:
+- Build your React app
+- Push the build to the gh-pages branch
+- Deploy to GitHub Pages
+
+3. Merge your feature branch to main:
+```bash
+git checkout main
+git pull origin main
+git merge feature/your-feature-name
+git push origin main
+```
+
+### Important Notes
+
+#### Custom Domain
+- The CNAME file in the `public` folder maintains the custom domain configuration
+- Don't modify or delete the CNAME file unless changing domains
+- Content: `tylercartwright.co.uk`
+
+#### Branch Structure
+- `main`: Source code and development
+- `gh-pages`: Automated deployment branch (don't modify directly)
+- Feature branches: For new developments
+
+#### GitHub Pages Settings
+- Deploy from: gh-pages branch
+- Custom domain: tylercartwright.co.uk
+- Enforce HTTPS: Enabled
+
+## 📂 Project Structure
+
+```
+src/
+├── components/
+│   └── Portfolio.js       # Main portfolio component
+├── App.js                 # Root component
+└── index.js              # Entry point
+```
+
+## 🔧 Making Common Changes
+
+### Adding a New Section
+1. In `Portfolio.js`, locate the `PORTFOLIO_CHAPTERS` array
+2. Add a new chapter object following the existing pattern:
+```javascript
+{
+    title: "Your New Section",
+    icon: YourIcon,
+    content: (
+        <>
+            {/* Your content here */}
+        </>
+    )
+}
+```
+
+### Updating Content
+1. Find the relevant section in `PORTFOLIO_CHAPTERS`
+2. Update the content within the JSX
+3. Test locally with `npm start`
+4. Deploy using the deployment process above
+
+### Styling Changes
+- Global styles: Modify `src/index.css`
+- Component styles: Update Tailwind classes in respective components
+
+## 🚨 Troubleshooting
+
+### Deployment Issues
+1. Check GitHub Pages settings in repository
+2. Verify CNAME file exists in public folder
+3. Ensure gh-pages branch was updated
+4. Check build output for errors
+
+### Local Development Issues
+1. Clear npm cache: `npm cache clean --force`
+2. Delete node_modules: `rm -rf node_modules`
+3. Reinstall dependencies: `npm install`
+
+## 📝 Version History
+- v1.0: Original static HTML portfolio
+- v2.0: React-based interactive portfolio
+
+## 🤝 Contributing
+Personal portfolio project - not open for contributions.
+
+## 📄 License
+This project is private and not licensed for public use.
