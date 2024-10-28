@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Portfolio from './components/Portfolio';
+import { Download } from 'lucide-react';
 
 const App = () => {
     return (
@@ -30,6 +31,17 @@ const App = () => {
 
                     {/* Social Links Footer */}
                     <footer className="fixed bottom-4 right-4 flex gap-2 md:gap-4 z-50">
+                        {/* Resume Download Button */}
+                        <motion.a
+                            href="/resume.pdf"
+                            download="tyler-cartwright-resume.pdf"
+                            className="p-2 rounded-full bg-slate-800/50 backdrop-blur-sm hover:bg-slate-700/50 transition-colors"
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            aria-label="Download Resume"
+                        >
+                            <Download className="w-4 h-4 md:w-5 md:h-5" />
+                        </motion.a>
                         {/* GitHub Link */}
                         <motion.a
                             href="https://github.com/tyler-carty"
