@@ -79,32 +79,85 @@ const TechStack = ({ technologies }) => {
     );
 };
 
-const PORTFOLIO_CHAPTERS  = [
+const PORTFOLIO_CHAPTERS = [
     {
         title: "The Foundation",
         icon: Book,
         content: (
             <>
-                <motion.h3
-                    className="text-2xl mb-4"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.6 }}
-                >
-                    Academic Excellence
-                </motion.h3>
-                <motion.div
-                    className="space-y-4"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.8 }}
-                >
-                    <p className="text-lg">BSc Computer Science (First Class Honours)</p>
-                    <TechStack technologies={[
-                        "Computer Science A*", "Mathematics A*",
-                        "IT & Software Development Distinction*"
-                    ]} />
-                </motion.div>
+                {/* University Section */}
+                <div className="space-y-8">
+                    <motion.div
+                        className="space-y-4"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.6 }}
+                    >
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-2xl font-bold text-blue-400">University Education</h3>
+                            <span className="text-sm text-white/70 bg-blue-500/20 px-3 py-1 rounded-full">
+                                September 2020 - July 2024
+                            </span>
+                        </div>
+                        <div className="bg-slate-800/50 rounded-lg p-6 space-y-4">
+                            <div className="flex items-start justify-between">
+                                <div>
+                                    <h4 className="text-xl font-semibold">BSc Computer Science</h4>
+                                    <p className="text-white/70">University of Derby</p>
+                                </div>
+                                <span className="text-lg font-bold text-blue-400">First Class Honours</span>
+                            </div>
+                            <TechStack technologies={[
+                                "Data Science",
+                                "Machine Learning",
+                                "Software Engineering",
+                                "Web Development",
+                                "Networking",
+                                "Databases"
+                            ]} />
+                        </div>
+                    </motion.div>
+
+                    {/* A-Levels Section */}
+                    <motion.div
+                        className="space-y-4"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.8 }}
+                    >
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-2xl font-bold text-green-400">A-Level Education</h3>
+                            <span className="text-sm text-white/70 bg-green-500/20 px-3 py-1 rounded-full">
+                                September 2018 - June 2020
+                            </span>
+                        </div>
+                        <div className="bg-slate-800/50 rounded-lg p-6 space-y-6">
+                            {/* Computer Science */}
+                            <div className="space-y-3">
+                                <div className="flex items-start justify-between">
+                                    <h4 className="text-xl font-semibold">Computer Science</h4>
+                                    <span className="text-lg font-bold text-green-400">A*</span>
+                                </div>
+                            </div>
+
+                            {/* Mathematics */}
+                            <div className="space-y-3">
+                                <div className="flex items-start justify-between">
+                                    <h4 className="text-xl font-semibold">Mathematics</h4>
+                                    <span className="text-lg font-bold text-green-400">A*</span>
+                                </div>
+                            </div>
+
+                            {/* IT & Software Development */}
+                            <div className="space-y-3">
+                                <div className="flex items-start justify-between">
+                                    <h4 className="text-xl font-semibold">IT & Software Development</h4>
+                                    <span className="text-lg font-bold text-green-400">Distinction*</span>
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
             </>
         )
     },
@@ -113,14 +166,25 @@ const PORTFOLIO_CHAPTERS  = [
         icon: Briefcase,
         content: (
             <>
-                <motion.h3
-                    className="text-2xl mb-4"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                >
-                    Lloyds Banking Group Internship
-                </motion.h3>
                 <div className="space-y-6">
+                    <div className="flex items-center justify-between mb-4">
+                        <motion.h3
+                            className="text-2xl font-bold"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                        >
+                            Lloyds Banking Group - Placement Year
+                        </motion.h3>
+                        <motion.span
+                            className="text-sm text-white/70 bg-blue-500/20 px-3 py-1 rounded-full"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.3 }}
+                        >
+                            June 2022 - September 2023
+                        </motion.span>
+                    </div>
+
                     <motion.div
                         className="space-y-2"
                         initial={{ x: -50, opacity: 0 }}
@@ -139,7 +203,7 @@ const PORTFOLIO_CHAPTERS  = [
                         transition={{ delay: 0.6 }}
                     >
                         <h4 className="text-xl text-blue-400">Full Stack Engineer</h4>
-                        <p>Modernizing legacy applications and building new features</p>
+                        <p>Modernizing legacy applications and building new customer journeys</p>
                         <TechStack technologies={["React", "C#", ".NET", "Azure", "RESTful APIs"]} />
                     </motion.div>
                 </div>
@@ -151,25 +215,38 @@ const PORTFOLIO_CHAPTERS  = [
         icon: Database,
         content: (
             <>
-                <motion.h3
-                    className="text-2xl mb-4"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                >
-                    Hodsock Priory Management System
-                </motion.h3>
-                <motion.div
-                    className="space-y-4"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.4 }}
-                >
-                    <p>Transformed venue management processes through custom software</p>
-                    <TechStack technologies={[
-                        "React", "Node.js", "Express", "MongoDB",
-                        "System Architecture", "Project Management"
-                    ]} />
-                </motion.div>
+                <div className="space-y-6">
+                    <div className="flex items-center justify-between mb-4">
+                        <motion.h3
+                            className="text-2xl font-bold"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                        >
+                            Hodsock Priory Staff Management System
+                        </motion.h3>
+                        <motion.span
+                            className="text-sm text-white/70 bg-purple-500/20 px-3 py-1 rounded-full"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.3 }}
+                        >
+                            June 2024 - September 2024
+                        </motion.span>
+                    </div>
+
+                    <motion.div
+                        className="space-y-4"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.4 }}
+                    >
+                        <p>Transformed venue management processes through custom software</p>
+                        <TechStack technologies={[
+                            "React", "Node.js", "Express", "MongoDB",
+                            "System Architecture", "Project Management"
+                        ]} />
+                    </motion.div>
+                </div>
             </>
         )
     },
@@ -179,6 +256,24 @@ const PORTFOLIO_CHAPTERS  = [
         content: (
             <>
                 <div className="space-y-8">
+                    <div className="flex items-center justify-between mb-4">
+                        <motion.h3
+                            className="text-2xl font-bold text-yellow-400"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                        >
+                            University Research Projects
+                        </motion.h3>
+                        <motion.span
+                            className="text-sm text-white/70 bg-yellow-500/20 px-3 py-1 rounded-full"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.3 }}
+                        >
+                            2020 - 2024
+                        </motion.span>
+                    </div>
+
                     <motion.div
                         className="space-y-2"
                         initial={{ x: -50, opacity: 0 }}
@@ -215,25 +310,38 @@ const PORTFOLIO_CHAPTERS  = [
         icon: Shield,
         content: (
             <>
-                <motion.h3
-                    className="text-2xl mb-4"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                >
-                    Data Engineer @ Lloyds Banking Group
-                </motion.h3>
-                <motion.div
-                    className="space-y-4"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.4 }}
-                >
-                    <p>Transforming banking data into actionable insights for crime prevention</p>
-                    <TechStack technologies={[
-                        "Google Cloud Platform", "BigQuery", "Python",
-                        "Java", "Data Engineering", "Machine Learning"
-                    ]} />
-                </motion.div>
+                <div className="space-y-6">
+                    <div className="flex items-center justify-between mb-4">
+                        <motion.h3
+                            className="text-2xl font-bold"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                        >
+                            Data Engineer @ Lloyds Banking Group
+                        </motion.h3>
+                        <motion.span
+                            className="text-sm text-white/70 bg-red-500/20 px-3 py-1 rounded-full"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.3 }}
+                        >
+                            September 2024 - Present
+                        </motion.span>
+                    </div>
+
+                    <motion.div
+                        className="space-y-4"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.4 }}
+                    >
+                        <p>Transforming banking data into actionable insights for crime prevention</p>
+                        <TechStack technologies={[
+                            "Google Cloud Platform", "BigQuery", "Python",
+                            "Java", "Data Engineering", "Machine Learning"
+                        ]} />
+                    </motion.div>
+                </div>
             </>
         )
     },
@@ -311,13 +419,13 @@ const Portfolio = () => {
     const [currentChapter, setCurrentChapter] = useState(0);
     const [isExploring, setIsExploring] = useState(false);
     const [hoveredChapter, setHoveredChapter] = useState(null);
-    const [isScrolling, setIsScrolling] = useState(false);
+    const [isNavigating, setIsNavigating] = useState(false);
     const containerRef = useRef(null);
     const lastScrollTime = useRef(0);
 
     const scrollToChapter = React.useCallback((index) => {
-        if (index >= 0 && index < PORTFOLIO_CHAPTERS.length && !isScrolling) {
-            setIsScrolling(true);
+        if (index >= 0 && index < PORTFOLIO_CHAPTERS.length && !isNavigating) {
+            setIsNavigating(true);
             setCurrentChapter(index);
 
             const element = containerRef.current;
@@ -329,18 +437,16 @@ const Portfolio = () => {
                 });
             }
 
+            // Wait for animation to complete before allowing new navigation
             setTimeout(() => {
-                setIsScrolling(false);
+                setIsNavigating(false);
                 lastScrollTime.current = Date.now();
             }, 700);
         }
-    }, [isScrolling]); // Removed PORTFOLIO_CHAPTERS.length from dependencies
+    }, [isNavigating]);
 
     const handleKeyNavigation = React.useCallback((e) => {
-        if (!isExploring) return;
-
-        const now = Date.now();
-        if (now - lastScrollTime.current < 700) return;
+        if (!isExploring || isNavigating) return;
 
         if (e.key === 'ArrowUp' && currentChapter > 0) {
             e.preventDefault();
@@ -349,24 +455,24 @@ const Portfolio = () => {
             e.preventDefault();
             scrollToChapter(currentChapter + 1);
         }
-    }, [isExploring, currentChapter, scrollToChapter]); // Removed PORTFOLIO_CHAPTERS.length
+    }, [isExploring, currentChapter, scrollToChapter, isNavigating]);
 
     const handleScroll = React.useCallback(() => {
-        const element = containerRef.current;
-        if (!element || isScrolling) return;
+        // Disable manual scroll handling when we're programmatically navigating
+        if (isNavigating) return;
 
-        const now = Date.now();
-        if (now - lastScrollTime.current < 700) return;
+        const element = containerRef.current;
+        if (!element) return;
 
         const scrollPosition = element.scrollTop;
         const chapterHeight = element.clientHeight;
         const newChapter = Math.round(scrollPosition / chapterHeight);
 
         if (newChapter !== currentChapter && newChapter >= 0 && newChapter < PORTFOLIO_CHAPTERS.length) {
-            setCurrentChapter(newChapter);
-            lastScrollTime.current = now;
+            // Use scrollToChapter to ensure synchronized navigation
+            scrollToChapter(newChapter);
         }
-    }, [isScrolling, currentChapter]); // Removed PORTFOLIO_CHAPTERS.length
+    }, [currentChapter, isNavigating, scrollToChapter]);
 
     // Initialize when exploration starts
     useEffect(() => {
@@ -446,7 +552,7 @@ const Portfolio = () => {
                             chapters={PORTFOLIO_CHAPTERS}
                             currentChapter={currentChapter}
                             onDotClick={(index) => {
-                                if (!isScrolling) {
+                                if (!isNavigating) {
                                     scrollToChapter(index);
                                 }
                             }}
@@ -464,20 +570,12 @@ const Portfolio = () => {
                             ref={containerRef}
                             className="h-screen overflow-y-auto snap-y snap-mandatory"
                             onWheel={(e) => {
-                                // Prevent any action if already scrolling
-                                if (isScrolling) {
-                                    e.preventDefault();
-                                    return;
-                                }
-
-                                // Check the time since last scroll
-                                const now = Date.now();
-                                if (now - lastScrollTime.current < 700) {
-                                    e.preventDefault();
-                                    return;
-                                }
-
+                                // Always prevent default scroll
                                 e.preventDefault();
+
+                                // Don't handle new scrolls during navigation
+                                if (isNavigating) return;
+
                                 if (e.deltaY > 0 && currentChapter < PORTFOLIO_CHAPTERS.length - 1) {
                                     scrollToChapter(currentChapter + 1);
                                 } else if (e.deltaY < 0 && currentChapter > 0) {
@@ -494,7 +592,7 @@ const Portfolio = () => {
                                         isActive={currentChapter === index}
                                         progress={index <= currentChapter ? 1 : 0}
                                     >
-                                        {chapter.content}
+                                        {chapter.content} {/* Remove the () here */}
                                     </Chapter>
                                 </div>
                             ))}
