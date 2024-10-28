@@ -8,7 +8,8 @@ import {
     Shield,
     Database,
     ArrowLeft,
-    Menu
+    Menu,
+    ExternalLink
 } from 'lucide-react';
 
 // Mobile Navigation Menu Component
@@ -353,12 +354,25 @@ const PORTFOLIO_CHAPTERS = [
                     </div>
 
                     <motion.div
-                        className="space-y-2"
+                        className="space-y-4"
                         initial={{ x: -50, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
                         transition={{ delay: 0.4 }}
                     >
-                        <h4 className="text-xl text-yellow-400">From Posts to Profits</h4>
+                        <div className="flex items-start justify-between">
+                            <h4 className="text-xl text-yellow-400">From Posts to Profits</h4>
+                            <motion.a
+                                href="https://github.com/tyler-carty/social-media-sentiment/blob/main/sentiment_analysis.ipynb"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                            >
+                                <span className="text-sm">View Code</span>
+                                <ExternalLink className="w-4 h-4" />
+                            </motion.a>
+                        </div>
                         <p>Analysing social media's impact on stock markets</p>
                         <TechStack technologies={[
                             "Python", "FinBERT", "MemeBERT",
@@ -367,12 +381,25 @@ const PORTFOLIO_CHAPTERS = [
                     </motion.div>
 
                     <motion.div
-                        className="space-y-2"
+                        className="space-y-4"
                         initial={{ x: -50, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
                         transition={{ delay: 0.6 }}
                     >
-                        <h4 className="text-xl text-yellow-400">Healthcare ML Innovation</h4>
+                        <div className="flex items-start justify-between">
+                            <h4 className="text-xl text-yellow-400">Healthcare ML Innovation</h4>
+                            <motion.a
+                                href="https://github.com/tyler-carty/pneumonia-ml-xai/blob/main/Pneumonia%20Prediction%20with%20ML%20and%20XAI.ipynb"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                            >
+                                <span className="text-sm">View Code</span>
+                                <ExternalLink className="w-4 h-4" />
+                            </motion.a>
+                        </div>
                         <p>90% accurate pneumonia detection with explainable AI</p>
                         <TechStack technologies={[
                             "Neural Networks", "Computer Vision",
