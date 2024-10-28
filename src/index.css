@@ -104,3 +104,35 @@ body {
   -webkit-user-select: none;
   user-select: none;
 }
+
+/* Disable default scrolling */
+html, body {
+  overflow: hidden;
+  height: 100%;
+  overscroll-behavior-y: none;
+}
+
+/* For Chrome, Safari, and newer browsers */
+* {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+/* For Webkit browsers */
+*::-webkit-scrollbar {
+  display: none;
+}
+
+/* Ensure smooth transitions */
+.snap-start {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+/* Touch device optimizations */
+@media (hover: none) {
+  .h-screen {
+    height: 100vh;
+    height: -webkit-fill-available;
+  }
+}

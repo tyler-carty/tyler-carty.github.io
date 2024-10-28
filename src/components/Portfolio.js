@@ -512,13 +512,13 @@ const Portfolio = () => {
     const [currentChapter, setCurrentChapter] = useState(0);
     const [isExploring, setIsExploring] = useState(false);
     const [hoveredChapter, setHoveredChapter] = useState(null);
-    const [isNavigating, setIsNavigating] = useState(false);
     const containerRef = useRef(null);
-    const lastScrollTime = useRef(0);
+    const isScrolling = useRef(false);
+    const scrollTimeout = useRef(null);
 
     const scrollToChapter = React.useCallback((index) => {
-        if (index >= 0 && index < PORTFOLIO_CHAPTERS.length && !isNavigating) {
-            setIsNavigating(true);
+        if (index >= 0 && index < PORTFOLIO_CHAPTERS.length && !isScrolling.current) {
+            isScrolling.current = true;
             setCurrentChapter(index);
 
             const element = containerRef.current;
@@ -530,16 +530,18 @@ const Portfolio = () => {
                 });
             }
 
-            // Wait for animation to complete before allowing new navigation
-            setTimeout(() => {
-                setIsNavigating(false);
-                lastScrollTime.current = Date.now();
-            }, 700);
+            // Reset scrolling state after animation
+            if (scrollTimeout.current) {
+                clearTimeout(scrollTimeout.current);
+            }
+            scrollTimeout.current = setTimeout(() => {
+                isScrolling.current = false;
+            }, 700); // Match this with your transition duration
         }
-    }, [isNavigating]);
+    }, []);
 
     const handleKeyNavigation = React.useCallback((e) => {
-        if (!isExploring || isNavigating) return;
+        if (!isExploring || isScrolling.current) return;
 
         if (e.key === 'ArrowUp' && currentChapter > 0) {
             e.preventDefault();
@@ -548,34 +550,19 @@ const Portfolio = () => {
             e.preventDefault();
             scrollToChapter(currentChapter + 1);
         }
-    }, [isExploring, currentChapter, scrollToChapter, isNavigating]);
+    }, [isExploring, currentChapter, scrollToChapter]);
 
-    const handleScroll = React.useCallback(() => {
-        // Disable manual scroll handling when we're programmatically navigating
-        if (isNavigating) return;
+    const handleWheel = React.useCallback((e) => {
+        e.preventDefault();
 
-        const element = containerRef.current;
-        if (!element) return;
+        if (isScrolling.current) return;
 
-        const scrollPosition = element.scrollTop;
-        const chapterHeight = element.clientHeight;
-        const newChapter = Math.round(scrollPosition / chapterHeight);
-
-        if (newChapter !== currentChapter && newChapter >= 0 && newChapter < PORTFOLIO_CHAPTERS.length) {
-            // Use scrollToChapter to ensure synchronised navigation
-            scrollToChapter(newChapter);
+        if (e.deltaY > 0 && currentChapter < PORTFOLIO_CHAPTERS.length - 1) {
+            scrollToChapter(currentChapter + 1);
+        } else if (e.deltaY < 0 && currentChapter > 0) {
+            scrollToChapter(currentChapter - 1);
         }
-    }, [currentChapter, isNavigating, scrollToChapter]);
-
-    // Initialise when exploration starts
-    useEffect(() => {
-        if (isExploring) {
-            setCurrentChapter(0);
-            if (containerRef.current) {
-                containerRef.current.scrollTo(0, 0);
-            }
-        }
-    }, [isExploring]);
+    }, [currentChapter, scrollToChapter]);
 
     // Handle keyboard navigation
     useEffect(() => {
@@ -585,14 +572,24 @@ const Portfolio = () => {
         }
     }, [isExploring, handleKeyNavigation]);
 
-    // Handle scroll events
+    // Cleanup on unmount
     useEffect(() => {
-        const container = containerRef.current;
-        if (container && isExploring) {
-            container.addEventListener('scroll', handleScroll, { passive: true });
-            return () => container.removeEventListener('scroll', handleScroll);
+        return () => {
+            if (scrollTimeout.current) {
+                clearTimeout(scrollTimeout.current);
+            }
+        };
+    }, []);
+
+    // Initialize when exploration starts
+    useEffect(() => {
+        if (isExploring) {
+            setCurrentChapter(0);
+            if (containerRef.current) {
+                containerRef.current.scrollTo(0, 0);
+            }
         }
-    }, [isExploring, handleScroll]);
+    }, [isExploring]);
 
     return (
         <div className="h-screen bg-slate-900 text-white overflow-hidden">
@@ -663,23 +660,18 @@ const Portfolio = () => {
 
                         <div
                             ref={containerRef}
-                            className="h-screen overflow-y-auto snap-y snap-mandatory"
-                            onWheel={(e) => {
-                                // Always prevent default scroll
-                                e.preventDefault();
-
-                                // Don't handle new scrolls during navigation
-                                if (isNavigating) return;
-
-                                if (e.deltaY > 0 && currentChapter < PORTFOLIO_CHAPTERS.length - 1) {
-                                    scrollToChapter(currentChapter + 1);
-                                } else if (e.deltaY < 0 && currentChapter > 0) {
-                                    scrollToChapter(currentChapter - 1);
-                                }
+                            className="h-screen overflow-hidden"
+                            style={{
+                                scrollSnapType: 'y mandatory',
+                                overscrollBehavior: 'none'
                             }}
+                            onWheel={handleWheel}
                         >
                             {PORTFOLIO_CHAPTERS.map((chapter, index) => (
-                                <div key={index} className="snap-start h-screen">
+                                <div
+                                    key={index}
+                                    className="snap-start h-screen"
+                                >
                                     <Chapter
                                         icon={chapter.icon}
                                         title={chapter.title}
@@ -687,7 +679,7 @@ const Portfolio = () => {
                                         isActive={currentChapter === index}
                                         progress={index <= currentChapter ? 1 : 0}
                                     >
-                                        {chapter.content} {/* Remove the () here */}
+                                        {chapter.content}
                                     </Chapter>
                                 </div>
                             ))}
