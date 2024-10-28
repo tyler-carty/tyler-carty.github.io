@@ -8,19 +8,13 @@
   --header-height: 60px;
 }
 
-/* Better mobile touch handling */
-@media (max-width: 768px) {
-  html {
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-  }
-}
-
-/* Base scroll behavior */
+/* Global scroll behavior */
 html, body {
   overflow: hidden;
   height: 100%;
   overscroll-behavior: none;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Better font rendering */
@@ -28,23 +22,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   @apply text-base md:text-lg;
-}
-
-/* Hide scrollbars while maintaining functionality */
-* {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;     /* Firefox */
-}
-
-*::-webkit-scrollbar {
-  display: none;
-}
-
-/* Smooth scrolling - disable on mobile for better performance */
-@screen md {
-  html {
-    scroll-behavior: smooth;
-  }
 }
 
 /* Glass effect utility */
@@ -63,6 +40,13 @@ body {
 
   .h-screen {
     height: 100vh;
+    height: -webkit-fill-available;
+  }
+}
+
+/* For mobile viewport height */
+@supports (-webkit-touch-callout: none) {
+  .h-screen {
     height: -webkit-fill-available;
   }
 }
@@ -104,8 +88,26 @@ body {
   user-select: none;
 }
 
-/* Snap scroll behavior */
-.snap-start {
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
+/* Remove any existing snap scroll behavior */
+* {
+  scroll-snap-type: none;
+}
+
+/* Hide scrollbars but keep functionality */
+* {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
+
+/* Optimize animations */
+.touch-none {
+  touch-action: none;
+  -webkit-overflow-scrolling: touch;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
 }

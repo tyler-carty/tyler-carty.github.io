@@ -521,22 +521,13 @@ const Portfolio = () => {
             isScrolling.current = true;
             setCurrentChapter(index);
 
-            const element = containerRef.current;
-            if (element) {
-                const chapterHeight = element.clientHeight;
-                element.scrollTo({
-                    top: index * chapterHeight,
-                    behavior: 'smooth'
-                });
-            }
-
             // Reset scrolling state after animation
             if (scrollTimeout.current) {
                 clearTimeout(scrollTimeout.current);
             }
             scrollTimeout.current = setTimeout(() => {
                 isScrolling.current = false;
-            }, 700); // Match this with your transition duration
+            }, 700);
         }
     }, []);
 
@@ -552,6 +543,7 @@ const Portfolio = () => {
         }
     }, [isExploring, currentChapter, scrollToChapter]);
 
+    // Handle wheel events (desktop)
     const handleWheel = React.useCallback((e) => {
         e.preventDefault();
 
@@ -563,6 +555,37 @@ const Portfolio = () => {
             scrollToChapter(currentChapter - 1);
         }
     }, [currentChapter, scrollToChapter]);
+
+    // Add touch handling for mobile
+    const touchStart = useRef(null);
+
+    // Handle touch events (mobile)
+    const handleTouchStart = (e) => {
+        touchStart.current = e.touches[0].clientY;
+    };
+
+    const handleTouchMove = (e) => {
+        e.preventDefault(); // Prevent native scroll
+
+        if (isScrolling.current || !touchStart.current) return;
+
+        const touchY = e.touches[0].clientY;
+        const diff = touchStart.current - touchY;
+
+        // Require minimum swipe distance of 50px
+        if (Math.abs(diff) > 50) {
+            if (diff > 0 && currentChapter < PORTFOLIO_CHAPTERS.length - 1) {
+                scrollToChapter(currentChapter + 1);
+            } else if (diff < 0 && currentChapter > 0) {
+                scrollToChapter(currentChapter - 1);
+            }
+            touchStart.current = null; // Reset to prevent multiple triggers
+        }
+    };
+
+    const handleTouchEnd = () => {
+        touchStart.current = null;
+    };
 
     // Handle keyboard navigation
     useEffect(() => {
@@ -658,28 +681,37 @@ const Portfolio = () => {
                             />
                         )}
 
-                        <div
-                            ref={containerRef}
-                            className="h-screen overflow-hidden scroll-smooth snap-y snap-mandatory"
-                            style={{overscrollBehavior: 'none'}}
-                            onWheel={handleWheel}
-                        >
-                            {PORTFOLIO_CHAPTERS.map((chapter, index) => (
-                                <div
-                                    key={index}
-                                    className="h-screen snap-start"
-                                >
-                                    <Chapter
-                                        icon={chapter.icon}
-                                        title={chapter.title}
-                                        index={index}
-                                        isActive={currentChapter === index}
-                                        progress={index <= currentChapter ? 1 : 0}
+                        <div className="h-screen overflow-hidden">
+                            <div
+                                ref={containerRef}
+                                className="h-screen w-full flex flex-col touch-none transition-transform duration-700 ease-in-out"
+                                onWheel={handleWheel}
+                                onTouchStart={handleTouchStart}
+                                onTouchMove={handleTouchMove}
+                                onTouchEnd={handleTouchEnd}
+                                style={{
+                                    transform: `translateY(-${currentChapter * 100}vh)`,
+                                    overscrollBehavior: 'none',
+                                    willChange: 'transform'
+                                }}
+                            >
+                                {PORTFOLIO_CHAPTERS.map((chapter, index) => (
+                                    <div
+                                        key={index}
+                                        className="h-screen w-full flex-shrink-0"
                                     >
-                                        {chapter.content}
-                                    </Chapter>
-                                </div>
-                            ))}
+                                        <Chapter
+                                            icon={chapter.icon}
+                                            title={chapter.title}
+                                            index={index}
+                                            isActive={currentChapter === index}
+                                            progress={index <= currentChapter ? 1 : 0}
+                                        >
+                                            {chapter.content}
+                                        </Chapter>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </>
                 )}
