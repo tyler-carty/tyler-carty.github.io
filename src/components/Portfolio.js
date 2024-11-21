@@ -153,11 +153,20 @@ const PORTFOLIO_CHAPTERS = [
                         animate={{opacity: 1}}
                         transition={{delay: 0.6}}
                     >
-                        <div className="flex items-center justify-between mb-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
                             <h3 className="text-2xl font-bold text-blue-400">University Education</h3>
-                            <span className="text-sm text-white/70 bg-blue-500/20 px-3 py-1 rounded-full">
-                                September 2020 - July 2024
-                            </span>
+                            <motion.div
+                                className="self-start sm:self-auto"  // This ensures the date stays left-aligned on mobile
+                                initial={{opacity: 0, y: -10}}
+                                animate={{opacity: 1, y: 0}}
+                                transition={{delay: 0.3}}
+                            >
+                                <span className="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full
+                                    bg-gradient-to-r from-blue-500/20 to-blue-400/10 backdrop-blur-sm
+                                    border border-blue-500/20 text-blue-300 whitespace-nowrap">
+                                    Sept 2020 - July 2024
+                                </span>
+                            </motion.div>
                         </div>
                         <div className="bg-slate-800/50 rounded-lg p-6 space-y-6">
                             {/* Degree Information */}
@@ -246,84 +255,110 @@ const PORTFOLIO_CHAPTERS = [
         content: (
             <>
                 <div className="space-y-6">
-                    <div className="flex items-center justify-between mb-4">
-                        <motion.h3
-                            className="text-2xl font-bold"
-                            initial={{opacity: 0}}
-                            animate={{opacity: 1}}
-                        >
-                            Lloyds Banking Group - Placement Year
-                        </motion.h3>
-                        <motion.span
-                            className="text-sm text-white/70 bg-blue-500/20 px-3 py-1 rounded-full"
-                            initial={{opacity: 0, x: 20}}
-                            animate={{opacity: 1, x: 0}}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                        <h3 className="text-2xl font-bold">Industrial Placement @ Lloyds Banking Group</h3>
+                        <motion.div
+                            className="self-start sm:self-auto"
+                            initial={{opacity: 0, y: -10}}
+                            animate={{opacity: 1, y: 0}}
                             transition={{delay: 0.3}}
                         >
-                            June 2022 - September 2023
-                        </motion.span>
+                        <span className="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full
+                            bg-gradient-to-r from-green-500/20 to-green-400/10 backdrop-blur-sm
+                            border border-green-500/20 text-green-300 whitespace-nowrap">
+                            June 2022 - Sept 2023
+                        </span>
+                        </motion.div>
                     </div>
 
                     <motion.div
                         className="space-y-2"
-                        initial={{ x: -50, opacity: 0 }}
-                        animate={{ x: 0, opacity: 1 }}
-                        transition={{ delay: 0.4 }}
+                        initial={{x: -50, opacity: 0}}
+                        animate={{x: 0, opacity: 1}}
+                        transition={{delay: 0.4}}
                     >
                         <h4 className="text-xl text-blue-400">Cloud Infrastructure Engineer</h4>
                         <p>Maintaining critical mortgage platform infrastructure</p>
-                        <TechStack technologies={["Azure", "Kubernetes", "CI/CD", "Infrastructure as Code"]} />
+                        <TechStack technologies={["Azure", "Kubernetes", "CI/CD", "Infrastructure as Code"]}/>
                     </motion.div>
 
                     <motion.div
                         className="space-y-2"
-                        initial={{ x: -50, opacity: 0 }}
-                        animate={{ x: 0, opacity: 1 }}
-                        transition={{ delay: 0.6 }}
+                        initial={{x: -50, opacity: 0}}
+                        animate={{x: 0, opacity: 1}}
+                        transition={{delay: 0.6}}
                     >
                         <h4 className="text-xl text-blue-400">Full Stack Engineer</h4>
                         <p>Modernising legacy applications and building new customer journeys</p>
-                        <TechStack technologies={["React", "C#", ".NET", "Azure", "RESTful APIs"]} />
+                        <TechStack technologies={["React", "C#", ".NET", "Azure", "RESTful APIs"]}/>
                     </motion.div>
                 </div>
             </>
         )
     },
     {
-        title: "Solo Project Success",
+        title: "Freelancing Success",
         icon: Database,
         content: (
             <>
                 <div className="space-y-6">
-                    <div className="flex items-center justify-between mb-4">
-                        <motion.h3
-                            className="text-2xl font-bold"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                        <h3 className="text-2xl font-bold">Staff Management System</h3>
+                        <motion.div
+                            className="self-start sm:self-auto"
+                            initial={{opacity: 0, y: -10}}
+                            animate={{opacity: 1, y: 0}}
+                            transition={{delay: 0.3}}
                         >
-                            Hodsock Priory Staff Management System
-                        </motion.h3>
-                        <motion.span
-                            className="text-sm text-white/70 bg-purple-500/20 px-3 py-1 rounded-full"
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.3 }}
-                        >
-                            June 2024 - September 2024
-                        </motion.span>
+                            <span className="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full
+                                bg-gradient-to-r from-indigo-500/20 to-indigo-400/10 backdrop-blur-sm
+                                border border-indigo-500/20 text-indigo-300 whitespace-nowrap">
+                                June 2024 - Sept 2024
+                            </span>
+                        </motion.div>
                     </div>
 
                     <motion.div
                         className="space-y-4"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.4 }}
+                        initial={{opacity: 0}}
+                        animate={{opacity: 1}}
+                        transition={{delay: 0.4}}
                     >
-                        <p>Transformed venue management processes through custom software</p>
-                        <TechStack technologies={[
-                            "React", "Node.js", "Express", "MongoDB",
-                            "System Architecture", "Project Management"
-                        ]} />
+                        <div className="space-y-3">
+                            <p className="text-lg">Designed and implemented a comprehensive staff management and
+                                accounting system, now successfully deployed at both Hodsock Priory and Prestwold Hall
+                                venues.</p>
+
+                            <ul className="space-y-2 mt-4">
+                                <li className="flex items-center gap-2">
+                                    <div className="w-1.5 h-1.5 bg-purple-400 rounded-full"/>
+                                    Developed on-premise solutions for secure local deployment at each venue
+                                </li>
+                                <li className="flex items-center gap-2">
+                                    <div className="w-1.5 h-1.5 bg-purple-400 rounded-full"/>
+                                    Reduced administrative overhead by 70% through process automation
+                                </li>
+                                <li className="flex items-center gap-2">
+                                    <div className="w-1.5 h-1.5 bg-purple-400 rounded-full"/>
+                                    Implemented comprehensive staff management, scheduling, and payroll features
+                                </li>
+                                <li className="flex items-center gap-2">
+                                    <div className="w-1.5 h-1.5 bg-purple-400 rounded-full"/>
+                                    Delivered secure role-based access control for different staff levels
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div className="mt-6">
+                            <h5 className="text-lg font-semibold text-purple-400 mb-3">Technologies Used</h5>
+                            <TechStack technologies={[
+                                "React",
+                                "Node.js",
+                                "Express",
+                                "MongoDB",
+                                "System Architecture"
+                            ]}/>
+                        </div>
                     </motion.div>
                 </div>
             </>
@@ -335,29 +370,27 @@ const PORTFOLIO_CHAPTERS = [
         content: (
             <>
                 <div className="space-y-8">
-                    <div className="flex items-center justify-between mb-4">
-                        <motion.h3
-                            className="text-2xl font-bold text-yellow-400"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                        <h3 className="text-2xl font-bold text-yellow-400">University Research Projects</h3>
+                        <motion.div
+                            className="self-start sm:self-auto"
+                            initial={{opacity: 0, y: -10}}
+                            animate={{opacity: 1, y: 0}}
+                            transition={{delay: 0.3}}
                         >
-                            University Research Projects
-                        </motion.h3>
-                        <motion.span
-                            className="text-sm text-white/70 bg-yellow-500/20 px-3 py-1 rounded-full"
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.3 }}
-                        >
-                            2020 - 2024
-                        </motion.span>
+                            <span className="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full
+                                bg-gradient-to-r from-yellow-500/20 to-yellow-400/10 backdrop-blur-sm
+                                border border-yellow-500/20 text-yellow-300 whitespace-nowrap">
+                                2020 - 2024
+                            </span>
+                        </motion.div>
                     </div>
 
                     <motion.div
                         className="space-y-4"
-                        initial={{ x: -50, opacity: 0 }}
-                        animate={{ x: 0, opacity: 1 }}
-                        transition={{ delay: 0.4 }}
+                        initial={{x: -50, opacity: 0}}
+                        animate={{x: 0, opacity: 1}}
+                        transition={{delay: 0.4}}
                     >
                         <div className="flex items-start justify-between">
                             <h4 className="text-xl text-yellow-400">From Posts to Profits</h4>
@@ -366,25 +399,25 @@ const PORTFOLIO_CHAPTERS = [
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
+                                whileHover={{scale: 1.05}}
+                                whileTap={{scale: 0.95}}
                             >
                                 <span className="text-sm">View Code</span>
-                                <ExternalLink className="w-4 h-4" />
+                                <ExternalLink className="w-4 h-4"/>
                             </motion.a>
                         </div>
                         <p>Analysing social media's impact on stock markets</p>
                         <TechStack technologies={[
                             "Python", "FinBERT", "MemeBERT",
                             "Sentiment Analysis", "Financial Analysis"
-                        ]} />
+                        ]}/>
                     </motion.div>
 
                     <motion.div
                         className="space-y-4"
-                        initial={{ x: -50, opacity: 0 }}
-                        animate={{ x: 0, opacity: 1 }}
-                        transition={{ delay: 0.6 }}
+                        initial={{x: -50, opacity: 0}}
+                        animate={{x: 0, opacity: 1}}
+                        transition={{delay: 0.6}}
                     >
                         <div className="flex items-start justify-between">
                             <h4 className="text-xl text-yellow-400">Healthcare ML Innovation</h4>
@@ -393,18 +426,18 @@ const PORTFOLIO_CHAPTERS = [
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
+                                whileHover={{scale: 1.05}}
+                                whileTap={{scale: 0.95}}
                             >
                                 <span className="text-sm">View Code</span>
-                                <ExternalLink className="w-4 h-4" />
+                                <ExternalLink className="w-4 h-4"/>
                             </motion.a>
                         </div>
                         <p>90% accurate pneumonia detection with explainable AI</p>
                         <TechStack technologies={[
                             "Neural Networks", "Computer Vision",
                             "XAI", "Healthcare ML"
-                        ]} />
+                        ]}/>
                     </motion.div>
                 </div>
             </>
@@ -416,35 +449,33 @@ const PORTFOLIO_CHAPTERS = [
         content: (
             <>
                 <div className="space-y-6">
-                    <div className="flex items-center justify-between mb-4">
-                        <motion.h3
-                            className="text-2xl font-bold"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                        <h3 className="text-2xl font-bold">Data Engineer @ Lloyds Banking Group</h3>
+                        <motion.div
+                            className="self-start sm:self-auto"
+                            initial={{opacity: 0, y: -10}}
+                            animate={{opacity: 1, y: 0}}
+                            transition={{delay: 0.3}}
                         >
-                            Data Engineer @ Lloyds Banking Group
-                        </motion.h3>
-                        <motion.span
-                            className="text-sm text-white/70 bg-red-500/20 px-3 py-1 rounded-full"
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.3 }}
-                        >
-                            September 2024 - Present
-                        </motion.span>
+                            <span className="inline-flex items-center px-3 py-1 text-sm font-medium rounded-full
+                                bg-gradient-to-r from-red-500/20 to-red-400/10 backdrop-blur-sm
+                                border border-red-500/20 text-red-300 whitespace-nowrap">
+                                Sept 2024 - Present
+                            </span>
+                        </motion.div>
                     </div>
 
                     <motion.div
                         className="space-y-4"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.4 }}
+                        initial={{opacity: 0}}
+                        animate={{opacity: 1}}
+                        transition={{delay: 0.4}}
                     >
                         <p>Transforming banking data into actionable insights for crime prevention</p>
                         <TechStack technologies={[
                             "Google Cloud Platform", "BigQuery", "Python",
                             "Java", "Data Engineering", "Machine Learning"
-                        ]} />
+                        ]}/>
                     </motion.div>
                 </div>
             </>
@@ -457,8 +488,8 @@ const PORTFOLIO_CHAPTERS = [
             <>
                 <motion.div
                     className="space-y-4"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
+                    initial={{opacity: 0}}
+                    animate={{opacity: 1}}
                 >
                     <p className="text-lg">
                         Passionate about advancing ML Engineering and Data Science in financial crime prevention,
@@ -467,14 +498,13 @@ const PORTFOLIO_CHAPTERS = [
                     <TechStack technologies={[
                         "Machine Learning", "Data Science", "Cloud Architecture",
                         "Financial Crime Prevention", "Innovation"
-                    ]} />
+                    ]}/>
                 </motion.div>
             </>
         )
     }
 ];
 
-// Updated NavigationDots Component
 const NavigationDots = React.memo(({
                                        chapters,
                                        currentChapter,
@@ -483,7 +513,7 @@ const NavigationDots = React.memo(({
                                    }) => {
     return (
         <motion.div
-            className="fixed left-2 md:left-8 top-1/2 -translate-y-1/2 flex flex-col gap-3 md:gap-4 z-50 lg:flex"
+            className="fixed left-2 md:left-8 top-1/2 -translate-y-1/2 flex flex-col gap-3 md:gap-4 z-50 hidden lg:flex"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5 }}
