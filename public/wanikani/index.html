@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WaniKani Analytics Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/date-fns@2.29.3/index.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-bg: #0f0f23;
+            --secondary-bg: #1a1a3e;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --accent: #ff6b9d;
+            --secondary-accent: #4ecdc4;
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --border: rgba(255, 255, 255, 0.1);
+            --success: #4ecdc4;
+            --warning: #ffc107;
+            --error: #ff6b9d;
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .api-setup {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.1);
+        }
+
+        button {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            background: var(--gradient);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left: 4px solid var(--accent);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .dashboard {
+            display: none;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .chart-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+        }
+
+        .chart-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .level-progress {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+        }
+
+        .progress-bar {
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .srs-stages {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .srs-stage {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .srs-stage-count {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .srs-stage-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .error {
+            background: rgba(255, 107, 157, 0.1);
+            border: 1px solid var(--error);
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1rem 0;
+            color: var(--error);
+        }
+
+        .success {
+            background: rgba(78, 205, 196, 0.1);
+            border: 1px solid var(--success);
+            border-radius: 12px;
+            padding: 1rem;
+            margin: 1rem 0;
+            color: var(--success);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .data-table th {
+            background: rgba(255, 255, 255, 0.05);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .accuracy-meter {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .accuracy-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab {
+            padding: 1rem 2rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            color: var(--text-primary);
+            border-bottom-color: var(--accent);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .input-group {
+                flex-direction: column;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>WaniKani Analytics Dashboard</h1>
+            <p class="subtitle">Comprehensive insights into your Japanese learning journey</p>
+        </header>
+
+        <div class="api-setup" id="api-setup">
+            <h2>API Configuration</h2>
+            <p style="margin-bottom: 1rem; color: var(--text-secondary);">
+                Enter your WaniKani API token to load your progress data. 
+                <a href="https://www.wanikani.com/settings/personal_access_tokens" target="_blank" style="color: var(--accent);">Get your token here</a>
+            </p>
+            <div class="input-group">
+                <input type="text" id="api-token" placeholder="Enter your WaniKani API token..." />
+                <button onclick="loadWaniKaniData()">Load Data</button>
+            </div>
+            <div id="error-message"></div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Loading your WaniKani data...</p>
+        </div>
+
+        <div class="dashboard" id="dashboard">
+            <div class="level-progress">
+                <h2>Current Level Progress</h2>
+                <div id="level-info"></div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="level-progress"></div>
+                </div>
+                <div id="level-details"></div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="total-subjects">0</div>
+                    <div class="stat-label">Total Items</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="burned-count">0</div>
+                    <div class="stat-label">Burned Items</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="review-accuracy">0%</div>
+                    <div class="stat-label">Overall Accuracy</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="days-active">0</div>
+                    <div class="stat-label">Days Active</div>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('overview')">Overview</button>
+                <button class="tab" onclick="showTab('srs')">SRS Distribution</button>
+                <button class="tab" onclick="showTab('subjects')">Subject Breakdown</button>
+                <button class="tab" onclick="showTab('reviews')">Review Analysis</button>
+                <button class="tab" onclick="showTab('timeline')">Learning Timeline</button>
+            </div>
+
+            <div id="overview" class="tab-content active">
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3 class="chart-title">Level Progression Timeline</h3>
+                        <canvas id="level-timeline-chart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3 class="chart-title">Subject Type Distribution</h3>
+                        <canvas id="subject-distribution-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div id="srs" class="tab-content">
+                <div class="srs-stages" id="srs-stages"></div>
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3 class="chart-title">SRS Stage Distribution</h3>
+                        <canvas id="srs-chart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3 class="chart-title">Review Forecast (Next 24 Hours)</h3>
+                        <canvas id="review-forecast-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div id="subjects" class="tab-content">
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3 class="chart-title">Items by Level</h3>
+                        <canvas id="items-by-level-chart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3 class="chart-title">Accuracy by Subject Type</h3>
+                        <canvas id="accuracy-by-type-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div id="reviews" class="tab-content">
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3 class="chart-title">Daily Review Activity (Last 30 Days)</h3>
+                        <canvas id="daily-reviews-chart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3 class="chart-title">Review Accuracy Trend</h3>
+                        <canvas id="accuracy-trend-chart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h3 class="chart-title">Most Troublesome Items</h3>
+                    <table class="data-table" id="troublesome-items-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Type</th>
+                                <th>Level</th>
+                                <th>Accuracy</th>
+                                <th>Reviews</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="timeline" class="tab-content">
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3 class="chart-title">Learning Journey</h3>
+                        <canvas id="learning-timeline-chart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3 class="chart-title">Items Learned Per Month</h3>
+                        <canvas id="monthly-progress-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let userData = {};
+        let assignments = [];
+        let subjects = {};
+        let reviews = [];
+        let reviewStats = [];
+        let levelProgressions = [];
+        let summary = {};
+
+        const API_BASE = 'https://api.wanikani.com/v2';
+        const REVISION_HEADER = '20170710';
+
+        async function makeAPIRequest(endpoint, token) {
+            const response = await fetch(`${API_BASE}${endpoint}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Wanikani-Revision': REVISION_HEADER
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+            }
+
+            return response.json();
+        }
+
+        async function fetchAllPages(endpoint, token) {
+            let allData = [];
+            let url = endpoint;
+
+            while (url) {
+                const response = await makeAPIRequest(url.replace(API_BASE, ''), token);
+                allData = allData.concat(response.data);
+                url = response.pages?.next_url;
+            }
+
+            return allData;
+        }
+
+        async function loadWaniKaniData() {
+            const token = document.getElementById('api-token').value.trim();
+            if (!token) {
+                showError('Please enter your API token');
+                return;
+            }
+
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('api-setup').style.display = 'none';
+            
+            try {
+                // Load user data
+                const userResponse = await makeAPIRequest('/user', token);
+                userData = userResponse.data;
+
+                // Load all data in parallel
+                const [
+                    assignmentsData,
+                    subjectsData,
+                    reviewsData,
+                    reviewStatsData,
+                    levelProgressData,
+                    summaryData
+                ] = await Promise.all([
+                    fetchAllPages('/assignments', token),
+                    fetchAllPages('/subjects', token),
+                    fetchAllPages('/reviews', token),
+                    fetchAllPages('/review_statistics', token),
+                    fetchAllPages('/level_progressions', token),
+                    makeAPIRequest('/summary', token)
+                ]);
+
+                assignments = assignmentsData;
+                reviewStats = reviewStatsData;
+                reviews = reviewsData;
+                levelProgressions = levelProgressData;
+                summary = summaryData.data;
+
+                // Convert subjects array to object for easier lookup
+                subjects = {};
+                subjectsData.forEach(subject => {
+                    subjects[subject.id] = subject.data;
+                });
+
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                
+                renderDashboard();
+                showSuccess('Data loaded successfully!');
+
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('api-setup').style.display = 'block';
+                showError(`Error loading data: ${error.message}`);
+            }
+        }
+
+        function renderDashboard() {
+            renderUserStats();
+            renderLevelProgress();
+            renderSRSDistribution();
+            renderCharts();
+        }
+
+        function renderUserStats() {
+            const totalSubjects = Object.keys(subjects).length;
+            const burnedCount = assignments.filter(a => a.data.burned_at).length;
+            
+            let totalCorrect = 0;
+            let totalAnswers = 0;
+            reviewStats.forEach(stat => {
+                totalCorrect += stat.data.meaning_correct + stat.data.reading_correct;
+                totalAnswers += stat.data.meaning_correct + stat.data.reading_correct + 
+                               stat.data.meaning_incorrect + stat.data.reading_incorrect;
+            });
+            
+            const accuracy = totalAnswers > 0 ? Math.round((totalCorrect / totalAnswers) * 100) : 0;
+            const daysActive = Math.floor((new Date() - new Date(userData.started_at)) / (1000 * 60 * 60 * 24));
+
+            document.getElementById('total-subjects').textContent = totalSubjects.toLocaleString();
+            document.getElementById('burned-count').textContent = burnedCount.toLocaleString();
+            document.getElementById('review-accuracy').textContent = `${accuracy}%`;
+            document.getElementById('days-active').textContent = daysActive.toLocaleString();
+        }
+
+        function renderLevelProgress() {
+            const currentLevel = userData.level;
+            const currentLevelAssignments = assignments.filter(a => 
+                subjects[a.data.subject_id] && subjects[a.data.subject_id].level === currentLevel
+            );
+            
+            const kanjiAssignments = currentLevelAssignments.filter(a => 
+                subjects[a.data.subject_id] && subjects[a.data.subject_id].object === 'kanji'
+            );
+            
+            const passedKanji = kanjiAssignments.filter(a => a.data.passed_at).length;
+            const totalKanji = kanjiAssignments.length;
+            const progress = totalKanji > 0 ? (passedKanji / totalKanji) * 100 : 0;
+
+            document.getElementById('level-info').innerHTML = `
+                <h3>Level ${currentLevel}</h3>
+                <p>${passedKanji} of ${totalKanji} kanji passed (${Math.round(progress)}%)</p>
+            `;
+
+            document.getElementById('level-progress').style.width = `${progress}%`;
+            
+            document.getElementById('level-details').innerHTML = `
+                <p style="margin-top: 1rem; color: var(--text-secondary);">
+                    ${90 - Math.round(progress)}% remaining to level up
+                </p>
+            `;
+        }
+
+        function renderSRSDistribution() {
+            const srsStages = [
+                { name: 'Apprentice I', stage: 1, color: '#dd0093' },
+                { name: 'Apprentice II', stage: 2, color: '#dd0093' },
+                { name: 'Apprentice III', stage: 3, color: '#dd0093' },
+                { name: 'Apprentice IV', stage: 4, color: '#dd0093' },
+                { name: 'Guru I', stage: 5, color: '#882d9e' },
+                { name: 'Guru II', stage: 6, color: '#882d9e' },
+                { name: 'Master', stage: 7, color: '#294ddb' },
+                { name: 'Enlightened', stage: 8, color: '#0093dd' },
+                { name: 'Burned', stage: 9, color: '#434343' }
+            ];
+
+            const container = document.getElementById('srs-stages');
+            container.innerHTML = '';
+
+            srsStages.forEach(stage => {
+                const count = assignments.filter(a => a.data.srs_stage === stage.stage).length;
+                const div = document.createElement('div');
+                div.className = 'srs-stage';
+                div.innerHTML = `
+                    <div class="srs-stage-count" style="color: ${stage.color};">${count}</div>
+                    <div class="srs-stage-label">${stage.name}</div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function renderCharts() {
+            renderLevelTimelineChart();
+            renderSubjectDistributionChart();
+            renderSRSChart();
+            renderReviewForecastChart();
+            renderItemsByLevelChart();
+            renderAccuracyByTypeChart();
+            renderDailyReviewsChart();
+            renderAccuracyTrendChart();
+            renderTroublesomeItems();
+            renderLearningTimelineChart();
+            renderMonthlyProgressChart();
+        }
+
+        function renderLevelTimelineChart() {
+            const ctx = document.getElementById('level-timeline-chart').getContext('2d');
+            
+            const progressData = levelProgressions
+                .filter(p => p.data.completed_at)
+                .sort((a, b) => new Date(a.data.completed_at) - new Date(b.data.completed_at))
+                .map(p => ({
+                    x: new Date(p.data.completed_at),
+                    y: p.data.level
+                }));
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: [{
+                        label: 'Level',
+                        data: progressData,
+                        borderColor: '#ff6b9d',
+                        backgroundColor: 'rgba(255, 107, 157, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: { unit: 'month' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: 'rgba(255, 255, 255, 0.7)' }
+                        },
+                        y: {
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: 'rgba(255, 255, 255, 0.7)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderItemsByLevelChart() {
+            const ctx = document.getElementById('items-by-level-chart').getContext('2d');
+            
+            const levelData = {};
+            Object.values(subjects).forEach(subject => {
+                if (!levelData[subject.level]) levelData[subject.level] = 0;
+                levelData[subject.level]++;
+            });
+
+            const levels = Object.keys(levelData).sort((a, b) => a - b);
+            const counts = levels.map(level => levelData[level]);
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: levels,
+                    datasets: [{
+                        label: 'Items',
+                        data: counts,
+                        backgroundColor: 'rgba(255, 107, 157, 0.6)',
+                        borderColor: '#ff6b9d',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { 
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: 'rgba(255, 255, 255, 0.7)' }
+                        },
+                        y: { 
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: 'rgba(255, 255, 255, 0.7)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderAccuracyByTypeChart() {
+            const ctx = document.getElementById('accuracy-by-type-chart').getContext('2d');
+            
+            const typeAccuracy = {};
+            const types = ['radical', 'kanji', 'vocabulary', 'kana_vocabulary'];
+            
+            types.forEach(type => {
+                const stats = reviewStats.filter(stat => 
+                    subjects[stat.data.subject_id] && subjects[stat.data.subject_id].object === type
+                );
+                
+                let totalCorrect = 0;
+                let totalAnswers = 0;
+                
+                stats.forEach(stat => {
+                    totalCorrect += stat.data.meaning_correct + stat.data.reading_correct;
+                    totalAnswers += stat.data.meaning_correct + stat.data.reading_correct + 
+                                   stat.data.meaning_incorrect + stat.data.reading_incorrect;
+                });
+                
+                typeAccuracy[type] = totalAnswers > 0 ? (totalCorrect / totalAnswers) * 100 : 0;
+            });
+
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Radicals', 'Kanji', 'Vocabulary', 'Kana Vocabulary'],
+                    datasets: [{
+                        label: 'Accuracy %',
+                        data: types.map(type => typeAccuracy[type]),
+                        backgroundColor: 'rgba(78, 205, 196, 0.2)',
+                        borderColor: '#4ecdc4',
+                        pointBackgroundColor: '#4ecdc4'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            pointLabels: { color: 'rgba(255, 255, 255, 0.7)' },
+                            ticks: { color: 'rgba(255, 255, 255, 0.7)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderDailyReviewsChart() {
+            const ctx = document.getElementById('daily-reviews-chart').getContext('2d');
+            
+            const last30Days = {};
+            const today = new Date();
+            
+            for (let i = 29; i >= 0; i--) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                const dateKey = date.toISOString().split('T')[0];
+                last30Days[dateKey] = 0;
+            }
+            
+            reviews.forEach(review => {
+                const reviewDate = new Date(review.data.created_at).toISOString().split('T')[0];
+                if (last30Days.hasOwnProperty(reviewDate)) {
+                    last30Days[reviewDate]++;
+                }
+            });
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Object.keys(last30Days),
+                    datasets: [{
+                        label: 'Reviews',
+                        data: Object.values(last30Days),
+                        borderColor: '#4ecdc4',
+                        backgroundColor: 'rgba(78, 205, 196, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { 
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { 
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                maxTicksLimit: 8
+                            }
+                        },
+                        y: { 
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: 'rgba(255, 255, 255, 0.7)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderAccuracyTrendChart() {
+            const ctx = document.getElementById('accuracy-trend-chart').getContext('2d');
+            
+            const reviewsByMonth = {};
+            reviews.forEach(review => {
+                const month = new Date(review.data.created_at).toISOString().substring(0, 7);
+                if (!reviewsByMonth[month]) {
+                    reviewsByMonth[month] = { correct: 0, total: 0 };
+                }
+                
+                const totalAnswers = review.data.incorrect_meaning_answers + review.data.incorrect_reading_answers + 1;
+                const correctAnswers = 1;
+                
+                reviewsByMonth[month].correct += correctAnswers;
+                reviewsByMonth[month].total += totalAnswers;
+            });
+            
+            const months = Object.keys(reviewsByMonth).sort();
+            const accuracyData = months.map(month => {
+                const data = reviewsByMonth[month];
+                return data.total > 0 ? (data.correct / data.total) * 100 : 0;
+            });
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: 'Accuracy %',
+                        data: accuracyData,
+                        borderColor: '#ff6b9d',
+                        backgroundColor: 'rgba(255, 107, 157, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { 
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: 'rgba(255, 255, 255, 0.7)' }
+                        },
+                        y: { 
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: 'rgba(255, 255, 255, 0.7)' },
+                            min: 0,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderTroublesomeItems() {
+            const troublesomeItems = reviewStats
+                .filter(stat => stat.data.percentage_correct < 70 && 
+                       (stat.data.meaning_correct + stat.data.reading_correct + 
+                        stat.data.meaning_incorrect + stat.data.reading_incorrect) >= 5)
+                .sort((a, b) => a.data.percentage_correct - b.data.percentage_correct)
+                .slice(0, 10);
+
+            const tbody = document.querySelector('#troublesome-items-table tbody');
+            tbody.innerHTML = '';
+
+            troublesomeItems.forEach(stat => {
+                const subject = subjects[stat.data.subject_id];
+                if (subject) {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${subject.characters || subject.meanings[0].meaning}</td>
+                        <td style="text-transform: capitalize;">${subject.object}</td>
+                        <td>${subject.level}</td>
+                        <td>${stat.data.percentage_correct}%</td>
+                        <td>${stat.data.meaning_correct + stat.data.reading_correct + 
+                             stat.data.meaning_incorrect + stat.data.reading_incorrect}</td>
+                    `;
+                    tbody.appendChild(row);
+                }
+            });
+        }
+
+        function renderLearningTimelineChart() {
+            const ctx = document.getElementById('learning-timeline-chart').getContext('2d');
+            
+            const timelineData = assignments
+                .filter(a => a.data.started_at)
+                .map(a => ({
+                    x: new Date(a.data.started_at),
+                    y: subjects[a.data.subject_id] ? subjects[a.data.subject_id].level : 0
+                }))
+                .sort((a, b) => a.x - b.x);
+
+            new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Items Started',
+                        data: timelineData,
+                        backgroundColor: 'rgba(255, 107, 157, 0.6)',
+                        borderColor: '#ff6b9d'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: { unit: 'month' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: 'rgba(255, 255, 255, 0.7)' }
+                        },
+                        y: {
+                            title: { display: true, text: 'Level', color: 'rgba(255, 255, 255, 0.7)' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: 'rgba(255, 255, 255, 0.7)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderMonthlyProgressChart() {
+            const ctx = document.getElementById('monthly-progress-chart').getContext('2d');
+            
+            const monthlyProgress = {};
+            assignments.forEach(assignment => {
+                if (assignment.data.started_at) {
+                    const month = new Date(assignment.data.started_at).toISOString().substring(0, 7);
+                    if (!monthlyProgress[month]) monthlyProgress[month] = 0;
+                    monthlyProgress[month]++;
+                }
+            });
+
+            const months = Object.keys(monthlyProgress).sort();
+            const counts = months.map(month => monthlyProgress[month]);
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: 'Items Started',
+                        data: counts,
+                        backgroundColor: 'rgba(78, 205, 196, 0.6)',
+                        borderColor: '#4ecdc4',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { 
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: 'rgba(255, 255, 255, 0.7)' }
+                        },
+                        y: { 
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: 'rgba(255, 255, 255, 0.7)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.innerHTML = `<div class="error">${message}</div>`;
+        }
+
+        function showSuccess(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.innerHTML = `<div class="success">${message}</div>`;
+            setTimeout(() => {
+                errorDiv.innerHTML = '';
+            }, 3000);
+        }
+
+        // Allow Enter key to trigger data loading
+        document.getElementById('api-token').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                loadWaniKaniData();
+            }
+        });
+
+        // Check for stored token on page load
+        window.addEventListener('load', function() {
+            const storedToken = localStorage.getItem('wanikani-token');
+            if (storedToken) {
+                document.getElementById('api-token').value = storedToken;
+            }
+        });
+
+        // Save token to localStorage when loading data
+        function loadWaniKaniData() {
+            const token = document.getElementById('api-token').value.trim();
+            if (!token) {
+                showError('Please enter your API token');
+                return;
+            }
+
+            // Save token for future use
+            localStorage.setItem('wanikani-token', token);
+
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('api-setup').style.display = 'none';
+            
+            // Rest of the function remains the same...
+            loadData(token);
+        }
+
+        async function loadData(token) {
+            try {
+                // Load user data
+                const userResponse = await makeAPIRequest('/user', token);
+                userData = userResponse.data;
+
+                // Load all data in parallel
+                const [
+                    assignmentsData,
+                    subjectsData,
+                    reviewsData,
+                    reviewStatsData,
+                    levelProgressData,
+                    summaryData
+                ] = await Promise.all([
+                    fetchAllPages('/assignments', token),
+                    fetchAllPages('/subjects', token),
+                    fetchAllPages('/reviews', token),
+                    fetchAllPages('/review_statistics', token),
+                    fetchAllPages('/level_progressions', token),
+                    makeAPIRequest('/summary', token)
+                ]);
+
+                assignments = assignmentsData;
+                reviewStats = reviewStatsData;
+                reviews = reviewsData;
+                levelProgressions = levelProgressData;
+                summary = summaryData.data;
+
+                // Convert subjects array to object for easier lookup
+                subjects = {};
+                subjectsData.forEach(subject => {
+                    subjects[subject.id] = subject.data;
+                });
+
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                
+                renderDashboard();
+                showSuccess('Data loaded successfully!');
+
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('api-setup').style.display = 'block';
+                showError(`Error loading data: ${error.message}`);
+            }
+        }
+    </script>
+</body>
+</html>)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderSubjectDistributionChart() {
+            const ctx = document.getElementById('subject-distribution-chart').getContext('2d');
+            
+            const types = ['radical', 'kanji', 'vocabulary', 'kana_vocabulary'];
+            const counts = types.map(type => 
+                Object.values(subjects).filter(s => s.object === type).length
+            );
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Radicals', 'Kanji', 'Vocabulary', 'Kana Vocabulary'],
+                    datasets: [{
+                        data: counts,
+                        backgroundColor: ['#ff6b9d', '#4ecdc4', '#45b7d1', '#96ceb4']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: { color: 'rgba(255, 255, 255, 0.7)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderSRSChart() {
+            const ctx = document.getElementById('srs-chart').getContext('2d');
+            
+            const srsData = [1, 2, 3, 4, 5, 6, 7, 8, 9].map(stage => 
+                assignments.filter(a => a.data.srs_stage === stage).length
+            );
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['App I', 'App II', 'App III', 'App IV', 'Guru I', 'Guru II', 'Master', 'Enlightened', 'Burned'],
+                    datasets: [{
+                        data: srsData,
+                        backgroundColor: ['#dd0093', '#dd0093', '#dd0093', '#dd0093', '#882d9e', '#882d9e', '#294ddb', '#0093dd', '#434343']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { 
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: 'rgba(255, 255, 255, 0.7)' }
+                        },
+                        y: { 
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: 'rgba(255, 255, 255, 0.7)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderReviewForecastChart() {
+            const ctx = document.getElementById('review-forecast-chart').getContext('2d');
+            
+            const forecastData = summary.reviews.map(review => ({
+                x: new Date(review.available_at),
+                y: review.subject_ids.length
+            }));
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: [{
+                        label: 'Reviews Available',
+                        data: forecastData,
+                        borderColor: '#4ecdc4',
+                        backgroundColor: 'rgba(78, 205, 196, 0.1)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: { unit: 'hour' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: 'rgba(255, 255, 255, 0.7)' }
+                        },
+                        y: {
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: 'rgba(255, 255, 255, 0.7
