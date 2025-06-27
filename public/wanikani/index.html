@@ -428,7 +428,7 @@
                 </div>
                 <div class="stat-card">
                     <div class="stat-value" id="reviews-pending">0</div>
-                    <div class="stat-label">Reviews Available</div>
+                    <div class="stat-label">Reviews In Next 24 Hours</div>
                 </div>
             </div>
 
@@ -843,6 +843,8 @@
                 kana_vocabulary: 0
             };
 
+            console.log(subjects);
+
             Object.values(subjects).forEach(subject => {
                 if (subjectCounts.hasOwnProperty(subject.object)) {
                     subjectCounts[subject.object]++;
@@ -882,8 +884,6 @@
                     }
                 }
             });
-
-            console.log(subjects);
         }
 
         function renderSRSChart() {
@@ -1032,16 +1032,14 @@
         }
 
         function renderAccuracyByTypeChart() {
+
             const ctx = document.getElementById('accuracy-by-type-chart').getContext('2d');
             
             const typeAccuracy = {};
             const types = ['radical', 'kanji', 'vocabulary', 'kana_vocabulary'];
-            
+
             types.forEach(type => {
-                const stats = reviewStats.filter(stat => {
-                    const subjectId = stat.data.subject_id;
-                    return subjects[subjectId] && subjects[subjectId].object === type;
-                });
+                const stats = reviewStats.filter(stat => stat.data.subject_type === type);
                 
                 let totalCorrect = 0;
                 let totalAnswers = 0;
@@ -1146,7 +1144,7 @@
         function renderAccuracyTrendChart() {
             const ctx = document.getElementById('accuracy-trend-chart').getContext('2d');
             
-            // Since reviews array is empty, calculate from review statistics
+            // Since reviews endpoint is disabled, estimate accuracy trend from review statistics
             // Group by when items were last reviewed (approximation based on data_updated_at)
             const statsByMonth = {};
             
@@ -1385,28 +1383,31 @@
         }
 
         function calculateStreak() {
-            if (!reviews || reviews.length === 0) return 0;
+            // if (!reviews || reviews.length === 0) return 0;
             
-            const reviewDates = reviews
-                .map(r => new Date(r.data.created_at).toDateString())
-                .filter((date, index, array) => array.indexOf(date) === index)
-                .sort((a, b) => new Date(b) - new Date(a));
+            // const reviewDates = reviews
+            //     .map(r => new Date(r.data.created_at).toDateString())
+            //     .filter((date, index, array) => array.indexOf(date) === index)
+            //     .sort((a, b) => new Date(b) - new Date(a));
 
-            let streak = 0;
-            const today = new Date();
+            // let streak = 0;
+            // const today = new Date();
             
-            for (let i = 0; i < reviewDates.length; i++) {
-                const checkDate = new Date();
-                checkDate.setDate(checkDate.getDate() - i);
+            // for (let i = 0; i < reviewDates.length; i++) {
+            //     const checkDate = new Date();
+            //     checkDate.setDate(checkDate.getDate() - i);
                 
-                if (reviewDates.includes(checkDate.toDateString())) {
-                    streak++;
-                } else {
-                    break;
-                }
-            }
+            //     if (reviewDates.includes(checkDate.toDateString())) {
+            //         streak++;
+            //     } else {
+            //         break;
+            //     }
+            // }
             
-            return streak;
+            // return streak;
+
+            // WaniKani have disabled the /review endpoint, so we can't calculate the streak
+            return 0;
         }
 
         function exportData() {
