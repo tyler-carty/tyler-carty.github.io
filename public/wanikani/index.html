@@ -6,6 +6,7 @@
     <title>WaniKani Analytics Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/date-fns@2.29.3/index.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@2.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -301,28 +302,12 @@
             color: var(--text-primary);
         }
 
-        .accuracy-meter {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .accuracy-circle {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            color: white;
-        }
-
         .tabs {
             display: flex;
             gap: 1rem;
             margin-bottom: 2rem;
             border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
         }
 
         .tab {
@@ -348,6 +333,15 @@
             display: block;
         }
 
+        .export-section {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .export-button {
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 1rem;
@@ -363,6 +357,15 @@
 
             .charts-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                justify-content: center;
+            }
+
+            .tab {
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -418,6 +421,14 @@
                 <div class="stat-card">
                     <div class="stat-value" id="days-active">0</div>
                     <div class="stat-label">Days Active</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="current-streak">0</div>
+                    <div class="stat-label">Current Streak</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="reviews-pending">0</div>
+                    <div class="stat-label">Reviews Available</div>
                 </div>
             </div>
 
@@ -509,6 +520,10 @@
                     </div>
                 </div>
             </div>
+
+            <div class="export-section">
+                <button class="export-button" onclick="exportData()">Export Data</button>
+            </div>
         </div>
     </div>
 
@@ -520,6 +535,7 @@
         let reviewStats = [];
         let levelProgressions = [];
         let summary = {};
+        let charts = {};
 
         const API_BASE = 'https://api.wanikani.com/v2';
         const REVISION_HEADER = '20170710';
@@ -559,31 +575,42 @@
                 return;
             }
 
+            // Save token for future use
+            try {
+                localStorage.setItem('wanikani-token', token);
+            } catch (e) {
+                console.warn('Could not save token to localStorage:', e);
+            }
+
             document.getElementById('loading').style.display = 'block';
             document.getElementById('api-setup').style.display = 'none';
             
             try {
-                // Load user data
+                // Load user data first to validate token
+                updateLoadingMessage('Validating API token...');
                 const userResponse = await makeAPIRequest('/user', token);
                 userData = userResponse.data;
 
-                // Load all data in parallel
-                const [
-                    assignmentsData,
-                    subjectsData,
-                    reviewsData,
-                    reviewStatsData,
-                    levelProgressData,
-                    summaryData
-                ] = await Promise.all([
-                    fetchAllPages('/assignments', token),
-                    fetchAllPages('/subjects', token),
-                    fetchAllPages('/reviews', token),
-                    fetchAllPages('/review_statistics', token),
-                    fetchAllPages('/level_progressions', token),
-                    makeAPIRequest('/summary', token)
-                ]);
+                // Show progress updates
+                updateLoadingMessage('Loading assignments...');
+                const assignmentsData = await fetchAllPages('/assignments', token);
+                
+                updateLoadingMessage('Loading subjects...');
+                const subjectsData = await fetchAllPages('/subjects', token);
+                
+                updateLoadingMessage('Loading reviews...');
+                const reviewsData = await fetchAllPages('/reviews', token);
+                
+                updateLoadingMessage('Loading review statistics...');
+                const reviewStatsData = await fetchAllPages('/review_statistics', token);
+                
+                updateLoadingMessage('Loading level progressions...');
+                const levelProgressData = await fetchAllPages('/level_progressions', token);
+                
+                updateLoadingMessage('Loading summary...');
+                const summaryData = await makeAPIRequest('/summary', token);
 
+                // Store data globally
                 assignments = assignmentsData;
                 reviewStats = reviewStatsData;
                 reviews = reviewsData;
@@ -596,16 +623,32 @@
                     subjects[subject.id] = subject.data;
                 });
 
+                updateLoadingMessage('Generating visualizations...');
+                
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('dashboard').style.display = 'block';
                 
                 renderDashboard();
-                showSuccess('Data loaded successfully!');
+                showSuccess(`Successfully loaded ${assignmentsData.length} assignments, ${subjectsData.length} subjects, and ${reviewsData.length} reviews!`);
 
             } catch (error) {
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('api-setup').style.display = 'block';
-                showError(`Error loading data: ${error.message}`);
+                
+                if (error.message.includes('401')) {
+                    showError('Invalid API token. Please check your token and try again.');
+                } else if (error.message.includes('429')) {
+                    showError('Rate limit exceeded. Please wait a moment and try again.');
+                } else {
+                    showError(`Error loading data: ${error.message}`);
+                }
+            }
+        }
+
+        function updateLoadingMessage(message) {
+            const loadingElement = document.querySelector('#loading p');
+            if (loadingElement) {
+                loadingElement.textContent = message;
             }
         }
 
@@ -623,44 +666,64 @@
             let totalCorrect = 0;
             let totalAnswers = 0;
             reviewStats.forEach(stat => {
-                totalCorrect += stat.data.meaning_correct + stat.data.reading_correct;
-                totalAnswers += stat.data.meaning_correct + stat.data.reading_correct + 
-                               stat.data.meaning_incorrect + stat.data.reading_incorrect;
+                // Check if subject is a radical (they don't have readings)
+                const subjectId = stat.data.subject_id;
+                const isRadical = subjects[subjectId] && subjects[subjectId].object === 'radical';
+                
+                if (isRadical) {
+                    // Only count meaning for radicals
+                    totalCorrect += stat.data.meaning_correct;
+                    totalAnswers += stat.data.meaning_correct + stat.data.meaning_incorrect;
+                } else {
+                    // Count both meaning and reading for other types
+                    totalCorrect += stat.data.meaning_correct + stat.data.reading_correct;
+                    totalAnswers += stat.data.meaning_correct + stat.data.reading_correct + 
+                                stat.data.meaning_incorrect + stat.data.reading_incorrect;
+                }
             });
             
             const accuracy = totalAnswers > 0 ? Math.round((totalCorrect / totalAnswers) * 100) : 0;
             const daysActive = Math.floor((new Date() - new Date(userData.started_at)) / (1000 * 60 * 60 * 24));
+            const streak = calculateStreak();
+            const reviewsPending = summary.reviews ? summary.reviews.reduce((sum, r) => sum + r.subject_ids.length, 0) : 0;
 
             document.getElementById('total-subjects').textContent = totalSubjects.toLocaleString();
             document.getElementById('burned-count').textContent = burnedCount.toLocaleString();
             document.getElementById('review-accuracy').textContent = `${accuracy}%`;
             document.getElementById('days-active').textContent = daysActive.toLocaleString();
+            document.getElementById('current-streak').textContent = streak.toLocaleString();
+            document.getElementById('reviews-pending').textContent = reviewsPending.toLocaleString();
         }
 
         function renderLevelProgress() {
             const currentLevel = userData.level;
             const currentLevelAssignments = assignments.filter(a => 
-                subjects[a.data.subject_id] && subjects[a.data.subject_id].level === currentLevel
+                a.data.subject_id && subjects[a.data.subject_id] && subjects[a.data.subject_id].level === currentLevel
             );
             
-            const kanjiAssignments = currentLevelAssignments.filter(a => 
-                subjects[a.data.subject_id] && subjects[a.data.subject_id].object === 'kanji'
-            );
+            const kanjiAssignments = currentLevelAssignments.filter(a => {
+                const subjectId = a.data.subject_id;
+                return subjects[subjectId] && subjects[subjectId].object === 'kanji';
+            });
             
             const passedKanji = kanjiAssignments.filter(a => a.data.passed_at).length;
             const totalKanji = kanjiAssignments.length;
-            const progress = totalKanji > 0 ? (passedKanji / totalKanji) * 100 : 0;
+            
+            // WaniKani requires 90% of kanji to be passed to level up
+            const kanjiNeededToPass = Math.ceil(totalKanji * 0.9);
+            const progress = totalKanji > 0 ? (passedKanji / kanjiNeededToPass) * 100 : 0;
+            const cappedProgress = Math.min(progress, 100);
 
             document.getElementById('level-info').innerHTML = `
                 <h3>Level ${currentLevel}</h3>
-                <p>${passedKanji} of ${totalKanji} kanji passed (${Math.round(progress)}%)</p>
+                <p>${passedKanji} of ${kanjiNeededToPass} kanji needed (${totalKanji} total)</p>
             `;
 
-            document.getElementById('level-progress').style.width = `${progress}%`;
+            document.getElementById('level-progress').style.width = `${cappedProgress}%`;
             
             document.getElementById('level-details').innerHTML = `
                 <p style="margin-top: 1rem; color: var(--text-secondary);">
-                    ${90 - Math.round(progress)}% remaining to level up
+                    ${Math.max(0, kanjiNeededToPass - passedKanji)} more kanji needed to level up
                 </p>
             `;
         }
@@ -694,6 +757,12 @@
         }
 
         function renderCharts() {
+            // Destroy existing charts before creating new ones
+            Object.values(charts).forEach(chart => {
+                if (chart) chart.destroy();
+            });
+            charts = {};
+
             renderLevelTimelineChart();
             renderSubjectDistributionChart();
             renderSRSChart();
@@ -710,15 +779,26 @@
         function renderLevelTimelineChart() {
             const ctx = document.getElementById('level-timeline-chart').getContext('2d');
             
+            // Use passed_at instead of completed_at for level progressions
             const progressData = levelProgressions
-                .filter(p => p.data.completed_at)
-                .sort((a, b) => new Date(a.data.completed_at) - new Date(b.data.completed_at))
+                .filter(p => p.data.passed_at)
+                .sort((a, b) => new Date(a.data.passed_at) - new Date(b.data.passed_at))
                 .map(p => ({
-                    x: new Date(p.data.completed_at),
+                    x: new Date(p.data.passed_at),
                     y: p.data.level
                 }));
 
-            new Chart(ctx, {
+            // Add current level if not already passed
+            const currentLevel = userData.level;
+            const currentLevelProgression = levelProgressions.find(p => p.data.level === currentLevel);
+            if (currentLevelProgression && !currentLevelProgression.data.passed_at) {
+                progressData.push({
+                    x: new Date(),
+                    y: currentLevel
+                });
+            }
+
+            charts['levelTimeline'] = new Chart(ctx, {
                 type: 'line',
                 data: {
                     datasets: [{
@@ -736,9 +816,168 @@
                         legend: { display: false }
                     },
                     scales: {
+                        x: { 
+                            type: 'time',
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: 'rgba(255, 255, 255, 0.7)' }
+                        },
+                        y: { 
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { 
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderSubjectDistributionChart() {
+            const ctx = document.getElementById('subject-distribution-chart').getContext('2d');
+            
+            const subjectCounts = {
+                radical: 0,
+                kanji: 0,
+                vocabulary: 0,
+                kana_vocabulary: 0
+            };
+
+            Object.values(subjects).forEach(subject => {
+                if (subjectCounts.hasOwnProperty(subject.object)) {
+                    subjectCounts[subject.object]++;
+                }
+            });
+
+            charts['subjectDistribution'] = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Radicals', 'Kanji', 'Vocabulary', 'Kana Vocabulary'],
+                    datasets: [{
+                        data: [
+                            subjectCounts.radical,
+                            subjectCounts.kanji,
+                            subjectCounts.vocabulary,
+                            subjectCounts.kana_vocabulary
+                        ],
+                        backgroundColor: [
+                            '#00aaff',
+                            '#ff00aa',
+                            '#aa00ff',
+                            '#ffaa00'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                padding: 20
+                            }
+                        }
+                    }
+                }
+            });
+
+            console.log(subjects);
+        }
+
+        function renderSRSChart() {
+            const ctx = document.getElementById('srs-chart').getContext('2d');
+            
+            const srsData = {
+                'Apprentice': 0,
+                'Guru': 0,
+                'Master': 0,
+                'Enlightened': 0,
+                'Burned': 0
+            };
+
+            assignments.forEach(assignment => {
+                const stage = assignment.data.srs_stage;
+                if (stage >= 1 && stage <= 4) srsData['Apprentice']++;
+                else if (stage >= 5 && stage <= 6) srsData['Guru']++;
+                else if (stage === 7) srsData['Master']++;
+                else if (stage === 8) srsData['Enlightened']++;
+                else if (stage === 9) srsData['Burned']++;
+            });
+
+            charts['srsDistribution'] = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(srsData),
+                    datasets: [{
+                        label: 'Items',
+                        data: Object.values(srsData),
+                        backgroundColor: [
+                            '#dd0093',
+                            '#882d9e',
+                            '#294ddb',
+                            '#0093dd',
+                            '#434343'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: 'rgba(255, 255, 255, 0.7)' }
+                        },
+                        y: {
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: 'rgba(255, 255, 255, 0.7)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderReviewForecastChart() {
+            const ctx = document.getElementById('review-forecast-chart').getContext('2d');
+            
+            if (!summary.reviews || summary.reviews.length === 0) {
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.font = '16px Inter';
+                ctx.textAlign = 'center';
+                ctx.fillText('No upcoming reviews', ctx.canvas.width / 2, ctx.canvas.height / 2);
+                return;
+            }
+
+            const forecastData = summary.reviews
+                .filter(review => new Date(review.available_at) <= new Date(Date.now() + 24 * 60 * 60 * 1000))
+                .map(review => ({
+                    x: new Date(review.available_at),
+                    y: review.subject_ids.length
+                }));
+
+            charts['reviewForecast'] = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: [{
+                        label: 'Reviews Available',
+                        data: forecastData,
+                        borderColor: '#4ecdc4',
+                        backgroundColor: 'rgba(78, 205, 196, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
                         x: {
                             type: 'time',
-                            time: { unit: 'month' },
+                            time: { unit: 'hour' },
                             grid: { color: 'rgba(255, 255, 255, 0.1)' },
                             ticks: { color: 'rgba(255, 255, 255, 0.7)' }
                         },
@@ -763,7 +1002,7 @@
             const levels = Object.keys(levelData).sort((a, b) => a - b);
             const counts = levels.map(level => levelData[level]);
 
-            new Chart(ctx, {
+            charts['itemsByLevel'] = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: levels,
@@ -799,23 +1038,31 @@
             const types = ['radical', 'kanji', 'vocabulary', 'kana_vocabulary'];
             
             types.forEach(type => {
-                const stats = reviewStats.filter(stat => 
-                    subjects[stat.data.subject_id] && subjects[stat.data.subject_id].object === type
-                );
+                const stats = reviewStats.filter(stat => {
+                    const subjectId = stat.data.subject_id;
+                    return subjects[subjectId] && subjects[subjectId].object === type;
+                });
                 
                 let totalCorrect = 0;
                 let totalAnswers = 0;
                 
                 stats.forEach(stat => {
-                    totalCorrect += stat.data.meaning_correct + stat.data.reading_correct;
-                    totalAnswers += stat.data.meaning_correct + stat.data.reading_correct + 
-                                   stat.data.meaning_incorrect + stat.data.reading_incorrect;
+                    // For radicals, only count meaning reviews (they don't have readings)
+                    if (type === 'radical') {
+                        totalCorrect += stat.data.meaning_correct;
+                        totalAnswers += stat.data.meaning_correct + stat.data.meaning_incorrect;
+                    } else {
+                        // For other types, count both meaning and reading
+                        totalCorrect += stat.data.meaning_correct + stat.data.reading_correct;
+                        totalAnswers += stat.data.meaning_correct + stat.data.reading_correct + 
+                                    stat.data.meaning_incorrect + stat.data.reading_incorrect;
+                    }
                 });
                 
                 typeAccuracy[type] = totalAnswers > 0 ? (totalCorrect / totalAnswers) * 100 : 0;
             });
 
-            new Chart(ctx, {
+            charts['accuracyByType'] = new Chart(ctx, {
                 type: 'radar',
                 data: {
                     labels: ['Radicals', 'Kanji', 'Vocabulary', 'Kana Vocabulary'],
@@ -863,10 +1110,10 @@
                 }
             });
 
-            new Chart(ctx, {
+            charts['dailyReviews'] = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: Object.keys(last30Days),
+                    labels: Object.keys(last30Days).map(date => new Date(date).toLocaleDateString()),
                     datasets: [{
                         label: 'Reviews',
                         data: Object.values(last30Days),
@@ -899,27 +1146,45 @@
         function renderAccuracyTrendChart() {
             const ctx = document.getElementById('accuracy-trend-chart').getContext('2d');
             
-            const reviewsByMonth = {};
-            reviews.forEach(review => {
-                const month = new Date(review.data.created_at).toISOString().substring(0, 7);
-                if (!reviewsByMonth[month]) {
-                    reviewsByMonth[month] = { correct: 0, total: 0 };
+            // Since reviews array is empty, calculate from review statistics
+            // Group by when items were last reviewed (approximation based on data_updated_at)
+            const statsByMonth = {};
+            
+            reviewStats.forEach(stat => {
+                // Use data_updated_at as a proxy for review activity
+                const month = stat.data_updated_at.substring(0, 7);
+                if (!statsByMonth[month]) {
+                    statsByMonth[month] = { correct: 0, total: 0 };
                 }
                 
-                const totalAnswers = review.data.incorrect_meaning_answers + review.data.incorrect_reading_answers + 1;
-                const correctAnswers = 1;
-                
-                reviewsByMonth[month].correct += correctAnswers;
-                reviewsByMonth[month].total += totalAnswers;
+                // For radicals, only count meaning
+                if (subjects[stat.data.subject_id] && subjects[stat.data.subject_id].object === 'radical') {
+                    statsByMonth[month].correct += stat.data.meaning_correct;
+                    statsByMonth[month].total += stat.data.meaning_correct + stat.data.meaning_incorrect;
+                } else {
+                    // For other types, count both
+                    statsByMonth[month].correct += stat.data.meaning_correct + stat.data.reading_correct;
+                    statsByMonth[month].total += stat.data.meaning_correct + stat.data.reading_correct +
+                                                stat.data.meaning_incorrect + stat.data.reading_incorrect;
+                }
             });
             
-            const months = Object.keys(reviewsByMonth).sort();
+            const months = Object.keys(statsByMonth).sort();
             const accuracyData = months.map(month => {
-                const data = reviewsByMonth[month];
+                const data = statsByMonth[month];
                 return data.total > 0 ? (data.correct / data.total) * 100 : 0;
             });
 
-            new Chart(ctx, {
+            if (months.length === 0) {
+                ctx.font = '16px Inter';
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('No accuracy data available', ctx.canvas.width / 2, ctx.canvas.height / 2);
+                return;
+            }
+
+            charts['accuracyTrend'] = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: months,
@@ -962,15 +1227,23 @@
             const tbody = document.querySelector('#troublesome-items-table tbody');
             tbody.innerHTML = '';
 
+            if (troublesomeItems.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td colspan="5" style="text-align: center; color: var(--text-secondary);">No troublesome items found (great job!)</td>`;
+                tbody.appendChild(row);
+                return;
+            }
+
             troublesomeItems.forEach(stat => {
                 const subject = subjects[stat.data.subject_id];
                 if (subject) {
                     const row = document.createElement('tr');
+                    const displayName = subject.characters || (subject.meanings && subject.meanings[0] ? subject.meanings[0].meaning : 'Unknown');
                     row.innerHTML = `
-                        <td>${subject.characters || subject.meanings[0].meaning}</td>
+                        <td>${displayName}</td>
                         <td style="text-transform: capitalize;">${subject.object}</td>
                         <td>${subject.level}</td>
-                        <td>${stat.data.percentage_correct}%</td>
+                        <td>${Math.round(stat.data.percentage_correct)}%</td>
                         <td>${stat.data.meaning_correct + stat.data.reading_correct + 
                              stat.data.meaning_incorrect + stat.data.reading_incorrect}</td>
                     `;
@@ -990,14 +1263,15 @@
                 }))
                 .sort((a, b) => a.x - b.x);
 
-            new Chart(ctx, {
+            charts['learningTimeline'] = new Chart(ctx, {
                 type: 'scatter',
                 data: {
                     datasets: [{
                         label: 'Items Started',
                         data: timelineData,
                         backgroundColor: 'rgba(255, 107, 157, 0.6)',
-                        borderColor: '#ff6b9d'
+                        borderColor: '#ff6b9d',
+                        pointRadius: 3
                     }]
                 },
                 options: {
@@ -1035,7 +1309,7 @@
             const months = Object.keys(monthlyProgress).sort();
             const counts = months.map(month => monthlyProgress[month]);
 
-            new Chart(ctx, {
+            charts['monthlyProgress'] = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: months,
@@ -1079,20 +1353,115 @@
             document.getElementById(tabName).classList.add('active');
             
             // Add active class to clicked tab
-            event.target.classList.add('active');
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
+
+            // Re-render charts when tab becomes visible
+            setTimeout(() => {
+                Object.values(charts).forEach(chart => {
+                    if (chart && chart.resize) {
+                        chart.resize();
+                    }
+                });
+            }, 100);
+        }
+
+        function showTabByName(tabName) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(tabName).classList.add('active');
+            
+            const tabButton = document.querySelector(`[onclick="showTab('${tabName}')"]`);
+            if (tabButton) {
+                tabButton.classList.add('active');
+            }
+        }
+
+        function calculateStreak() {
+            if (!reviews || reviews.length === 0) return 0;
+            
+            const reviewDates = reviews
+                .map(r => new Date(r.data.created_at).toDateString())
+                .filter((date, index, array) => array.indexOf(date) === index)
+                .sort((a, b) => new Date(b) - new Date(a));
+
+            let streak = 0;
+            const today = new Date();
+            
+            for (let i = 0; i < reviewDates.length; i++) {
+                const checkDate = new Date();
+                checkDate.setDate(checkDate.getDate() - i);
+                
+                if (reviewDates.includes(checkDate.toDateString())) {
+                    streak++;
+                } else {
+                    break;
+                }
+            }
+            
+            return streak;
+        }
+
+        function exportData() {
+            if (!userData || Object.keys(subjects).length === 0) {
+                showError('No data to export. Please load your WaniKani data first.');
+                return;
+            }
+
+            const exportData = {
+                user: {
+                    username: userData.username,
+                    level: userData.level,
+                    started_at: userData.started_at
+                },
+                stats: {
+                    totalSubjects: Object.keys(subjects).length,
+                    burnedCount: assignments.filter(a => a.data.burned_at).length,
+                    currentLevel: userData.level,
+                    streak: calculateStreak(),
+                    totalReviews: reviews.length
+                },
+                srsDistribution: [1, 2, 3, 4, 5, 6, 7, 8, 9].map(stage => ({
+                    stage: stage,
+                    count: assignments.filter(a => a.data.srs_stage === stage).length
+                })),
+                exportDate: new Date().toISOString()
+            };
+
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], {
+                type: 'application/json'
+            });
+            
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `wanikani-stats-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showSuccess('Data exported successfully!');
         }
 
         function showError(message) {
             const errorDiv = document.getElementById('error-message');
-            errorDiv.innerHTML = `<div class="error">${message}</div>`;
+            errorDiv.innerHTML = `<div class="error">❌ ${message}</div>`;
         }
 
         function showSuccess(message) {
             const errorDiv = document.getElementById('error-message');
-            errorDiv.innerHTML = `<div class="success">${message}</div>`;
+            errorDiv.innerHTML = `<div class="success">✅ ${message}</div>`;
             setTimeout(() => {
                 errorDiv.innerHTML = '';
-            }, 3000);
+            }, 5000);
         }
 
         // Allow Enter key to trigger data loading
@@ -1104,176 +1473,67 @@
 
         // Check for stored token on page load
         window.addEventListener('load', function() {
-            const storedToken = localStorage.getItem('wanikani-token');
-            if (storedToken) {
-                document.getElementById('api-token').value = storedToken;
+            try {
+                const storedToken = localStorage.getItem('wanikani-token');
+                if (storedToken) {
+                    document.getElementById('api-token').value = storedToken;
+                }
+            } catch (e) {
+                console.warn('Could not access localStorage:', e);
             }
         });
 
-        // Save token to localStorage when loading data
-        function loadWaniKaniData() {
-            const token = document.getElementById('api-token').value.trim();
-            if (!token) {
-                showError('Please enter your API token');
-                return;
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case '1':
+                        e.preventDefault();
+                        showTabByName('overview');
+                        break;
+                    case '2':
+                        e.preventDefault();
+                        showTabByName('srs');
+                        break;
+                    case '3':
+                        e.preventDefault();
+                        showTabByName('subjects');
+                        break;
+                    case '4':
+                        e.preventDefault();
+                        showTabByName('reviews');
+                        break;
+                    case '5':
+                        e.preventDefault();
+                        showTabByName('timeline');
+                        break;
+                }
             }
+        });
 
-            // Save token for future use
-            localStorage.setItem('wanikani-token', token);
-
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('api-setup').style.display = 'none';
-            
-            // Rest of the function remains the same...
-            loadData(token);
-        }
-
-        async function loadData(token) {
-            try {
-                // Load user data
-                const userResponse = await makeAPIRequest('/user', token);
-                userData = userResponse.data;
-
-                // Load all data in parallel
-                const [
-                    assignmentsData,
-                    subjectsData,
-                    reviewsData,
-                    reviewStatsData,
-                    levelProgressData,
-                    summaryData
-                ] = await Promise.all([
-                    fetchAllPages('/assignments', token),
-                    fetchAllPages('/subjects', token),
-                    fetchAllPages('/reviews', token),
-                    fetchAllPages('/review_statistics', token),
-                    fetchAllPages('/level_progressions', token),
-                    makeAPIRequest('/summary', token)
-                ]);
-
-                assignments = assignmentsData;
-                reviewStats = reviewStatsData;
-                reviews = reviewsData;
-                levelProgressions = levelProgressData;
-                summary = summaryData.data;
-
-                // Convert subjects array to object for easier lookup
-                subjects = {};
-                subjectsData.forEach(subject => {
-                    subjects[subject.id] = subject.data;
-                });
-
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('dashboard').style.display = 'block';
-                
-                renderDashboard();
-                showSuccess('Data loaded successfully!');
-
-            } catch (error) {
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('api-setup').style.display = 'block';
-                showError(`Error loading data: ${error.message}`);
-            }
-        }
+        // Console welcome message
+        console.log(`
+            ╭─────────────────────────────────────────╮
+            │      WaniKani Analytics Dashboard       │
+            │                                         │
+            │  Features:                              │
+            │  • Comprehensive progress tracking      │
+            │  • SRS distribution analysis            │
+            │  • Review performance metrics           │
+            │  • Level progression timeline           │
+            │  • Subject breakdown & accuracy         │
+            │                                         │
+            │  Keyboard Shortcuts:                    │
+            │  • Ctrl/Cmd + 1-5: Switch tabs          │
+            │  • Enter: Load data                     │
+            │                                         │
+            │  Functions available:                   │
+            │  • exportData(): Export your stats      │
+            │                                         │
+            │  Need help? Check the WaniKani API:     │
+            │  docs.api.wanikani.com                  │
+            ╰─────────────────────────────────────────╯
+        `);
     </script>
 </body>
-</html>)' }
-                        }
-                    }
-                }
-            });
-        }
-
-        function renderSubjectDistributionChart() {
-            const ctx = document.getElementById('subject-distribution-chart').getContext('2d');
-            
-            const types = ['radical', 'kanji', 'vocabulary', 'kana_vocabulary'];
-            const counts = types.map(type => 
-                Object.values(subjects).filter(s => s.object === type).length
-            );
-
-            new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Radicals', 'Kanji', 'Vocabulary', 'Kana Vocabulary'],
-                    datasets: [{
-                        data: counts,
-                        backgroundColor: ['#ff6b9d', '#4ecdc4', '#45b7d1', '#96ceb4']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            labels: { color: 'rgba(255, 255, 255, 0.7)' }
-                        }
-                    }
-                }
-            });
-        }
-
-        function renderSRSChart() {
-            const ctx = document.getElementById('srs-chart').getContext('2d');
-            
-            const srsData = [1, 2, 3, 4, 5, 6, 7, 8, 9].map(stage => 
-                assignments.filter(a => a.data.srs_stage === stage).length
-            );
-
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['App I', 'App II', 'App III', 'App IV', 'Guru I', 'Guru II', 'Master', 'Enlightened', 'Burned'],
-                    datasets: [{
-                        data: srsData,
-                        backgroundColor: ['#dd0093', '#dd0093', '#dd0093', '#dd0093', '#882d9e', '#882d9e', '#294ddb', '#0093dd', '#434343']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { 
-                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
-                            ticks: { color: 'rgba(255, 255, 255, 0.7)' }
-                        },
-                        y: { 
-                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
-                            ticks: { color: 'rgba(255, 255, 255, 0.7)' }
-                        }
-                    }
-                }
-            });
-        }
-
-        function renderReviewForecastChart() {
-            const ctx = document.getElementById('review-forecast-chart').getContext('2d');
-            
-            const forecastData = summary.reviews.map(review => ({
-                x: new Date(review.available_at),
-                y: review.subject_ids.length
-            }));
-
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    datasets: [{
-                        label: 'Reviews Available',
-                        data: forecastData,
-                        borderColor: '#4ecdc4',
-                        backgroundColor: 'rgba(78, 205, 196, 0.1)',
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: {
-                            type: 'time',
-                            time: { unit: 'hour' },
-                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
-                            ticks: { color: 'rgba(255, 255, 255, 0.7)' }
-                        },
-                        y: {
-                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
-                            ticks: { color: 'rgba(255, 255, 255, 0.7
+</html>
