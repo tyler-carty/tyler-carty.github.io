@@ -18,8 +18,8 @@ export const portfolioData = {
   // ============================================
   personalInfo: {
     name: "Tyler Cartwright",
-    title: "Software Engineer | Data Scientist | ML Engineer",
-    email: "contact@tylercartwright.co.uk", // Update with your actual email
+    title: "Data Nerd | Freelance Software",
+    email: "tylercartwright2606@gmail.com",
     location: "United Kingdom",
     tagline: "Building intelligent systems that solve real-world problems. Specializing in machine learning, cloud architecture, and data engineering.",
     resumeUrl: "/resume.pdf",
@@ -42,11 +42,11 @@ export const portfolioData = {
       team: "Economic Crime Prevention Platform",
       description: "Leading data science initiatives to combat financial crime through advanced analytics and machine learning.",
       achievements: [
-        "Developing ML models for fraud detection and prevention",
+        "Development of machine learning models for AML purposes",
         "Building scalable data pipelines for real-time transaction monitoring",
         "Collaborating with cross-functional teams to implement AI-driven solutions"
       ],
-      technologies: ["Python", "Machine Learning", "Data Analytics", "Cloud Platforms"]
+      technologies: ["Python", "Machine Learning", "Data Analytics", "GCP"]
     },
     {
       id: 2,
@@ -58,10 +58,10 @@ export const portfolioData = {
       description: "Built and maintained data infrastructure supporting fraud detection systems.",
       achievements: [
         "Designed and implemented ETL pipelines processing millions of transactions daily",
-        "Optimized data warehouse queries improving performance by 40%",
-        "Developed automated data quality monitoring systems"
+        "Introduced over 100 new data points to the data warehouse, directly improving the accuracy of the models",
+        "Optimized spark applications for performance and cost efficiency, saving £500,000 per year"
       ],
-      technologies: ["Python", "SQL", "Apache Spark", "AWS", "Data Warehousing"]
+      technologies: ["Python", "SQL", "Apache Spark", "GCP", "Data Warehousing"]
     },
     {
       id: 3,
@@ -72,11 +72,11 @@ export const portfolioData = {
       team: "Homes Platform",
       description: "Contributed to cloud-native applications supporting mortgage services.",
       achievements: [
-        "Developed microservices using modern cloud architecture patterns",
-        "Implemented CI/CD pipelines reducing deployment time by 60%",
-        "Collaborated on API design and documentation"
+        "Developed incident detection systems within Azure to reduce response times from hours to minutes",
+        "Migrated a central microservices application to Azure to improve scalability and reliability",
+        "Automated health checks and alerting systems to reduce application downtime by 50%"
       ],
-      technologies: ["Java", "Spring Boot", "AWS", "Docker", "Kubernetes", "CI/CD"]
+      technologies: ["Javascript", "Azure", "Docker", "Kubernetes", "CI/CD"]
     }
   ],
 
@@ -91,11 +91,11 @@ export const portfolioData = {
       period: "June 2024 - May 2025",
       description: "Developed a comprehensive staff management platform for event venues.",
       achievements: [
-        "Built full-stack web application with real-time scheduling capabilities",
+        "Built full-stack web application to handle shift tracking and payroll management",
         "Implemented role-based access control and automated reporting",
-        "Reduced administrative overhead by 50% through automation"
+        "Reduced administrative overhead by 95% through automation of manual tasks"
       ],
-      technologies: ["React", "Node.js", "PostgreSQL", "AWS"]
+      technologies: ["React", "Node.js"]
     }
   ],
 
@@ -108,7 +108,7 @@ export const portfolioData = {
       title: "Staff Management System",
       category: "Freelance",
       description: "Full-stack staff scheduling and management platform for event venues. Features include shift scheduling, automated reporting, and mobile-responsive design.",
-      technologies: ["React", "Node.js", "PostgreSQL", "AWS"],
+      technologies: ["React", "Node.js"],
       github: null, // Private client work
       demo: null,
       featured: true
@@ -118,7 +118,7 @@ export const portfolioData = {
       title: "Economic Crime ML Models",
       category: "Work",
       description: "Machine learning models for fraud detection and prevention, processing millions of transactions in real-time.",
-      technologies: ["Python", "TensorFlow", "Apache Spark", "AWS"],
+      technologies: ["Python", "Machine Learning", "Data Analytics", "GCP"],
       github: null, // Proprietary
       demo: null,
       featured: true
@@ -128,7 +128,7 @@ export const portfolioData = {
       title: "Data Pipeline Architecture",
       category: "Work",
       description: "Scalable ETL pipelines for real-time transaction monitoring and data warehousing.",
-      technologies: ["Python", "Apache Airflow", "Spark", "AWS Glue"],
+      technologies: ["Python", "SQL", "Apache Spark", "GCP", "Data Warehousing"],
       github: null, // Proprietary
       demo: null,
       featured: true
@@ -143,6 +143,16 @@ export const portfolioData = {
       github: "https://github.com/tyler-carty/tyler-carty.github.io",
       demo: "https://tylercartwright.co.uk",
       featured: false
+    },
+    {
+      id: 5,
+      title: "WaniKani Statistics Tracker",
+      category: "Educational",
+      description: "A web application to track and visualize WaniKani progress. Shared with thousands of users to help them track their progress and stay motivated.",
+      technologies: ["Javascript", "PWA", "Github Actions"],
+      github: "https://github.com/tyler-cartwright/wanikani-stats-tracker",
+      demo: "https://tyler-cartwright.github.io/wanikani-stats-tracker/",
+      featured: false
     }
   ],
 
@@ -155,11 +165,10 @@ export const portfolioData = {
       "JavaScript",
       "TypeScript",
       "Java",
-      "SQL",
-      "R"
+      "SQL"
     ],
     cloud: [
-      "AWS (Lambda, S3, EC2, Glue, Redshift)",
+      "GCP",
       "Azure",
       "Docker",
       "Kubernetes",
@@ -167,28 +176,23 @@ export const portfolioData = {
     ],
     dataScience: [
       "Machine Learning",
-      "Deep Learning",
-      "TensorFlow",
-      "PyTorch",
       "Scikit-learn",
+      "LightGBM",
       "Pandas",
       "NumPy"
     ],
     dataEngineering: [
       "Apache Spark",
-      "Apache Airflow",
+      "BigQuery",
+      "Java",
       "ETL Pipelines",
       "Data Warehousing",
-      "PostgreSQL",
-      "MongoDB"
     ],
     webDevelopment: [
       "React",
       "Node.js",
       "Express",
       "REST APIs",
-      "GraphQL",
-      "Spring Boot"
     ],
     tools: [
       "Git",
@@ -213,7 +217,7 @@ export const portfolioData = {
       achievements: [
         "Dean's Award recipient (all years)",
         "Specialized in Machine Learning and Data Science",
-        "Final year project: Advanced ML techniques for predictive analytics"
+        "Final year project: Analysis of advanced ML techniques for predictive analytics in finance"
       ]
     }
   ]
