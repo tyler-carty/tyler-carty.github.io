@@ -2,57 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Base styles */
-:root {
-  --content-width: min(90vw, 1200px);
-  --header-height: 60px;
-}
+/* ============================================
+   BASE STYLES
+   ============================================ */
 
-/* Global scroll behavior */
-html, body {
-  overflow: hidden;
-  height: 100%;
-  overscroll-behavior: none;
-  touch-action: none;
-  -webkit-tap-highlight-color: transparent;
-}
-
-/* Better font rendering */
-body {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  @apply text-base md:text-lg;
-}
-
-/* Glass effect utility */
-.glass {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Mobile touch optimization */
-@media (hover: none) {
-  .hover\:scale-105 {
-    transform: none !important;
+/* Modern CSS reset and base */
+@layer base {
+  html {
+    @apply scroll-smooth;
   }
 
-  .h-screen {
-    height: 100vh;
-    height: -webkit-fill-available;
+  body {
+    @apply font-sans antialiased;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
-/* For mobile viewport height */
-@supports (-webkit-touch-callout: none) {
-  .h-screen {
-    height: -webkit-fill-available;
-  }
-}
+/* ============================================
+   CUSTOM UTILITIES
+   ============================================ */
 
-/* Responsive text utilities */
 @layer utilities {
+  /* Text balance utilities */
   .text-balance {
     text-wrap: balance;
   }
@@ -60,9 +32,91 @@ body {
   .text-pretty {
     text-wrap: pretty;
   }
+
+  /* Container utilities */
+  .container-custom {
+    width: 100%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
 }
 
-/* Custom animations */
+/* ============================================
+   THEME VARIABLES
+   ============================================ */
+
+:root {
+  --content-width: min(90vw, 1200px);
+
+  /* Light theme colors */
+  --color-bg-light: #ffffff;
+  --color-text-light: #1e293b;
+  --color-accent-light: #3b82f6;
+
+  /* Dark theme colors (default) */
+  --color-bg-dark: #0f172a;
+  --color-text-dark: #f8fafc;
+  --color-accent-dark: #3b82f6;
+}
+
+/* ============================================
+   CUSTOM SCROLLBAR
+   ============================================ */
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-slate-900;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-700 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-600;
+}
+
+/* Light mode scrollbar */
+.light ::-webkit-scrollbar-track {
+  @apply bg-slate-100;
+}
+
+.light ::-webkit-scrollbar-thumb {
+  @apply bg-slate-300;
+}
+
+.light ::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-400;
+}
+
+/* ============================================
+   FOCUS STYLES (ACCESSIBILITY)
+   ============================================ */
+
+:focus-visible {
+  outline: 2px solid theme('colors.blue.500');
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid theme('colors.blue.500');
+  outline-offset: 2px;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
 @keyframes float {
   0%, 100% {
     transform: translateY(0);
@@ -72,42 +126,237 @@ body {
   }
 }
 
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  }
+  50% {
+    opacity: 0.8;
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+  }
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 .animate-float {
   animation: float 3s ease-in-out infinite;
 }
 
-/* Focus styles for better accessibility */
-:focus-visible {
-  outline: 2px solid theme('colors.blue.400');
-  outline-offset: 2px;
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-gradient {
+  animation: gradient-shift 3s ease infinite;
+  background-size: 200% 200%;
+}
+
+/* ============================================
+   PRINT STYLES
+   ============================================ */
+
+@media print {
+  /* Hide non-essential elements when printing */
+  button,
+  .no-print,
+  [role="button"],
+  header nav {
+    display: none !important;
+  }
+
+  /* Ensure proper page breaks */
+  section {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Remove backgrounds and shadows for print */
+  * {
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Show links */
+  a[href]:after {
+    content: " (" attr(href) ")";
+  }
+
+  /* Better spacing for print */
+  body {
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+
+  h1 {
+    font-size: 24pt;
+  }
+
+  h2 {
+    font-size: 18pt;
+  }
+
+  h3 {
+    font-size: 14pt;
+  }
+
+  /* Ensure links are visible */
+  a {
+    color: #0000ee !important;
+    text-decoration: underline;
+  }
+}
+
+/* ============================================
+   MOBILE OPTIMIZATIONS
+   ============================================ */
+
+/* Better mobile viewport handling */
+@supports (-webkit-touch-callout: none) {
+  .min-h-screen {
+    min-height: -webkit-fill-available;
+  }
+}
+
+/* Disable hover effects on touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .hover\:scale-105:hover {
+    transform: none;
+  }
+
+  .hover\:shadow-xl:hover {
+    box-shadow: none;
+  }
+}
+
+/* Remove tap highlight on mobile */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ============================================
+   DARK MODE SPECIFIC STYLES
+   ============================================ */
+
+.dark {
+  color-scheme: dark;
+}
+
+.light {
+  color-scheme: light;
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
+/* Glass effect utility */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Prevent text selection on interactive elements */
 .no-select {
   -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
   user-select: none;
 }
 
-/* Remove any existing snap scroll behavior */
-* {
-  scroll-snap-type: none;
+/* Optimize animations for performance */
+.will-change-transform {
+  will-change: transform;
 }
 
-/* Hide scrollbars but keep functionality */
-* {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;     /* Firefox */
-}
-
-*::-webkit-scrollbar {
-  display: none;
-}
-
-/* Optimize animations */
-.touch-none {
-  touch-action: none;
-  -webkit-overflow-scrolling: touch;
+.gpu-accelerated {
   transform: translateZ(0);
   backface-visibility: hidden;
   perspective: 1000px;
+}
+
+/* ============================================
+   TYPOGRAPHY IMPROVEMENTS
+   ============================================ */
+
+/* Better text rendering */
+body {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Responsive font sizes */
+html {
+  font-size: 16px;
+}
+
+@media (max-width: 640px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+/* ============================================
+   SECTION SPACING
+   ============================================ */
+
+section {
+  position: relative;
+  scroll-margin-top: 2rem;
+}
+
+/* ============================================
+   LOADING STATES
+   ============================================ */
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.loading-skeleton {
+  animation: shimmer 2s infinite linear;
+  background: linear-gradient(
+    to right,
+    #334155 0%,
+    #475569 20%,
+    #334155 40%,
+    #334155 100%
+  );
+  background-size: 1000px 100%;
+}
+
+/* ============================================
+   REDUCED MOTION
+   ============================================ */
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
