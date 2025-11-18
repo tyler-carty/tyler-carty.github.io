@@ -1,99 +1,127 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Portfolio from './components/Portfolio';
-import { Download } from 'lucide-react';
+import { Moon, Sun } from 'lucide-react';
 
-const App = () => {
-    return (
-        <AnimatePresence mode="wait">
-            <div className="min-h-screen bg-slate-900 font-sans antialiased">
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className="relative"
-                >
-                    {/* Background Elements */}
-                    <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900" />
-                    <div
-                        className="fixed inset-0 opacity-10"
-                        style={{
-                            backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
-                            backgroundSize: '24px 24px'
-                        }}
-                    />
+// Import components
+import Hero from './components/Hero';
+import ExperienceSection from './components/ExperienceSection';
+import ProjectsSection from './components/ProjectsSection';
+import SkillsSection from './components/SkillsSection';
+import EducationSection from './components/EducationSection';
+import Footer from './components/Footer';
 
-                    {/* Main Content */}
-                    <main className="relative z-10">
-                        <Portfolio />
-                    </main>
+// Import data
+import portfolioData from './data/portfolioData';
 
-                    {/* Social Links Footer */}
-                    <footer className="fixed bottom-4 right-4 flex gap-2 md:gap-4 z-50">
-                        {/* Resume Download Button */}
-                        <motion.a
-                            href="/resume.pdf"
-                            download="tyler-cartwright-resume.pdf"
-                            className="p-2 rounded-full bg-slate-800/50 backdrop-blur-sm hover:bg-slate-700/50 transition-colors"
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                            aria-label="Download Resume"
-                        >
-                            <Download className="w-4 h-4 md:w-5 md:h-5" />
-                        </motion.a>
-                        {/* GitHub Link */}
-                        <motion.a
-                            href="https://github.com/tyler-carty"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-2 rounded-full bg-slate-800/50 backdrop-blur-sm hover:bg-slate-700/50 transition-colors"
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                            aria-label="GitHub Profile"
-                        >
-                            <svg
-                                className="w-4 h-4 md:w-5 md:h-5"
-                                fill="currentColor"
-                                viewBox="0 0 24 24"
-                                aria-hidden="true"
-                            >
-                                <path
-                                    fillRule="evenodd"
-                                    d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
-                                    clipRule="evenodd"
-                                />
-                            </svg>
-                        </motion.a>
+/**
+ * Main App Component
+ *
+ * Root component that assembles all sections of the portfolio.
+ * Features:
+ * - Dark/Light theme toggle
+ * - Smooth scroll behavior
+ * - Responsive design
+ * - Framer Motion animations
+ */
+function App() {
+  // Theme state - defaults to dark
+  const [isDarkMode, setIsDarkMode] = useState(true);
 
-                        {/* LinkedIn Link */}
-                        <motion.a
-                            href="https://linkedin.com/in/tyler-reece-cartwright"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-2 rounded-full bg-slate-800/50 backdrop-blur-sm hover:bg-slate-700/50 transition-colors"
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                            aria-label="LinkedIn Profile"
-                        >
-                            <svg
-                                className="w-4 h-4 md:w-5 md:h-5"
-                                fill="currentColor"
-                                viewBox="0 0 24 24"
-                                aria-hidden="true"
-                            >
-                                <path
-                                    fillRule="evenodd"
-                                    d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"
-                                    clipRule="evenodd"
-                                />
-                            </svg>
-                        </motion.a>
-                    </footer>
-                </motion.div>
-            </div>
-        </AnimatePresence>
-    );
-};
+  // Load theme preference from localStorage on mount
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      setIsDarkMode(savedTheme === 'dark');
+    }
+  }, []);
+
+  // Save theme preference to localStorage and update document class
+  useEffect(() => {
+    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDarkMode]);
+
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
+  };
+
+  return (
+    <AnimatePresence mode="wait">
+      <div className={`min-h-screen font-sans antialiased transition-colors duration-300 ${
+        isDarkMode ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'
+      }`}>
+        {/* Background Elements */}
+        <div className={`fixed inset-0 transition-colors duration-300 ${
+          isDarkMode
+            ? 'bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900'
+            : 'bg-gradient-to-br from-slate-50 via-white to-slate-100'
+        }`} />
+
+        {/* Grid Pattern Overlay */}
+        <div
+          className={`fixed inset-0 transition-opacity duration-300 ${
+            isDarkMode ? 'opacity-10' : 'opacity-5'
+          }`}
+          style={{
+            backgroundImage: `radial-gradient(circle at 2px 2px, ${
+              isDarkMode ? 'white' : 'black'
+            } 1px, transparent 0)`,
+            backgroundSize: '24px 24px'
+          }}
+        />
+
+        {/* Theme Toggle Button */}
+        <motion.button
+          onClick={toggleTheme}
+          className={`fixed top-8 right-8 z-50 p-3 rounded-full shadow-lg transition-all duration-300 ${
+            isDarkMode
+              ? 'bg-slate-800/80 backdrop-blur-sm hover:bg-slate-700 text-yellow-400 border border-slate-700'
+              : 'bg-white/80 backdrop-blur-sm hover:bg-slate-100 text-slate-800 border border-slate-200'
+          }`}
+          whileHover={{ scale: 1.1, rotate: 180 }}
+          whileTap={{ scale: 0.9 }}
+          aria-label="Toggle theme"
+        >
+          {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+        </motion.button>
+
+        {/* Main Content */}
+        <main className="relative z-10">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            {/* Hero Section */}
+            <Hero data={portfolioData.personalInfo} />
+
+            {/* Experience Section */}
+            <ExperienceSection
+              experience={portfolioData.experience}
+              freelanceExperience={portfolioData.freelanceExperience}
+            />
+
+            {/* Projects Section */}
+            <ProjectsSection projects={portfolioData.projects} />
+
+            {/* Skills Section */}
+            <SkillsSection skills={portfolioData.skills} />
+
+            {/* Education Section */}
+            <EducationSection education={portfolioData.education} />
+
+            {/* Footer / Contact */}
+            <Footer data={portfolioData.personalInfo} />
+          </motion.div>
+        </main>
+      </div>
+    </AnimatePresence>
+  );
+}
 
 export default App;
