@@ -8,7 +8,7 @@ import { Briefcase, ChevronDown, ChevronUp } from 'lucide-react';
  * Expandable card showing work experience details.
  * Click to expand/collapse for more information.
  */
-const ExperienceCard = ({ experience, index }) => {
+const ExperienceCard = ({ experience, index, isDarkMode }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
@@ -20,12 +20,20 @@ const ExperienceCard = ({ experience, index }) => {
       className="relative"
     >
       {/* Timeline Dot */}
-      <div className="absolute left-0 md:left-1/2 md:-translate-x-1/2 w-4 h-4 bg-blue-500 rounded-full mt-2 z-10 ring-4 ring-slate-900" />
+      <div className={`absolute left-0 md:left-1/2 md:-translate-x-1/2 w-4 h-4 ${
+        experience.isFreelance ? 'bg-purple-500' : 'bg-blue-500'
+      } rounded-full mt-2 z-10 ring-4 ${
+        isDarkMode ? 'ring-slate-900' : 'ring-slate-50'
+      }`} />
 
       {/* Card */}
       <div className={`ml-8 md:ml-0 ${index % 2 === 0 ? 'md:pr-[52%]' : 'md:pl-[52%]'}`}>
         <motion.div
-          className="bg-slate-800/50 backdrop-blur-sm rounded-lg p-6 border border-slate-700 hover:border-blue-500/50 transition-all duration-300 cursor-pointer shadow-lg"
+          className={`rounded-lg p-6 border transition-all duration-300 cursor-pointer shadow-lg ${
+            isDarkMode
+              ? 'bg-slate-800/50 border-slate-700 hover:border-blue-500/50'
+              : 'bg-white border-slate-200 hover:border-blue-500/50'
+          }`}
           onClick={() => setIsExpanded(!isExpanded)}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
@@ -33,30 +41,53 @@ const ExperienceCard = ({ experience, index }) => {
           {/* Header */}
           <div className="flex items-start justify-between mb-3">
             <div className="flex-1">
-              <h3 className="text-xl font-bold text-white mb-1">{experience.role}</h3>
-              <p className="text-blue-400 font-medium">{experience.company}</p>
-              <p className="text-sm text-slate-400 mt-1">{experience.team}</p>
+              <div className="flex items-center gap-2 mb-1 flex-wrap">
+                <h3 className={`text-xl font-bold ${
+                  isDarkMode ? 'text-white' : 'text-slate-900'
+                }`}>{experience.role}</h3>
+                {experience.isFreelance && (
+                  <span className="px-2 py-0.5 text-xs font-medium bg-purple-500/10 text-purple-600 dark:text-purple-400 rounded-full border border-purple-500/20">
+                    Freelance
+                  </span>
+                )}
+              </div>
+              <p className={`font-medium ${
+                isDarkMode ? 'text-blue-400' : 'text-blue-600'
+              }`}>{experience.company}</p>
+              {experience.team && (
+                <p className={`text-sm mt-1 ${
+                  isDarkMode ? 'text-slate-400' : 'text-slate-600'
+                }`}>{experience.team}</p>
+              )}
             </div>
             <motion.div
               animate={{ rotate: isExpanded ? 180 : 0 }}
               transition={{ duration: 0.3 }}
             >
               {isExpanded ? (
-                <ChevronUp className="w-5 h-5 text-slate-400" />
+                <ChevronUp className={`w-5 h-5 ${
+                  isDarkMode ? 'text-slate-400' : 'text-slate-600'
+                }`} />
               ) : (
-                <ChevronDown className="w-5 h-5 text-slate-400" />
+                <ChevronDown className={`w-5 h-5 ${
+                  isDarkMode ? 'text-slate-400' : 'text-slate-600'
+                }`} />
               )}
             </motion.div>
           </div>
 
           {/* Period */}
-          <p className="text-sm text-slate-400 mb-3 flex items-center gap-2">
+          <p className={`text-sm mb-3 flex items-center gap-2 ${
+            isDarkMode ? 'text-slate-400' : 'text-slate-600'
+          }`}>
             <Briefcase className="w-4 h-4" />
             {experience.period}
           </p>
 
           {/* Description */}
-          <p className="text-slate-300 mb-4">{experience.description}</p>
+          <p className={`mb-4 ${
+            isDarkMode ? 'text-slate-300' : 'text-slate-700'
+          }`}>{experience.description}</p>
 
           {/* Expandable Content */}
           <AnimatePresence>
@@ -68,12 +99,20 @@ const ExperienceCard = ({ experience, index }) => {
                 transition={{ duration: 0.3 }}
               >
                 {/* Achievements */}
-                <div className="mb-4 pt-4 border-t border-slate-700">
-                  <h4 className="text-sm font-semibold text-white mb-2">Key Achievements:</h4>
+                <div className={`mb-4 pt-4 border-t ${
+                  isDarkMode ? 'border-slate-700' : 'border-slate-200'
+                }`}>
+                  <h4 className={`text-sm font-semibold mb-2 ${
+                    isDarkMode ? 'text-white' : 'text-slate-900'
+                  }`}>Key Achievements:</h4>
                   <ul className="space-y-2">
                     {experience.achievements.map((achievement, idx) => (
-                      <li key={idx} className="text-sm text-slate-300 flex items-start gap-2">
-                        <span className="text-blue-400 mt-1">•</span>
+                      <li key={idx} className={`text-sm flex items-start gap-2 ${
+                        isDarkMode ? 'text-slate-300' : 'text-slate-700'
+                      }`}>
+                        <span className={`mt-1 ${
+                          isDarkMode ? 'text-blue-400' : 'text-blue-600'
+                        }`}>•</span>
                         <span>{achievement}</span>
                       </li>
                     ))}
@@ -82,12 +121,18 @@ const ExperienceCard = ({ experience, index }) => {
 
                 {/* Technologies */}
                 <div>
-                  <h4 className="text-sm font-semibold text-white mb-2">Technologies:</h4>
+                  <h4 className={`text-sm font-semibold mb-2 ${
+                    isDarkMode ? 'text-white' : 'text-slate-900'
+                  }`}>Technologies:</h4>
                   <div className="flex flex-wrap gap-2">
                     {experience.technologies.map((tech, idx) => (
                       <span
                         key={idx}
-                        className="px-3 py-1 bg-slate-700/50 text-slate-300 text-xs rounded-full border border-slate-600"
+                        className={`px-3 py-1 text-xs rounded-full border ${
+                          isDarkMode
+                            ? 'bg-slate-700/50 text-slate-300 border-slate-600'
+                            : 'bg-slate-100 text-slate-700 border-slate-300'
+                        }`}
                       >
                         {tech}
                       </span>
@@ -106,10 +151,22 @@ const ExperienceCard = ({ experience, index }) => {
 /**
  * Experience Section Component
  *
- * Displays work experience in a timeline format.
- * Includes both full-time roles and freelance projects.
+ * Displays work experience in a unified timeline format.
+ * Integrates both full-time roles and freelance projects.
  */
-const ExperienceSection = ({ experience, freelanceExperience }) => {
+const ExperienceSection = ({ experience, freelanceExperience, isDarkMode }) => {
+  // Merge and prepare all experiences for timeline
+  const allExperiences = [
+    ...experience.map(exp => ({ ...exp, isFreelance: false })),
+    ...(freelanceExperience || []).map(exp => ({
+      ...exp,
+      role: exp.project,
+      company: exp.client,
+      team: exp.team || null,
+      isFreelance: true
+    }))
+  ];
+
   return (
     <section id="experience" className="py-20 px-4">
       <div className="max-w-6xl mx-auto">
@@ -121,10 +178,14 @@ const ExperienceSection = ({ experience, freelanceExperience }) => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+          <h2 className={`text-4xl md:text-5xl font-bold mb-4 ${
+            isDarkMode ? 'text-white' : 'text-slate-900'
+          }`}>
             Experience
           </h2>
-          <p className="text-lg text-slate-400 max-w-2xl mx-auto">
+          <p className={`text-lg max-w-2xl mx-auto ${
+            isDarkMode ? 'text-slate-400' : 'text-slate-600'
+          }`}>
             My professional journey in software engineering and data science
           </p>
         </motion.div>
@@ -132,48 +193,23 @@ const ExperienceSection = ({ experience, freelanceExperience }) => {
         {/* Timeline */}
         <div className="relative">
           {/* Timeline Line */}
-          <div className="hidden md:block absolute left-1/2 -translate-x-1/2 w-0.5 h-full bg-gradient-to-b from-blue-500 via-slate-700 to-transparent" />
+          <div className={`hidden md:block absolute left-1/2 -translate-x-1/2 w-0.5 h-full bg-gradient-to-b ${
+            isDarkMode
+              ? 'from-blue-500 via-slate-700 to-transparent'
+              : 'from-blue-500 via-slate-300 to-transparent'
+          }`} />
 
-          {/* Full-time Experience */}
+          {/* All Experience Cards */}
           <div className="space-y-12">
-            {experience.map((exp, index) => (
-              <ExperienceCard key={exp.id} experience={exp} index={index} />
+            {allExperiences.map((exp, index) => (
+              <ExperienceCard
+                key={exp.id}
+                experience={exp}
+                index={index}
+                isDarkMode={isDarkMode}
+              />
             ))}
           </div>
-
-          {/* Freelance Section */}
-          {freelanceExperience && freelanceExperience.length > 0 && (
-            <>
-              <motion.div
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                className="my-16 text-center"
-              >
-                <h3 className="text-2xl font-bold text-white mb-2">Freelance Work</h3>
-                <div className="w-24 h-1 bg-blue-500 mx-auto rounded-full" />
-              </motion.div>
-
-              <div className="space-y-12">
-                {freelanceExperience.map((exp, index) => (
-                  <ExperienceCard
-                    key={exp.id}
-                    experience={{
-                      ...exp,
-                      role: exp.project,
-                      company: exp.client,
-                      team: 'Freelance Project',
-                      period: exp.period,
-                      description: exp.description,
-                      achievements: exp.achievements,
-                      technologies: exp.technologies
-                    }}
-                    index={index}
-                  />
-                ))}
-              </div>
-            </>
-          )}
         </div>
       </div>
     </section>

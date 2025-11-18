@@ -8,7 +8,7 @@ import { ArrowRight, Download, Github, Linkedin } from 'lucide-react';
  * Main landing section with name, title, and call-to-action buttons.
  * Features smooth animations and responsive design.
  */
-const Hero = ({ data }) => {
+const Hero = ({ data, isDarkMode }) => {
   const { name, title, tagline, resumeUrl, links } = data;
 
   return (
@@ -25,7 +25,11 @@ const Hero = ({ data }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-slate-200 to-slate-400 bg-clip-text text-transparent"
+            className={`text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r ${
+              isDarkMode
+                ? 'from-slate-200 to-slate-400'
+                : 'from-slate-700 to-slate-900'
+            } bg-clip-text text-transparent`}
           >
             {name}
           </motion.h1>
@@ -35,7 +39,9 @@ const Hero = ({ data }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-xl md:text-2xl text-blue-400 mb-6 font-medium"
+            className={`text-xl md:text-2xl mb-6 font-medium ${
+              isDarkMode ? 'text-blue-400' : 'text-blue-600'
+            }`}
           >
             {title}
           </motion.p>
@@ -45,7 +51,9 @@ const Hero = ({ data }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="text-lg md:text-xl text-slate-400 mb-12 max-w-2xl mx-auto leading-relaxed"
+            className={`text-lg md:text-xl mb-12 max-w-2xl mx-auto leading-relaxed ${
+              isDarkMode ? 'text-slate-400' : 'text-slate-600'
+            }`}
           >
             {tagline}
           </motion.p>
@@ -75,7 +83,11 @@ const Hero = ({ data }) => {
             <motion.a
               href={resumeUrl}
               download="tyler-cartwright-resume.pdf"
-              className="px-8 py-4 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-medium transition-all duration-200 flex items-center gap-2 shadow-lg hover:shadow-xl border border-slate-700"
+              className={`px-8 py-4 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 shadow-lg hover:shadow-xl ${
+                isDarkMode
+                  ? 'bg-slate-800 hover:bg-slate-700 text-white border border-slate-700'
+                  : 'bg-white hover:bg-slate-50 text-slate-900 border border-slate-300'
+              }`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -95,7 +107,11 @@ const Hero = ({ data }) => {
               href={links.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-slate-400 hover:text-white transition-colors"
+              className={`transition-colors ${
+                isDarkMode
+                  ? 'text-slate-400 hover:text-white'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               aria-label="GitHub Profile"
@@ -106,7 +122,11 @@ const Hero = ({ data }) => {
               href={links.linkedin}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-slate-400 hover:text-white transition-colors"
+              className={`transition-colors ${
+                isDarkMode
+                  ? 'text-slate-400 hover:text-white'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               aria-label="LinkedIn Profile"

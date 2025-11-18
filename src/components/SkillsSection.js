@@ -1,135 +1,91 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Code, Cloud, Brain, Database, Globe, Wrench } from 'lucide-react';
-
-/**
- * Skill Category Component
- *
- * Displays a category of skills with an icon and list of technologies.
- */
-const SkillCategory = ({ title, skills, icon: Icon, index }) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="bg-slate-800/50 backdrop-blur-sm rounded-lg p-6 border border-slate-700 hover:border-blue-500/50 transition-all duration-300 shadow-lg"
-    >
-      {/* Category Header */}
-      <div className="flex items-center gap-3 mb-4">
-        <div className="p-2 bg-blue-500/10 rounded-lg">
-          <Icon className="w-6 h-6 text-blue-400" />
-        </div>
-        <h3 className="text-xl font-bold text-white">{title}</h3>
-      </div>
-
-      {/* Skills List */}
-      <div className="flex flex-wrap gap-2">
-        {skills.map((skill, idx) => (
-          <motion.span
-            key={idx}
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.3, delay: index * 0.1 + idx * 0.05 }}
-            className="px-3 py-2 bg-slate-700/50 text-slate-300 text-sm rounded-lg border border-slate-600 hover:border-blue-500/50 hover:bg-slate-700 transition-all duration-200"
-            whileHover={{ scale: 1.05 }}
-          >
-            {skill}
-          </motion.span>
-        ))}
-      </div>
-    </motion.div>
-  );
-};
+import { Code2, Sparkles } from 'lucide-react';
 
 /**
  * Skills Section Component
  *
- * Displays technical skills organized by category.
- * Categories: Languages, Cloud, Data Science, Data Engineering, Web Development, Tools
+ * Displays philosophy on technology and adaptability.
  */
-const SkillsSection = ({ skills }) => {
-  // Map skill categories to icons
-  const skillCategories = [
-    {
-      title: 'Languages',
-      skills: skills.languages,
-      icon: Code
-    },
-    {
-      title: 'Cloud & Infrastructure',
-      skills: skills.cloud,
-      icon: Cloud
-    },
-    {
-      title: 'Data Science & ML',
-      skills: skills.dataScience,
-      icon: Brain
-    },
-    {
-      title: 'Data Engineering',
-      skills: skills.dataEngineering,
-      icon: Database
-    },
-    {
-      title: 'Web Development',
-      skills: skills.webDevelopment,
-      icon: Globe
-    },
-    {
-      title: 'Tools & Methodologies',
-      skills: skills.tools,
-      icon: Wrench
-    }
-  ];
-
+const SkillsSection = ({ isDarkMode }) => {
   return (
     <section id="skills" className="py-20 px-4">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Skills & Technologies
+          <h2 className={`text-4xl md:text-5xl font-bold mb-8 ${
+            isDarkMode ? 'text-white' : 'text-slate-900'
+          }`}>
+            Technology Stack
           </h2>
-          <p className="text-lg text-slate-400 max-w-2xl mx-auto">
-            A comprehensive overview of my technical expertise
-          </p>
-        </motion.div>
 
-        {/* Skills Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {skillCategories.map((category, index) => (
-            <SkillCategory
-              key={category.title}
-              title={category.title}
-              skills={category.skills}
-              icon={category.icon}
-              index={index}
-            />
-          ))}
-        </div>
+          {/* Main Message Card */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className={`rounded-xl p-8 md:p-12 shadow-xl border ${
+              isDarkMode
+                ? 'bg-slate-800/50 border-slate-700'
+                : 'bg-white border-slate-200'
+            }`}
+          >
+            <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full mb-6 ${
+              isDarkMode
+                ? 'bg-blue-500/10'
+                : 'bg-blue-50'
+            }`}>
+              <Code2 className={`w-8 h-8 ${
+                isDarkMode ? 'text-blue-400' : 'text-blue-600'
+              }`} />
+            </div>
 
-        {/* Tech Stack Summary */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="mt-12 text-center"
-        >
-          <div className="inline-block px-6 py-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
-            <p className="text-lg text-blue-400 font-medium">
-              "Whatever you throw at me" - Always learning, always adapting
+            <h3 className={`text-2xl md:text-3xl font-bold mb-4 ${
+              isDarkMode ? 'text-white' : 'text-slate-900'
+            }`}>
+              Whatever you throw at me
+            </h3>
+
+            <p className={`text-lg md:text-xl leading-relaxed max-w-2xl mx-auto ${
+              isDarkMode ? 'text-slate-300' : 'text-slate-700'
+            }`}>
+              I believe in using the right tool for the job, not forcing square pegs into round holes. My focus is on solving problems effectively, whether that means learning a new technology, leveraging existing expertise, or combining approaches in novel ways.
             </p>
-          </div>
+
+            <div className={`mt-8 pt-8 border-t ${
+              isDarkMode ? 'border-slate-700' : 'border-slate-200'
+            }`}>
+              <div className="flex items-center justify-center gap-3">
+                <Sparkles className={`w-5 h-5 ${
+                  isDarkMode ? 'text-blue-400' : 'text-blue-600'
+                }`} />
+                <p className={`text-base md:text-lg font-medium ${
+                  isDarkMode ? 'text-slate-400' : 'text-slate-600'
+                }`}>
+                  Adaptable. Pragmatic. Results-driven.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Supporting Text */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className={`mt-8 text-base ${
+              isDarkMode ? 'text-slate-400' : 'text-slate-600'
+            }`}>
+            Experience across Python, JavaScript, cloud platforms, machine learning frameworks, and more—but always learning.
+          </motion.p>
         </motion.div>
       </div>
     </section>
