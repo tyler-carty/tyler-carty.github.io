@@ -18,8 +18,8 @@ export const portfolioData = {
   // ============================================
   personalInfo: {
     name: "Tyler Cartwright",
-    title: "Software Engineer | Data Scientist | ML Engineer",
-    email: "contact@tylercartwright.co.uk", // Update with your actual email
+    title: "Data Scientist | Freelance Solutions Developer",
+    email: "tylercartwright2606@gmail.com",
     location: "United Kingdom",
     tagline: "Building intelligent systems that solve real-world problems. Specializing in machine learning, cloud architecture, and data engineering.",
     resumeUrl: "/resume.pdf",
