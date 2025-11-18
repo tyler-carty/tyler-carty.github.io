@@ -2,7 +2,6 @@
   "name": "tyler-carty.github.io",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://tylercartwright.co.uk",
   "dependencies": {
     "@radix-ui/react-toast": "^1.2.2",
     "@testing-library/jest-dom": "^5.17.0",
