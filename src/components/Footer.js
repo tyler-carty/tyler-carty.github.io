@@ -1,6 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Github, Linkedin, Mail, Download, ArrowUp } from 'lucide-react';
+import { generateResume } from '../utils/resumeGenerator';
+import portfolioData from '../data/portfolioData';
 
 /**
  * Footer Component
@@ -8,11 +10,15 @@ import { Github, Linkedin, Mail, Download, ArrowUp } from 'lucide-react';
  * Contact section with social links, resume download, and back-to-top button.
  */
 const Footer = ({ data }) => {
-  const { name, email, links, resumeUrl } = data;
+  const { name, email, links } = data;
   const currentYear = new Date().getFullYear();
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleDownloadResume = () => {
+    generateResume(portfolioData);
   };
 
   return (
@@ -63,16 +69,15 @@ const Footer = ({ data }) => {
             )}
 
             {/* Resume Download */}
-            <motion.a
-              href={resumeUrl}
-              download={`${name.toLowerCase().replace(' ', '-')}-resume.pdf`}
+            <motion.button
+              onClick={handleDownloadResume}
               className="flex items-center gap-2 px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl border border-slate-700"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
               <Download className="w-5 h-5" />
               Download Resume
-            </motion.a>
+            </motion.button>
           </motion.div>
 
           {/* Social Links */}

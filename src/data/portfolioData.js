@@ -22,7 +22,6 @@ export const portfolioData = {
     email: "tylercartwright2606@gmail.com",
     location: "United Kingdom",
     tagline: "Building intelligent systems that solve real-world problems. Specializing in machine learning, cloud architecture, and data engineering.",
-    resumeUrl: "/resume.pdf",
     links: {
       github: "https://github.com/tyler-carty",
       linkedin: "https://linkedin.com/in/tyler-reece-cartwright",

@@ -1,6 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Download, Github, Linkedin } from 'lucide-react';
+import { generateResume } from '../utils/resumeGenerator';
+import portfolioData from '../data/portfolioData';
 
 /**
  * Hero Component
@@ -9,7 +11,11 @@ import { ArrowRight, Download, Github, Linkedin } from 'lucide-react';
  * Features smooth animations and responsive design.
  */
 const Hero = ({ data, isDarkMode }) => {
-  const { name, title, tagline, resumeUrl, links } = data;
+  const { name, title, tagline, links } = data;
+
+  const handleDownloadResume = () => {
+    generateResume(portfolioData);
+  };
 
   return (
     <section className="min-h-screen flex items-center justify-center px-4 py-20">
@@ -80,9 +86,8 @@ const Hero = ({ data, isDarkMode }) => {
             </motion.button>
 
             {/* Download Resume Button */}
-            <motion.a
-              href={resumeUrl}
-              download="tyler-cartwright-resume.pdf"
+            <motion.button
+              onClick={handleDownloadResume}
               className={`px-8 py-4 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 shadow-lg hover:shadow-xl ${
                 isDarkMode
                   ? 'bg-slate-800 hover:bg-slate-700 text-white border border-slate-700'
@@ -93,7 +98,7 @@ const Hero = ({ data, isDarkMode }) => {
             >
               <Download className="w-5 h-5" />
               Download Resume
-            </motion.a>
+            </motion.button>
           </motion.div>
 
           {/* Social Links */}
