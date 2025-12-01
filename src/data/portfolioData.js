@@ -41,9 +41,9 @@ export const portfolioData = {
       team: "Economic Crime Prevention Platform",
       description: "Leading data science initiatives to combat financial crime through advanced analytics and machine learning.",
       achievements: [
-        "Development of machine learning models for AML purposes",
-        "Building scalable data pipelines for real-time transaction monitoring",
-        "Collaborating with cross-functional teams to implement AI-driven solutions"
+        "Developed two machine learning models for AML and fraud detection.",
+        "Improved fraud detection rates by 50% per model without increasing alert volume.",
+        "Generated £100,000 in additional recovered funds per model each month"
       ],
       technologies: ["Python", "Machine Learning", "Data Analytics", "GCP"]
     },
@@ -127,7 +127,7 @@ export const portfolioData = {
       title: "Data Pipeline Architecture",
       category: "Work",
       description: "Scalable ETL pipelines for real-time transaction monitoring and data warehousing.",
-      technologies: ["Python", "SQL", "Apache Spark", "GCP", "Data Warehousing"],
+      technologies: ["Java", "SQL", "Apache Spark", "GCP", "Data Warehousing"],
       github: null, // Proprietary
       demo: null,
       featured: true
@@ -148,7 +148,7 @@ export const portfolioData = {
       title: "WaniKani Statistics Tracker",
       category: "Educational",
       description: "A web application to track and visualize WaniKani progress. Shared with thousands of users to help them track their progress and stay motivated.",
-      technologies: ["Javascript", "PWA", "Github Actions"],
+      technologies: ["TypeScript", "PWA", "Github Actions"],
       github: "https://github.com/tyler-cartwright/wanikani-stats-tracker",
       demo: "https://tyler-cartwright.github.io/wanikani-stats-tracker/",
       featured: false
@@ -177,8 +177,7 @@ export const portfolioData = {
       "Machine Learning",
       "Scikit-learn",
       "LightGBM",
-      "Pandas",
-      "NumPy"
+      "PyTorch"
     ],
     dataEngineering: [
       "Apache Spark",
@@ -216,7 +215,7 @@ export const portfolioData = {
       achievements: [
         "Dean's Award recipient (all years)",
         "Specialized in Machine Learning and Data Science",
-        "Final year project: Analysis of advanced ML techniques for predictive analytics in finance"
+        "Final year project: Sentiment analysis using Reddit data surrounding the GameStop and AMC stock craze"
       ]
     }
   ]
