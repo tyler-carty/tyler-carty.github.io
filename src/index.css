@@ -2,11 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ============================================
-   BASE STYLES
-   ============================================ */
-
-/* Modern CSS reset and base */
 @layer base {
   html {
     @apply scroll-smooth;
@@ -16,15 +11,11 @@
     @apply font-sans antialiased;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 }
 
-/* ============================================
-   CUSTOM UTILITIES
-   ============================================ */
-
 @layer utilities {
-  /* Text balance utilities */
   .text-balance {
     text-wrap: balance;
   }
@@ -33,7 +24,6 @@
     text-wrap: pretty;
   }
 
-  /* Container utilities */
   .container-custom {
     width: 100%;
     max-width: 1200px;
@@ -44,29 +34,11 @@
   }
 }
 
-/* ============================================
-   THEME VARIABLES
-   ============================================ */
-
 :root {
   --content-width: min(90vw, 1200px);
-
-  /* Light theme colors */
-  --color-bg-light: #ffffff;
-  --color-text-light: #1e293b;
-  --color-accent-light: #3b82f6;
-
-  /* Dark theme colors (default) */
-  --color-bg-dark: #0f172a;
-  --color-text-dark: #f8fafc;
-  --color-accent-dark: #3b82f6;
 }
 
-/* ============================================
-   CUSTOM SCROLLBAR
-   ============================================ */
-
-/* Custom scrollbar for webkit browsers */
+/* Custom scrollbar — webkit only, no Firefox equivalent needed */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -84,22 +56,17 @@
   @apply bg-slate-600;
 }
 
-/* Light mode scrollbar */
-.light ::-webkit-scrollbar-track {
+:root:not(.dark) ::-webkit-scrollbar-track {
   @apply bg-slate-100;
 }
 
-.light ::-webkit-scrollbar-thumb {
+:root:not(.dark) ::-webkit-scrollbar-thumb {
   @apply bg-slate-300;
 }
 
-.light ::-webkit-scrollbar-thumb:hover {
+:root:not(.dark) ::-webkit-scrollbar-thumb:hover {
   @apply bg-slate-400;
 }
-
-/* ============================================
-   FOCUS STYLES (ACCESSIBILITY)
-   ============================================ */
 
 :focus-visible {
   outline: 2px solid theme('colors.blue.500');
@@ -113,61 +80,16 @@ a:focus-visible {
   outline-offset: 2px;
 }
 
-/* ============================================
-   ANIMATIONS
-   ============================================ */
-
 @keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes pulse-glow {
-  0%, 100% {
-    opacity: 1;
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
-  }
-  50% {
-    opacity: 0.8;
-    box-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
-  }
-}
-
-@keyframes gradient-shift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
 .animate-float {
   animation: float 3s ease-in-out infinite;
 }
 
-.animate-pulse-glow {
-  animation: pulse-glow 2s ease-in-out infinite;
-}
-
-.animate-gradient {
-  animation: gradient-shift 3s ease infinite;
-  background-size: 200% 200%;
-}
-
-/* ============================================
-   PRINT STYLES
-   ============================================ */
-
 @media print {
-  /* Hide non-essential elements when printing */
   button,
   .no-print,
   [role="button"],
@@ -175,13 +97,11 @@ a:focus-visible {
     display: none !important;
   }
 
-  /* Ensure proper page breaks */
   section {
     page-break-inside: avoid;
     break-inside: avoid;
   }
 
-  /* Remove backgrounds and shadows for print */
   * {
     background: white !important;
     color: black !important;
@@ -189,80 +109,44 @@ a:focus-visible {
     text-shadow: none !important;
   }
 
-  /* Show links */
   a[href]:after {
     content: " (" attr(href) ")";
   }
 
-  /* Better spacing for print */
   body {
     font-size: 12pt;
     line-height: 1.5;
   }
 
-  h1 {
-    font-size: 24pt;
-  }
+  h1 { font-size: 24pt; }
+  h2 { font-size: 18pt; }
+  h3 { font-size: 14pt; }
 
-  h2 {
-    font-size: 18pt;
-  }
-
-  h3 {
-    font-size: 14pt;
-  }
-
-  /* Ensure links are visible */
   a {
     color: #0000ee !important;
     text-decoration: underline;
   }
 }
 
-/* ============================================
-   MOBILE OPTIMIZATIONS
-   ============================================ */
-
-/* Better mobile viewport handling */
 @supports (-webkit-touch-callout: none) {
   .min-h-screen {
     min-height: -webkit-fill-available;
   }
 }
 
-/* Disable hover effects on touch devices */
 @media (hover: none) and (pointer: coarse) {
-  .hover\:scale-105:hover {
-    transform: none;
-  }
-
-  .hover\:shadow-xl:hover {
-    box-shadow: none;
-  }
+  .hover\:scale-105:hover { transform: none; }
+  .hover\:shadow-xl:hover { box-shadow: none; }
 }
 
-/* Remove tap highlight on mobile */
 * {
   -webkit-tap-highlight-color: transparent;
 }
-
-/* ============================================
-   DARK MODE SPECIFIC STYLES
-   ============================================ */
 
 .dark {
   color-scheme: dark;
 }
 
-.light {
-  color-scheme: light;
-}
-
-/* ============================================
-   UTILITY CLASSES
-   ============================================ */
-
-/* Glass effect utility */
 .glass {
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
@@ -270,86 +154,15 @@ a:focus-visible {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Prevent text selection on interactive elements */
 .no-select {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
 }
-
-/* Optimize animations for performance */
-.will-change-transform {
-  will-change: transform;
-}
-
-.gpu-accelerated {
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  perspective: 1000px;
-}
-
-/* ============================================
-   TYPOGRAPHY IMPROVEMENTS
-   ============================================ */
-
-/* Better text rendering */
-body {
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Responsive font sizes */
-html {
-  font-size: 16px;
-}
-
-@media (max-width: 640px) {
-  html {
-    font-size: 14px;
-  }
-}
-
-/* ============================================
-   SECTION SPACING
-   ============================================ */
 
 section {
   position: relative;
   scroll-margin-top: 2rem;
 }
 
-/* ============================================
-   LOADING STATES
-   ============================================ */
-
-@keyframes shimmer {
-  0% {
-    background-position: -1000px 0;
-  }
-  100% {
-    background-position: 1000px 0;
-  }
-}
-
-.loading-skeleton {
-  animation: shimmer 2s infinite linear;
-  background: linear-gradient(
-    to right,
-    #334155 0%,
-    #475569 20%,
-    #334155 40%,
-    #334155 100%
-  );
-  background-size: 1000px 100%;
-}
-
-/* ============================================
-   REDUCED MOTION
-   ============================================ */
-
-/* Respect user's motion preferences */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

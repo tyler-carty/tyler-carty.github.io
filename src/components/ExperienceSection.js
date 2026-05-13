@@ -1,13 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Briefcase, ChevronDown, ChevronUp } from 'lucide-react';
+import { Briefcase, ChevronDown } from 'lucide-react';
 
-/**
- * Experience Card Component
- *
- * Expandable card showing work experience details.
- * Click to expand/collapse for more information.
- */
 const ExperienceCard = ({ experience, index, isDarkMode }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -64,15 +58,9 @@ const ExperienceCard = ({ experience, index, isDarkMode }) => {
               animate={{ rotate: isExpanded ? 180 : 0 }}
               transition={{ duration: 0.3 }}
             >
-              {isExpanded ? (
-                <ChevronUp className={`w-5 h-5 ${
-                  isDarkMode ? 'text-slate-400' : 'text-slate-600'
-                }`} />
-              ) : (
-                <ChevronDown className={`w-5 h-5 ${
-                  isDarkMode ? 'text-slate-400' : 'text-slate-600'
-                }`} />
-              )}
+              <ChevronDown className={`w-5 h-5 ${
+                isDarkMode ? 'text-slate-400' : 'text-slate-600'
+              }`} />
             </motion.div>
           </div>
 
@@ -148,12 +136,6 @@ const ExperienceCard = ({ experience, index, isDarkMode }) => {
   );
 };
 
-/**
- * Experience Section Component
- *
- * Displays work experience in a unified timeline format.
- * Integrates both full-time roles and freelance projects.
- */
 const ExperienceSection = ({ experience, freelanceExperience, isDarkMode }) => {
   // Merge and prepare all experiences for timeline
   const allExperiences = [

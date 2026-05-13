@@ -1,21 +1,4 @@
-/**
- * Portfolio Data Structure
- *
- * This file contains all the content for the portfolio website.
- * To update any information, simply edit the values in this file.
- *
- * Structure:
- * - personalInfo: Basic information and social links
- * - experience: Work history in reverse chronological order
- * - projects: Portfolio projects with categories
- * - skills: Organized by category
- * - education: Academic background
- */
-
 export const portfolioData = {
-  // ============================================
-  // PERSONAL INFORMATION
-  // ============================================
   personalInfo: {
     name: "Tyler Cartwright",
     title: "Data Nerd | Freelance Software",
@@ -28,9 +11,6 @@ export const portfolioData = {
     }
   },
 
-  // ============================================
-  // WORK EXPERIENCE
-  // ============================================
   experience: [
     {
       id: 1,
@@ -79,9 +59,6 @@ export const portfolioData = {
     }
   ],
 
-  // ============================================
-  // FREELANCE PROJECTS
-  // ============================================
   freelanceExperience: [
     {
       id: 1,
@@ -98,9 +75,6 @@ export const portfolioData = {
     }
   ],
 
-  // ============================================
-  // PROJECTS
-  // ============================================
   projects: [
     {
       id: 1,
@@ -108,7 +82,7 @@ export const portfolioData = {
       category: "Freelance",
       description: "Full-stack staff scheduling and management platform for event venues. Features include shift scheduling, automated reporting, and mobile-responsive design.",
       technologies: ["React", "Node.js"],
-      github: null, // Private client work
+      github: null,
       demo: null,
       featured: true
     },
@@ -118,7 +92,7 @@ export const portfolioData = {
       category: "Work",
       description: "Machine learning models for fraud detection and prevention, processing millions of transactions in real-time.",
       technologies: ["Python", "Machine Learning", "Data Analytics", "GCP"],
-      github: null, // Proprietary
+      github: null,
       demo: null,
       featured: true
     },
@@ -128,11 +102,10 @@ export const portfolioData = {
       category: "Work",
       description: "Scalable ETL pipelines for real-time transaction monitoring and data warehousing.",
       technologies: ["Java", "SQL", "Apache Spark", "GCP", "Data Warehousing"],
-      github: null, // Proprietary
+      github: null,
       demo: null,
       featured: true
     },
-    // Add more personal projects here as needed
     {
       id: 4,
       title: "Portfolio Website",
@@ -155,56 +128,15 @@ export const portfolioData = {
     }
   ],
 
-  // ============================================
-  // SKILLS
-  // ============================================
   skills: {
-    languages: [
-      "Python",
-      "JavaScript",
-      "TypeScript",
-      "Java",
-      "SQL"
-    ],
-    cloud: [
-      "GCP",
-      "Azure",
-      "Docker",
-      "Kubernetes",
-      "Terraform"
-    ],
-    dataScience: [
-      "Machine Learning",
-      "Scikit-learn",
-      "LightGBM",
-      "PyTorch"
-    ],
-    dataEngineering: [
-      "Apache Spark",
-      "BigQuery",
-      "Java",
-      "ETL Pipelines",
-      "Data Warehousing",
-    ],
-    webDevelopment: [
-      "React",
-      "Node.js",
-      "Express",
-      "REST APIs",
-    ],
-    tools: [
-      "Git",
-      "CI/CD",
-      "Jenkins",
-      "GitHub Actions",
-      "JIRA",
-      "Agile/Scrum"
-    ]
+    languages: ["Python", "JavaScript", "TypeScript", "Java", "SQL"],
+    cloud: ["GCP", "Azure", "Docker", "Kubernetes", "Terraform"],
+    dataScience: ["Machine Learning", "Scikit-learn", "LightGBM", "PyTorch"],
+    dataEngineering: ["Apache Spark", "BigQuery", "Java", "ETL Pipelines", "Data Warehousing"],
+    webDevelopment: ["React", "Node.js", "Express", "REST APIs"],
+    tools: ["Git", "CI/CD", "Jenkins", "GitHub Actions", "JIRA", "Agile/Scrum"]
   },
 
-  // ============================================
-  // EDUCATION
-  // ============================================
   education: [
     {
       id: 1,

@@ -1,19 +1,23 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Download, Github, Linkedin } from 'lucide-react';
-import { generateResume } from '../utils/resumeGenerator';
 import portfolioData from '../data/portfolioData';
 
-/**
- * Hero Component
- *
- * Main landing section with name, title, and call-to-action buttons.
- * Features smooth animations and responsive design.
- */
+const container = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.1, delayChildren: 0.1 } }
+};
+
+const item = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+};
+
 const Hero = ({ data, isDarkMode }) => {
   const { name, title, tagline, links } = data;
 
-  const handleDownloadResume = () => {
+  const handleDownloadResume = async () => {
+    const { generateResume } = await import('../utils/resumeGenerator');
     generateResume(portfolioData);
   };
 
@@ -21,16 +25,13 @@ const Hero = ({ data, isDarkMode }) => {
     <section className="min-h-screen flex items-center justify-center px-4 py-20">
       <div className="max-w-4xl w-full">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          variants={container}
+          initial="hidden"
+          animate="visible"
           className="text-center"
         >
-          {/* Name */}
           <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+            variants={item}
             className={`text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r ${
               isDarkMode
                 ? 'from-slate-200 to-slate-400'
@@ -40,11 +41,8 @@ const Hero = ({ data, isDarkMode }) => {
             {name}
           </motion.h1>
 
-          {/* Title */}
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            variants={item}
             className={`text-xl md:text-2xl mb-6 font-medium ${
               isDarkMode ? 'text-blue-400' : 'text-blue-600'
             }`}
@@ -52,11 +50,8 @@ const Hero = ({ data, isDarkMode }) => {
             {title}
           </motion.p>
 
-          {/* Tagline */}
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
+            variants={item}
             className={`text-lg md:text-xl mb-12 max-w-2xl mx-auto leading-relaxed ${
               isDarkMode ? 'text-slate-400' : 'text-slate-600'
             }`}
@@ -64,19 +59,12 @@ const Hero = ({ data, isDarkMode }) => {
             {tagline}
           </motion.p>
 
-          {/* CTA Buttons */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
+            variants={item}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center"
           >
-            {/* View Work Button */}
             <motion.button
-              onClick={() => {
-                const experienceSection = document.getElementById('experience');
-                experienceSection?.scrollIntoView({ behavior: 'smooth' });
-              }}
+              onClick={() => document.getElementById('experience')?.scrollIntoView({ behavior: 'smooth' })}
               className="group px-8 py-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-all duration-200 flex items-center gap-2 shadow-lg hover:shadow-xl"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -85,7 +73,6 @@ const Hero = ({ data, isDarkMode }) => {
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </motion.button>
 
-            {/* Download Resume Button */}
             <motion.button
               onClick={handleDownloadResume}
               className={`px-8 py-4 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 shadow-lg hover:shadow-xl ${
@@ -101,11 +88,8 @@ const Hero = ({ data, isDarkMode }) => {
             </motion.button>
           </motion.div>
 
-          {/* Social Links */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
+            variants={item}
             className="flex gap-6 justify-center mt-12"
           >
             <motion.a

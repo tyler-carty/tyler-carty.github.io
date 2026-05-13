@@ -2,11 +2,6 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Github, ExternalLink, Folder } from 'lucide-react';
 
-/**
- * Project Card Component
- *
- * Displays individual project information with links and technologies.
- */
 const ProjectCard = ({ project, index }) => {
   return (
     <motion.div
@@ -84,12 +79,6 @@ const ProjectCard = ({ project, index }) => {
   );
 };
 
-/**
- * Projects Section Component
- *
- * Displays portfolio projects with filtering by category.
- * Categories: All, Work, Freelance, Personal, Research
- */
 const ProjectsSection = ({ projects }) => {
   const [activeFilter, setActiveFilter] = useState('All');
 
