@@ -2,11 +2,6 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Code2, Sparkles } from 'lucide-react';
 
-/**
- * Skills Section Component
- *
- * Displays philosophy on technology and adaptability.
- */
 const SkillsSection = ({ isDarkMode }) => {
   return (
     <section id="skills" className="py-20 px-4">

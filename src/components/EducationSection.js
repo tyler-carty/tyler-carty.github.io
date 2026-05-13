@@ -2,11 +2,6 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { GraduationCap, Award, Calendar } from 'lucide-react';
 
-/**
- * Education Card Component
- *
- * Displays education details including degree, institution, and achievements.
- */
 const EducationCard = ({ education, index }) => {
   return (
     <motion.div
@@ -67,11 +62,6 @@ const EducationCard = ({ education, index }) => {
   );
 };
 
-/**
- * Education Section Component
- *
- * Displays academic background and achievements.
- */
 const EducationSection = ({ education }) => {
   return (
     <section id="education" className="py-20 px-4 bg-slate-900/50">

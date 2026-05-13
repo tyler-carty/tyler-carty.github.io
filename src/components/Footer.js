@@ -1,32 +1,23 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Github, Linkedin, Mail, Download, ArrowUp } from 'lucide-react';
-import { generateResume } from '../utils/resumeGenerator';
 import portfolioData from '../data/portfolioData';
 
-/**
- * Footer Component
- *
- * Contact section with social links, resume download, and back-to-top button.
- */
 const Footer = ({ data }) => {
   const { name, email, links } = data;
   const currentYear = new Date().getFullYear();
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  const handleDownloadResume = () => {
+  const handleDownloadResume = async () => {
+    const { generateResume } = await import('../utils/resumeGenerator');
     generateResume(portfolioData);
   };
 
   return (
     <footer id="contact" className="relative py-20 px-4 bg-slate-900/80 backdrop-blur-sm border-t border-slate-800">
       <div className="max-w-6xl mx-auto">
-        {/* Main Footer Content */}
         <div className="text-center mb-12">
-          {/* Heading */}
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -47,7 +38,6 @@ const Footer = ({ data }) => {
             I'm always interested in hearing about new opportunities and projects
           </motion.p>
 
-          {/* Contact Buttons */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -55,7 +45,6 @@ const Footer = ({ data }) => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="flex flex-wrap justify-center gap-4 mb-12"
           >
-            {/* Email Button */}
             {email && (
               <motion.a
                 href={`mailto:${email}`}
@@ -68,7 +57,6 @@ const Footer = ({ data }) => {
               </motion.a>
             )}
 
-            {/* Resume Download */}
             <motion.button
               onClick={handleDownloadResume}
               className="flex items-center gap-2 px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl border border-slate-700"
@@ -80,7 +68,6 @@ const Footer = ({ data }) => {
             </motion.button>
           </motion.div>
 
-          {/* Social Links */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -114,10 +101,8 @@ const Footer = ({ data }) => {
           </motion.div>
         </div>
 
-        {/* Divider */}
         <div className="w-full h-px bg-slate-800 mb-8" />
 
-        {/* Copyright */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -129,7 +114,6 @@ const Footer = ({ data }) => {
         </motion.div>
       </div>
 
-      {/* Back to Top Button */}
       <motion.button
         onClick={scrollToTop}
         className="fixed bottom-8 right-8 p-3 bg-blue-500 hover:bg-blue-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 z-50"

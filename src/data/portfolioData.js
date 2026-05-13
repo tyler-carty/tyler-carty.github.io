@@ -1,48 +1,42 @@
-/**
- * Portfolio Data Structure
- *
- * This file contains all the content for the portfolio website.
- * To update any information, simply edit the values in this file.
- *
- * Structure:
- * - personalInfo: Basic information and social links
- * - experience: Work history in reverse chronological order
- * - projects: Portfolio projects with categories
- * - skills: Organized by category
- * - education: Academic background
- */
-
 export const portfolioData = {
-  // ============================================
-  // PERSONAL INFORMATION
-  // ============================================
   personalInfo: {
     name: "Tyler Cartwright",
-    title: "Data Nerd | Freelance Software",
+    title: "Machine Learning Engineer",
     email: "tylercartwright2606@gmail.com",
     location: "United Kingdom",
-    tagline: "Building intelligent systems that solve real-world problems. Specializing in machine learning, cloud architecture, and data engineering.",
+    tagline: "Turning data science into production systems that scale. Specialising in ML engineering, cloud infrastructure, and intelligent fraud detection.",
     links: {
       github: "https://github.com/tyler-carty",
       linkedin: "https://linkedin.com/in/tyler-reece-cartwright",
     }
   },
 
-  // ============================================
-  // WORK EXPERIENCE
-  // ============================================
   experience: [
+    {
+      id: 4,
+      company: "Lloyds Banking Group",
+      role: "Machine Learning Engineer",
+      period: "Jan 2026 - Present",
+      location: "United Kingdom",
+      team: "Economic Crime Prevention Platform",
+      description: "Joined as the team's first Machine Learning Engineer, bridging the gap between data science experimentation and production-grade systems across multiple model sub-teams.",
+      achievements: [
+        "Owns the team's shared Python utilities package, standardising workflows across model sub-teams, eliminating duplicated effort, and giving engineers cross-team visibility of model development patterns",
+        "Productionising fraud detection models on GCP Vertex AI by translating notebook experiments into industry-standard pipelines, enabling scalable, auditable batch inference at production scale"
+      ],
+      technologies: ["Python", "GCP", "Vertex AI", "Machine Learning"]
+    },
     {
       id: 1,
       company: "Lloyds Banking Group",
       role: "Data Scientist",
-      period: "May 2025 - Present",
+      period: "May 2025 - Jan 2026",
       location: "United Kingdom",
       team: "Economic Crime Prevention Platform",
-      description: "Leading data science initiatives to combat financial crime through advanced analytics and machine learning.",
+      description: "Led data science initiatives to combat financial crime through advanced analytics and machine learning.",
       achievements: [
-        "Developed two machine learning models for AML and fraud detection.",
-        "Improved fraud detection rates by 50% per model without increasing alert volume.",
+        "Developed two machine learning models for AML and fraud detection",
+        "Improved fraud detection rates by 50% per model without increasing alert volume",
         "Generated £100,000 in additional recovered funds per model each month"
       ],
       technologies: ["Python", "Machine Learning", "Data Analytics", "GCP"]
@@ -58,7 +52,7 @@ export const portfolioData = {
       achievements: [
         "Designed and implemented ETL pipelines processing millions of transactions daily",
         "Introduced over 100 new data points to the data warehouse, directly improving the accuracy of the models",
-        "Optimized spark applications for performance and cost efficiency, saving £500,000 per year"
+        "Optimised Spark applications for performance and cost efficiency, saving £500,000 per year"
       ],
       technologies: ["Python", "SQL", "Apache Spark", "GCP", "Data Warehousing"]
     },
@@ -79,9 +73,6 @@ export const portfolioData = {
     }
   ],
 
-  // ============================================
-  // FREELANCE PROJECTS
-  // ============================================
   freelanceExperience: [
     {
       id: 1,
@@ -98,17 +89,24 @@ export const portfolioData = {
     }
   ],
 
-  // ============================================
-  // PROJECTS
-  // ============================================
   projects: [
+    {
+      id: 6,
+      title: "Production ML Systems",
+      category: "Work",
+      description: "Established ML platform foundations as the team's first Machine Learning Engineer — owning a shared Python utilities package adopted across model sub-teams and productionising fraud detection models through cloud-native ML pipelines on Vertex AI.",
+      technologies: ["Python", "GCP", "Vertex AI", "Machine Learning"],
+      github: null,
+      demo: null,
+      featured: true
+    },
     {
       id: 1,
       title: "Staff Management System",
       category: "Freelance",
       description: "Full-stack staff scheduling and management platform for event venues. Features include shift scheduling, automated reporting, and mobile-responsive design.",
       technologies: ["React", "Node.js"],
-      github: null, // Private client work
+      github: null,
       demo: null,
       featured: true
     },
@@ -116,9 +114,9 @@ export const portfolioData = {
       id: 2,
       title: "Economic Crime ML Models",
       category: "Work",
-      description: "Machine learning models for fraud detection and prevention, processing millions of transactions in real-time.",
+      description: "Machine learning models for fraud detection and prevention, processing millions of transactions daily.",
       technologies: ["Python", "Machine Learning", "Data Analytics", "GCP"],
-      github: null, // Proprietary
+      github: null,
       demo: null,
       featured: true
     },
@@ -128,11 +126,10 @@ export const portfolioData = {
       category: "Work",
       description: "Scalable ETL pipelines for real-time transaction monitoring and data warehousing.",
       technologies: ["Java", "SQL", "Apache Spark", "GCP", "Data Warehousing"],
-      github: null, // Proprietary
+      github: null,
       demo: null,
       featured: true
     },
-    // Add more personal projects here as needed
     {
       id: 4,
       title: "Portfolio Website",
@@ -147,7 +144,7 @@ export const portfolioData = {
       id: 5,
       title: "WaniKani Statistics Tracker",
       category: "Educational",
-      description: "A web application to track and visualize WaniKani progress. Shared with thousands of users to help them track their progress and stay motivated.",
+      description: "A web application to track and visualise WaniKani progress. Shared with thousands of users to help them track their progress and stay motivated.",
       technologies: ["TypeScript", "PWA", "Github Actions"],
       github: "https://github.com/tyler-cartwright/wanikani-stats-tracker",
       demo: "https://tyler-cartwright.github.io/wanikani-stats-tracker/",
@@ -155,56 +152,15 @@ export const portfolioData = {
     }
   ],
 
-  // ============================================
-  // SKILLS
-  // ============================================
   skills: {
-    languages: [
-      "Python",
-      "JavaScript",
-      "TypeScript",
-      "Java",
-      "SQL"
-    ],
-    cloud: [
-      "GCP",
-      "Azure",
-      "Docker",
-      "Kubernetes",
-      "Terraform"
-    ],
-    dataScience: [
-      "Machine Learning",
-      "Scikit-learn",
-      "LightGBM",
-      "PyTorch"
-    ],
-    dataEngineering: [
-      "Apache Spark",
-      "BigQuery",
-      "Java",
-      "ETL Pipelines",
-      "Data Warehousing",
-    ],
-    webDevelopment: [
-      "React",
-      "Node.js",
-      "Express",
-      "REST APIs",
-    ],
-    tools: [
-      "Git",
-      "CI/CD",
-      "Jenkins",
-      "GitHub Actions",
-      "JIRA",
-      "Agile/Scrum"
-    ]
+    languages: ["Python", "JavaScript", "TypeScript", "Java", "SQL"],
+    cloud: ["GCP", "Vertex AI", "Azure", "Docker", "Kubernetes", "Terraform"],
+    dataScience: ["Machine Learning", "Scikit-learn", "LightGBM", "PyTorch"],
+    dataEngineering: ["Apache Spark", "BigQuery", "ETL Pipelines", "Data Warehousing"],
+    webDevelopment: ["React", "Node.js", "Express", "REST APIs"],
+    tools: ["Git", "CI/CD", "Jenkins", "GitHub Actions", "JIRA", "Agile/Scrum"]
   },
 
-  // ============================================
-  // EDUCATION
-  // ============================================
   education: [
     {
       id: 1,
@@ -214,7 +170,7 @@ export const portfolioData = {
       period: "2020 - 2024",
       achievements: [
         "Dean's Award recipient (all years)",
-        "Specialized in Machine Learning and Data Science",
+        "Specialised in Machine Learning and Data Science",
         "Final year project: Sentiment analysis using Reddit data surrounding the GameStop and AMC stock craze"
       ]
     }

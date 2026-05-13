@@ -1,14 +1,5 @@
-import { jsPDF } from 'jspdf';
-
-/**
- * ATS-Friendly Resume Generator
- *
- * Generates a PDF resume from portfolioData with formatting optimized for
- * Applicant Tracking Systems (ATS). Uses simple formatting, standard fonts,
- * and clear section structure.
- */
-
-export const generateResume = (portfolioData) => {
+export const generateResume = async (portfolioData) => {
+  const { jsPDF } = await import('jspdf');
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
@@ -16,16 +7,6 @@ export const generateResume = (portfolioData) => {
   const lineHeight = 7;
   let yPosition = margin;
 
-  // Helper function to add text with wrapping
-  const addText = (text, x, y, maxWidth, fontSize = 10, fontStyle = 'normal') => {
-    doc.setFontSize(fontSize);
-    doc.setFont('helvetica', fontStyle);
-    const lines = doc.splitTextToSize(text, maxWidth);
-    doc.text(lines, x, y);
-    return lines.length * (fontSize / 2);
-  };
-
-  // Helper function to check if we need a new page
   const checkNewPage = (requiredSpace = 20) => {
     if (yPosition + requiredSpace > pageHeight - margin) {
       doc.addPage();
@@ -35,9 +16,7 @@ export const generateResume = (portfolioData) => {
     return false;
   };
 
-  // ============================================
-  // HEADER - Contact Information
-  // ============================================
+  // Header
   doc.setFontSize(18);
   doc.setFont('helvetica', 'bold');
   doc.text(portfolioData.personalInfo.name.toUpperCase(), pageWidth / 2, yPosition, { align: 'center' });
@@ -54,9 +33,7 @@ export const generateResume = (portfolioData) => {
   doc.text(contactInfo, pageWidth / 2, yPosition, { align: 'center' });
   yPosition += lineHeight * 2;
 
-  // ============================================
-  // PROFESSIONAL SUMMARY
-  // ============================================
+  // Professional Summary
   doc.setFontSize(12);
   doc.setFont('helvetica', 'bold');
   doc.text('PROFESSIONAL SUMMARY', margin, yPosition);
@@ -68,23 +45,19 @@ export const generateResume = (portfolioData) => {
   doc.text(summaryLines, margin, yPosition);
   yPosition += summaryLines.length * lineHeight + 5;
 
-  // ============================================
-  // PROFESSIONAL EXPERIENCE
-  // ============================================
+  // Professional Experience
   checkNewPage();
   doc.setFontSize(12);
   doc.setFont('helvetica', 'bold');
   doc.text('PROFESSIONAL EXPERIENCE', margin, yPosition);
   yPosition += lineHeight + 2;
 
-  // Full-time experience
   portfolioData.experience.forEach((exp) => {
     checkNewPage(40);
 
-    // Company and Role
     doc.setFontSize(11);
     doc.setFont('helvetica', 'bold');
-    doc.text(`${exp.company}`, margin, yPosition);
+    doc.text(exp.company, margin, yPosition);
     yPosition += lineHeight;
 
     doc.setFontSize(10);
@@ -98,13 +71,11 @@ export const generateResume = (portfolioData) => {
       yPosition += lineHeight;
     }
 
-    // Description
     doc.setFont('helvetica', 'normal');
     const descLines = doc.splitTextToSize(exp.description, pageWidth - 2 * margin);
     doc.text(descLines, margin, yPosition);
     yPosition += descLines.length * lineHeight + 2;
 
-    // Achievements
     exp.achievements.forEach((achievement) => {
       checkNewPage(15);
       const bulletLines = doc.splitTextToSize(`• ${achievement}`, pageWidth - 2 * margin - 5);
@@ -112,16 +83,13 @@ export const generateResume = (portfolioData) => {
       yPosition += bulletLines.length * lineHeight;
     });
 
-    // Technologies
     doc.setFont('helvetica', 'italic');
-    const techText = `Technologies: ${exp.technologies.join(', ')}`;
-    const techLines = doc.splitTextToSize(techText, pageWidth - 2 * margin);
+    const techLines = doc.splitTextToSize(`Technologies: ${exp.technologies.join(', ')}`, pageWidth - 2 * margin);
     doc.text(techLines, margin, yPosition);
     yPosition += techLines.length * lineHeight + 5;
   });
 
-  // Freelance experience
-  if (portfolioData.freelanceExperience && portfolioData.freelanceExperience.length > 0) {
+  if (portfolioData.freelanceExperience?.length > 0) {
     portfolioData.freelanceExperience.forEach((exp) => {
       checkNewPage(40);
 
@@ -148,16 +116,13 @@ export const generateResume = (portfolioData) => {
       });
 
       doc.setFont('helvetica', 'italic');
-      const techText = `Technologies: ${exp.technologies.join(', ')}`;
-      const techLines = doc.splitTextToSize(techText, pageWidth - 2 * margin);
+      const techLines = doc.splitTextToSize(`Technologies: ${exp.technologies.join(', ')}`, pageWidth - 2 * margin);
       doc.text(techLines, margin, yPosition);
       yPosition += techLines.length * lineHeight + 5;
     });
   }
 
-  // ============================================
-  // EDUCATION
-  // ============================================
+  // Education
   checkNewPage(40);
   doc.setFontSize(12);
   doc.setFont('helvetica', 'bold');
@@ -175,7 +140,7 @@ export const generateResume = (portfolioData) => {
     doc.text(`${edu.degree} - ${edu.grade} | ${edu.period}`, margin, yPosition);
     yPosition += lineHeight;
 
-    if (edu.achievements && edu.achievements.length > 0) {
+    if (edu.achievements?.length > 0) {
       doc.setFont('helvetica', 'normal');
       edu.achievements.forEach((achievement) => {
         checkNewPage(10);
@@ -187,9 +152,7 @@ export const generateResume = (portfolioData) => {
     yPosition += 5;
   });
 
-  // ============================================
-  // TECHNICAL SKILLS
-  // ============================================
+  // Technical Skills
   checkNewPage(80);
   doc.setFontSize(12);
   doc.setFont('helvetica', 'bold');
@@ -197,8 +160,7 @@ export const generateResume = (portfolioData) => {
   yPosition += lineHeight + 2;
 
   doc.setFontSize(10);
-  const skills = portfolioData.skills;
-
+  const { skills } = portfolioData;
   const skillsSections = [
     { title: 'Programming Languages', items: skills.languages },
     { title: 'Cloud & Infrastructure', items: skills.cloud },
@@ -208,24 +170,20 @@ export const generateResume = (portfolioData) => {
     { title: 'Tools & Methodologies', items: skills.tools }
   ];
 
-  skillsSections.forEach((section) => {
-    if (section.items && section.items.length > 0) {
+  skillsSections.forEach(({ title, items }) => {
+    if (items?.length > 0) {
       checkNewPage(15);
       doc.setFont('helvetica', 'bold');
-      doc.text(`${section.title}:`, margin, yPosition);
+      doc.text(`${title}:`, margin, yPosition);
       yPosition += lineHeight;
 
       doc.setFont('helvetica', 'normal');
-      const skillsText = section.items.join(', ');
-      const skillLines = doc.splitTextToSize(skillsText, pageWidth - 2 * margin - 5);
+      const skillLines = doc.splitTextToSize(items.join(', '), pageWidth - 2 * margin - 5);
       doc.text(skillLines, margin + 5, yPosition);
       yPosition += skillLines.length * lineHeight + 2;
     }
   });
 
-  // ============================================
-  // SAVE PDF
-  // ============================================
   const fileName = `${portfolioData.personalInfo.name.toLowerCase().replace(/\s+/g, '-')}-resume.pdf`;
   doc.save(fileName);
 };
