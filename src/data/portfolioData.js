@@ -22,9 +22,9 @@ export const portfolioData = {
       description: "Joined as the team's first Machine Learning Engineer, bridging the gap between data science experimentation and production-grade systems across multiple model sub-teams.",
       achievements: [
         "Architected and owns the team's shared Python utilities package, standardising workflows across model sub-teams, eliminating duplicated effort, and giving engineers cross-team visibility of model development patterns",
-        "Productionising fraud detection models on GCP Vertex AI by translating notebook experiments into KFP v2 Vertex Pipelines, enabling scalable, auditable batch inference at production scale"
+        "Productionising fraud detection models on GCP Vertex AI by translating notebook experiments into industry-standard pipelines, enabling scalable, auditable batch inference at production scale"
       ],
-      technologies: ["Python", "GCP", "Vertex AI", "Kubeflow Pipelines (KFP v2)", "Machine Learning"]
+      technologies: ["Python", "GCP", "Vertex AI", "Machine Learning"]
     },
     {
       id: 1,
