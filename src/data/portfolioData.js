@@ -13,10 +13,24 @@ export const portfolioData = {
 
   experience: [
     {
+      id: 4,
+      company: "Lloyds Banking Group",
+      role: "Machine Learning Engineer",
+      period: "Jan 2026 - Present",
+      location: "United Kingdom",
+      team: "Economic Crime Prevention Platform",
+      description: "Joined as the team's first Machine Learning Engineer, bridging the gap between data science experimentation and production-grade systems across multiple model sub-teams.",
+      achievements: [
+        "Architected and owns the team's shared Python utilities package, standardising workflows across model sub-teams, eliminating duplicated effort, and giving engineers cross-team visibility of model development patterns",
+        "Productionising fraud detection models on GCP Vertex AI by translating notebook experiments into KFP v2 Vertex Pipelines, enabling scalable, auditable batch inference at production scale"
+      ],
+      technologies: ["Python", "GCP", "Vertex AI", "Kubeflow Pipelines (KFP v2)", "Machine Learning"]
+    },
+    {
       id: 1,
       company: "Lloyds Banking Group",
       role: "Data Scientist",
-      period: "May 2025 - Present",
+      period: "May 2025 - Jan 2026",
       location: "United Kingdom",
       team: "Economic Crime Prevention Platform",
       description: "Leading data science initiatives to combat financial crime through advanced analytics and machine learning.",
