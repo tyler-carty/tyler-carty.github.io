@@ -1,11 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-    <rect width="100" height="100" rx="20" fill="#1E293B" />
-    <text x="50" y="70"
-          font-family="Arial, sans-serif"
-          font-size="60"
-          font-weight="bold"
-          fill="white"
-          text-anchor="middle">
-        TC
-    </text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#05080F"/>
+  <path d="M8 36 C14 36 16 22 22 22 C28 22 28 42 34 42 C40 42 40 30 44 30" stroke="#45E0B0" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.9"/>
+  <circle cx="50" cy="26" r="4" fill="#FF6B57"/>
+  <circle cx="50" cy="26" r="7.5" stroke="#FF6B57" stroke-width="1.5" fill="none" opacity="0.6"/>
 </svg>
