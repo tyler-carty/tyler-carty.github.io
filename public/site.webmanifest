@@ -1,0 +1,8 @@
+{
+  "name": "Tyler Cartwright — Machine Learning Engineer",
+  "short_name": "Tyler Cartwright",
+  "icons": [{ "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }],
+  "theme_color": "#05080F",
+  "background_color": "#05080F",
+  "display": "browser"
+}

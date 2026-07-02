@@ -28,7 +28,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '22'
           cache: 'npm'
 
       - name: Install dependencies
@@ -36,13 +36,11 @@ jobs:
 
       - name: Build project
         run: npm run build
-        env:
-          CI: false # Prevents treating warnings as errors
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./build
+          path: ./dist
 
   deploy:
     environment:
