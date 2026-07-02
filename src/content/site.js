@@ -113,14 +113,16 @@ export const site = {
     },
   ],
 
-  // Scroll boundaries (fraction of total page scroll) driving the particle field.
+  // Particle scenes anchored to page sections; the engine measures each
+  // anchor's position to derive scroll boundaries, so scene changes stay
+  // aligned with the narrative at any viewport size.
   sceneTimeline: [
-    { scene: 'noise', at: 0 },
-    { scene: 'grid', at: 0.14 },
-    { scene: 'streams', at: 0.32 },
-    { scene: 'anomaly', at: 0.5 },
-    { scene: 'production', at: 0.66 },
-    { scene: 'constellation', at: 0.86 },
+    { scene: 'noise', anchor: 'hero' },
+    { scene: 'grid', anchor: 'foundations' },
+    { scene: 'streams', anchor: 'pipeline' },
+    { scene: 'anomaly', anchor: 'models' },
+    { scene: 'production', anchor: 'production' },
+    { scene: 'constellation', anchor: 'contact' },
   ],
 
   projects: {

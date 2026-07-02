@@ -1,4 +1,5 @@
 import { site } from './content/site.js'
+import ParticleField from './lib/particles/ParticleField.jsx'
 import Nav from './components/Nav.jsx'
 import ProgressRail from './components/ProgressRail.jsx'
 import Hero from './components/Hero.jsx'
@@ -13,6 +14,7 @@ import Footer from './components/Footer.jsx'
 export default function App() {
   return (
     <>
+      <ParticleField />
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-signal focus:text-void focus:px-4 focus:py-2 font-mono text-sm"
