@@ -60,17 +60,20 @@ export function createEngine(canvas, timeline, { onAnomalies } = {}) {
   const out = { x: 0, y: 0, alpha: 0, hue: 0 }
   const outB = { x: 0, y: 0, alpha: 0, hue: 0 }
 
-  function allocate() {
-    const w = window.innerWidth
-    const h = window.innerHeight
-    let n = Math.round((w * h) / 1400)
+  function desiredCount() {
+    let n = Math.round((state.w * state.h) / 1400)
     n = Math.min(1800, Math.max(500, n))
     if (navigator.deviceMemory && navigator.deviceMemory <= 4) n = Math.round(n / 2)
     if (slowFrames >= 5) n = Math.round(n * 0.7)
+    return n
+  }
+
+  function allocate() {
+    const w = state.w
+    const h = state.h
+    const n = desiredCount()
 
     state.n = n
-    state.w = w
-    state.h = h
     state.r0 = new Float32Array(n)
     state.r1 = new Float32Array(n)
     state.r2 = new Float32Array(n)
@@ -99,7 +102,11 @@ export function createEngine(canvas, timeline, { onAnomalies } = {}) {
     canvas.style.width = `${w}px`
     canvas.style.height = `${h}px`
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-    allocate()
+    state.w = w
+    state.h = h
+    // Only re-seed the field when the count is meaningfully off (a mobile
+    // URL-bar show/hide shouldn't scatter every particle).
+    if (!particles.x || Math.abs(desiredCount() - state.n) / state.n > 0.25) allocate()
     measureBounds()
     lastStaticSegment = -1 // force static redraw after resize
   }

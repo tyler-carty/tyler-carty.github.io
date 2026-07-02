@@ -27,7 +27,7 @@ export default function Nav() {
       >
         <a
           href="#hero"
-          className="font-mono text-sm font-bold tracking-[0.2em] text-bright hover:text-signal transition-colors"
+          className="font-mono text-sm font-bold tracking-[0.2em] text-bright hover:text-signal transition-colors p-3 -m-3"
           aria-label="Back to top"
         >
           TC
@@ -36,13 +36,13 @@ export default function Nav() {
           <a
             href={site.person.cvPath}
             download
-            className="font-mono text-xs tracking-[0.12em] text-fog hover:text-signal transition-colors py-3"
+            className="font-mono text-xs tracking-[0.12em] text-fog hover:text-signal transition-colors py-4 px-2"
           >
             CV
           </a>
           <a
             href={`mailto:${person.email}`}
-            className="font-mono text-xs tracking-[0.12em] text-fog hover:text-signal transition-colors py-3"
+            className="font-mono text-xs tracking-[0.12em] text-fog hover:text-signal transition-colors py-4 px-2"
           >
             CONTACT
           </a>
@@ -51,7 +51,7 @@ export default function Nav() {
             target="_blank"
             rel="noreferrer"
             aria-label="GitHub"
-            className="text-fog hover:text-signal transition-colors p-2 -m-2"
+            className="text-fog hover:text-signal transition-colors p-3 -m-1"
           >
             <GitHubIcon />
           </a>
@@ -60,7 +60,7 @@ export default function Nav() {
             target="_blank"
             rel="noreferrer"
             aria-label="LinkedIn"
-            className="text-fog hover:text-signal transition-colors p-2 -m-2"
+            className="text-fog hover:text-signal transition-colors p-3 -m-1"
           >
             <LinkedInIcon />
           </a>

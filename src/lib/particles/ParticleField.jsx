@@ -8,7 +8,11 @@ import { createEngine } from './engine.js'
 // the low-frequency anomaly annotation labels.
 export default function ParticleField() {
   const canvasRef = useRef(null)
-  const reduced = useReducedMotion()
+  const prefersReduced = useReducedMotion()
+  // dev-only override so the static path can be exercised without OS settings
+  const reduced =
+    prefersReduced ||
+    (import.meta.env.DEV && new URLSearchParams(window.location.search).has('reduced'))
   const [labels, setLabels] = useState([])
   const labelTimer = useRef(0)
 
