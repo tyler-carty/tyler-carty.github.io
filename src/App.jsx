@@ -1,9 +1,36 @@
+import { site } from './content/site.js'
+import Nav from './components/Nav.jsx'
+import Hero from './components/Hero.jsx'
+import Prologue from './components/Prologue.jsx'
+import Chapter from './components/Chapter.jsx'
+import ProjectsSection from './components/ProjectsSection.jsx'
+import EducationSection from './components/EducationSection.jsx'
+import ToolkitSection from './components/ToolkitSection.jsx'
+import ContactSection from './components/ContactSection.jsx'
+import Footer from './components/Footer.jsx'
+
 export default function App() {
   return (
-    <main className="min-h-screen flex items-center justify-center">
-      <h1 className="font-mono text-fog text-sm tracking-[0.12em] uppercase">
-        Signal from noise — rebuild in progress
-      </h1>
-    </main>
+    <>
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-signal focus:text-void focus:px-4 focus:py-2 font-mono text-sm"
+      >
+        Skip to content
+      </a>
+      <Nav />
+      <main id="main" className="relative z-10">
+        <Hero />
+        <Prologue />
+        {site.chapters.map((chapter) => (
+          <Chapter key={chapter.id} chapter={chapter} />
+        ))}
+        <ProjectsSection />
+        <EducationSection />
+        <ToolkitSection />
+        <ContactSection />
+      </main>
+      <Footer />
+    </>
   )
 }
