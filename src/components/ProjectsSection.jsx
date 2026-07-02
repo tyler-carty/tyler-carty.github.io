@@ -54,7 +54,7 @@ function ProjectCard({ project }) {
 export default function ProjectsSection() {
   const { projects } = site
   return (
-    <section id="projects" aria-labelledby="projects-heading" className="px-5 sm:px-10 lg:px-20 py-28">
+    <section id="projects" aria-labelledby="projects-heading" className="px-5 sm:px-10 lg:pl-20 lg:pr-44 py-28">
       <div className="max-w-6xl">
         <Reveal>
           <p className="font-mono text-[11px] sm:text-xs tracking-[0.18em] text-fog mb-5">

@@ -36,10 +36,20 @@ function CountUp({ value, format, active }) {
   return <span ref={ref}>{formatValue(reduced ? value : 0, format)}</span>
 }
 
-function BigNumber({ children, label }) {
+// Sizes are per-variant so long values ("hours → minutes") and side-by-side
+// duals stay inside their column instead of spilling over the viewport.
+const SIZES = {
+  text: 'text-[clamp(2.25rem,4vw,4rem)]',
+  single: 'text-[clamp(3rem,6vw,6rem)]',
+  dual: 'text-[clamp(2.5rem,4vw,4.5rem)]',
+}
+
+function BigNumber({ children, label, size = 'single' }) {
   return (
-    <div>
-      <p className="font-display font-bold text-signal tabular-nums tracking-tight text-[clamp(3rem,8vw,6.5rem)] leading-none">
+    <div className="min-w-0">
+      <p
+        className={`font-display font-bold text-signal tabular-nums tracking-tight leading-none ${SIZES[size]}`}
+      >
         {children}
       </p>
       <p className="font-mono text-[11px] sm:text-xs tracking-[0.18em] text-fog mt-3">{label}</p>
@@ -53,7 +63,11 @@ export default function Metric({ metric, active = true }) {
   if (!metric) return null
 
   if (metric.type === 'text') {
-    return <BigNumber label={metric.label}>{metric.display}</BigNumber>
+    return (
+      <BigNumber label={metric.label} size="text">
+        {metric.display}
+      </BigNumber>
+    )
   }
 
   if (metric.type === 'count') {
@@ -66,11 +80,11 @@ export default function Metric({ metric, active = true }) {
 
   if (metric.type === 'dual') {
     return (
-      <div className="flex flex-col gap-10 xl:flex-row xl:gap-16">
-        <BigNumber label={metric.primary.label}>
+      <div className="flex flex-col gap-10 xl:flex-row xl:gap-12 min-w-0">
+        <BigNumber label={metric.primary.label} size="dual">
           <CountUp value={metric.primary.value} format={metric.primary.format} active={active} />
         </BigNumber>
-        <BigNumber label={metric.secondary.label}>
+        <BigNumber label={metric.secondary.label} size="dual">
           <CountUp value={metric.secondary.value} format={metric.secondary.format} active={active} />
         </BigNumber>
       </div>

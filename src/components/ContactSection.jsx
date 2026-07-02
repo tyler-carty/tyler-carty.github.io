@@ -8,7 +8,7 @@ export default function ContactSection() {
     <section
       id="contact"
       aria-labelledby="contact-heading"
-      className="min-h-screen flex items-center px-5 sm:px-10 lg:px-20"
+      className="min-h-screen flex items-center px-5 sm:px-10 lg:pl-20 lg:pr-44"
     >
       <Reveal className="max-w-6xl w-full py-28">
         <p className="font-mono text-[11px] sm:text-xs tracking-[0.18em] text-fog mb-5">

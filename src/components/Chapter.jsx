@@ -30,7 +30,7 @@ export default function Chapter({ chapter }) {
       aria-labelledby={`${chapter.id}-heading`}
       className="relative min-h-screen lg:min-h-[220vh]"
     >
-      <div className="lg:sticky lg:top-0 lg:h-screen flex items-center px-5 sm:px-10 lg:px-20 py-24 lg:py-0">
+      <div className="lg:sticky lg:top-0 lg:h-screen flex items-center px-5 sm:px-10 lg:pl-20 lg:pr-44 py-24 lg:py-0">
         <motion.div
           style={reduced ? undefined : { opacity: exitOpacity }}
           className="max-w-6xl w-full grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-14 lg:gap-20 items-center"

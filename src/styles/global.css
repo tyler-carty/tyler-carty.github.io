@@ -18,6 +18,8 @@ html {
   background-color: var(--color-void);
   color-scheme: dark;
   scroll-behavior: smooth;
+  /* decorative fixed-position layers must never introduce horizontal scroll */
+  overflow-x: clip;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -27,6 +29,7 @@ html {
 }
 
 body {
+  overflow-x: clip;
   font-family: var(--font-display);
   background-color: var(--color-void);
   color: var(--color-bright);

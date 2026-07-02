@@ -4,7 +4,7 @@ import Reveal from './ui/Reveal.jsx'
 export default function ToolkitSection() {
   const { toolkit } = site
   return (
-    <section id="toolkit" aria-labelledby="toolkit-heading" className="px-5 sm:px-10 lg:px-20 py-20">
+    <section id="toolkit" aria-labelledby="toolkit-heading" className="px-5 sm:px-10 lg:pl-20 lg:pr-44 py-20">
       <Reveal className="max-w-6xl border-t border-line pt-16">
         <p className="font-mono text-[11px] sm:text-xs tracking-[0.18em] text-fog mb-5">
           {toolkit.kicker}

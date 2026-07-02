@@ -40,13 +40,16 @@ export default function ParticleField() {
   }, [reduced])
 
   return (
-    <div aria-hidden="true" className="fixed inset-0 z-0 pointer-events-none">
+    <div aria-hidden="true" className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
       <canvas ref={canvasRef} />
       {labels.map((label) => (
         <span
           key={label.k}
           className="absolute font-mono text-[10px] tracking-[0.14em] text-flag/90 whitespace-nowrap"
-          style={{ left: label.x + 14, top: label.y - 18 }}
+          style={{
+            left: Math.min(label.x + 14, window.innerWidth - 150),
+            top: Math.min(Math.max(label.y - 18, 8), window.innerHeight - 30),
+          }}
         >
           FLAGGED · p={label.p}
         </span>

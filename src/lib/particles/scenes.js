@@ -93,6 +93,9 @@ export const anomaly = {
     out.alpha = 0.14 + s.r2[i] * 0.14
     out.hue = HUE_DIM
     if (anomaly.isFlagged(i, s)) {
+      // on wide screens the left half is the chapter's text column — keep the
+      // flagged set-pieces (rings + labels) out of it for legibility
+      if (s.w >= 1024) out.x = s.w * (0.52 + s.r0[i] * 0.36)
       // flare in sequence as the chapter progresses
       const stride = Math.max(1, Math.floor(s.n / anomaly.flaggedCount))
       const order = Math.floor(i / stride) / anomaly.flaggedCount
