@@ -1,10 +1,11 @@
 import { site } from '../content/site.js'
+import Reveal from './ui/Reveal.jsx'
 
 export default function EducationSection() {
   const { education } = site
   return (
     <section id="education" aria-labelledby="education-heading" className="px-5 sm:px-10 lg:px-20 py-20">
-      <div className="max-w-6xl border-t border-line pt-16">
+      <Reveal className="max-w-6xl border-t border-line pt-16">
         <p className="font-mono text-[11px] sm:text-xs tracking-[0.18em] text-fog mb-5">
           {education.kicker}
         </p>
@@ -34,7 +35,7 @@ export default function EducationSection() {
             ))}
           </ul>
         </div>
-      </div>
+      </Reveal>
     </section>
   )
 }

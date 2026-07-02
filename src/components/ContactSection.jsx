@@ -1,5 +1,6 @@
 import { site } from '../content/site.js'
 import { GitHubIcon, LinkedInIcon, MailIcon, DownloadIcon } from './ui/Icons.jsx'
+import Reveal from './ui/Reveal.jsx'
 
 export default function ContactSection() {
   const { contact, person } = site
@@ -9,7 +10,7 @@ export default function ContactSection() {
       aria-labelledby="contact-heading"
       className="min-h-screen flex items-center px-5 sm:px-10 lg:px-20"
     >
-      <div className="max-w-6xl w-full py-28">
+      <Reveal className="max-w-6xl w-full py-28">
         <p className="font-mono text-[11px] sm:text-xs tracking-[0.18em] text-fog mb-5">
           {contact.kicker}
         </p>
@@ -55,7 +56,7 @@ export default function ContactSection() {
             <GitHubIcon />
           </a>
         </div>
-      </div>
+      </Reveal>
     </section>
   )
 }

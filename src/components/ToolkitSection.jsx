@@ -1,10 +1,11 @@
 import { site } from '../content/site.js'
+import Reveal from './ui/Reveal.jsx'
 
 export default function ToolkitSection() {
   const { toolkit } = site
   return (
     <section id="toolkit" aria-labelledby="toolkit-heading" className="px-5 sm:px-10 lg:px-20 py-20">
-      <div className="max-w-6xl border-t border-line pt-16">
+      <Reveal className="max-w-6xl border-t border-line pt-16">
         <p className="font-mono text-[11px] sm:text-xs tracking-[0.18em] text-fog mb-5">
           {toolkit.kicker}
         </p>
@@ -25,7 +26,7 @@ export default function ToolkitSection() {
             </div>
           ))}
         </dl>
-      </div>
+      </Reveal>
     </section>
   )
 }

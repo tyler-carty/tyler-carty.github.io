@@ -1,10 +1,26 @@
+import { useState } from 'react'
+import { motion, useScroll, useMotionValueEvent, useReducedMotion } from 'motion/react'
 import { site } from '../content/site.js'
 import { GitHubIcon, LinkedInIcon } from './ui/Icons.jsx'
 
 export default function Nav() {
   const { person } = site
+  const reduced = useReducedMotion()
+  const [visible, setVisible] = useState(false)
+  const { scrollY } = useScroll()
+
+  useMotionValueEvent(scrollY, 'change', (y) => {
+    setVisible(y > window.innerHeight * 0.6)
+  })
+
   return (
-    <header className="fixed top-0 inset-x-0 z-40">
+    <motion.header
+      inert={visible ? undefined : true}
+      initial={false}
+      animate={reduced ? { opacity: visible ? 1 : 0 } : { opacity: visible ? 1 : 0, y: visible ? 0 : -12 }}
+      transition={{ duration: 0.35, ease: 'easeOut' }}
+      className="fixed top-0 inset-x-0 z-40"
+    >
       <nav
         aria-label="Primary"
         className="flex items-center justify-between px-5 sm:px-8 h-14 bg-panel/70 backdrop-blur-md border-b border-line"
@@ -50,6 +66,6 @@ export default function Nav() {
           </a>
         </div>
       </nav>
-    </header>
+    </motion.header>
   )
 }

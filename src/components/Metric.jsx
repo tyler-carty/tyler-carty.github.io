@@ -1,4 +1,8 @@
-const formatValue = (value, format) => {
+import { useEffect, useRef } from 'react'
+import { animate, useReducedMotion } from 'motion/react'
+import TypedStatus from './TypedStatus.jsx'
+
+export const formatValue = (value, format) => {
   switch (format) {
     case 'gbp-compact':
       return value >= 1000 ? `£${Math.round(value / 1000)}K` : `£${Math.round(value)}`
@@ -9,59 +13,73 @@ const formatValue = (value, format) => {
   }
 }
 
-function BigNumber({ display, label }) {
+function CountUp({ value, format, active }) {
+  const ref = useRef(null)
+  const reduced = useReducedMotion()
+
+  useEffect(() => {
+    if (!active || !ref.current) return
+    if (reduced) {
+      ref.current.textContent = formatValue(value, format)
+      return
+    }
+    const controls = animate(0, value, {
+      duration: 1.6,
+      ease: 'circOut',
+      onUpdate: (v) => {
+        if (ref.current) ref.current.textContent = formatValue(v, format)
+      },
+    })
+    return () => controls.stop()
+  }, [active, reduced, value, format])
+
+  return <span ref={ref}>{formatValue(reduced ? value : 0, format)}</span>
+}
+
+function BigNumber({ children, label }) {
   return (
     <div>
       <p className="font-display font-bold text-signal tabular-nums tracking-tight text-[clamp(3rem,8vw,6.5rem)] leading-none">
-        {display}
+        {children}
       </p>
       <p className="font-mono text-[11px] sm:text-xs tracking-[0.18em] text-fog mt-3">{label}</p>
     </div>
   )
 }
 
-// Static renderer for a chapter's metric set-piece. Count-up animation
-// is layered on in the scroll orchestration phase.
-export default function Metric({ metric }) {
+// A chapter's metric set-piece. `active` flips true once, when the chapter's
+// scroll progress passes its trigger point.
+export default function Metric({ metric, active = true }) {
   if (!metric) return null
 
   if (metric.type === 'text') {
-    return <BigNumber display={metric.display} label={metric.label} />
+    return <BigNumber label={metric.label}>{metric.display}</BigNumber>
   }
 
   if (metric.type === 'count') {
-    return <BigNumber display={formatValue(metric.value, metric.format)} label={metric.label} />
+    return (
+      <BigNumber label={metric.label}>
+        <CountUp value={metric.value} format={metric.format} active={active} />
+      </BigNumber>
+    )
   }
 
   if (metric.type === 'dual') {
     return (
-      <div className="flex flex-col sm:flex-row gap-10 sm:gap-16">
-        <BigNumber
-          display={formatValue(metric.primary.value, metric.primary.format)}
-          label={metric.primary.label}
-        />
-        <BigNumber
-          display={formatValue(metric.secondary.value, metric.secondary.format)}
-          label={metric.secondary.label}
-        />
+      <div className="flex flex-col gap-10 xl:flex-row xl:gap-16">
+        <BigNumber label={metric.primary.label}>
+          <CountUp value={metric.primary.value} format={metric.primary.format} active={active} />
+        </BigNumber>
+        <BigNumber label={metric.secondary.label}>
+          <CountUp value={metric.secondary.value} format={metric.secondary.format} active={active} />
+        </BigNumber>
       </div>
     )
   }
 
   if (metric.type === 'status') {
-    return (
-      <div className="font-mono text-sm sm:text-base text-signal space-y-2">
-        {metric.lines.map((line) => (
-          <p key={line}>
-            <span className="text-fog mr-2">&gt;</span>
-            {line}
-          </p>
-        ))}
-      </div>
-    )
+    return <TypedStatus lines={metric.lines} active={active} />
   }
 
   return null
 }
-
-export { formatValue }

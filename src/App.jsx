@@ -1,5 +1,6 @@
 import { site } from './content/site.js'
 import Nav from './components/Nav.jsx'
+import ProgressRail from './components/ProgressRail.jsx'
 import Hero from './components/Hero.jsx'
 import Prologue from './components/Prologue.jsx'
 import Chapter from './components/Chapter.jsx'
@@ -19,6 +20,7 @@ export default function App() {
         Skip to content
       </a>
       <Nav />
+      <ProgressRail />
       <main id="main" className="relative z-10">
         <Hero />
         <Prologue />
